@@ -251,6 +251,61 @@ make ingest MANIFEST=.data/media/segments/manifest.json
 
 本机手动运行服务的配置见 `docs/demo.md`。前端开发在已有 Demo API 上执行 `cd frontend && pnpm dev`，默认端口 5173 代理到 8080。
 
+### 上传自己的视频
+
+原视频统一放在项目根目录的 `.data/uploads/`。当前 Mac 的完整路径是 `/Users/wanghaoyu/Desktop/cs512Project/.data/uploads/`；其他机器使用自己的项目路径。`.data` 是隐藏目录，Finder 中按 `Command + Shift + .` 可显示隐藏文件，也可以按 `Command + Shift + G` 输入完整路径前往。
+
+**目前没有自动监控目录或前端上传按钮。复制文件后，需要手动切片并执行导入。** 以下以 `my-video.mp4`、视频 ID `my-video` 为例；需要本机已安装 FFmpeg、FFprobe 和 Python 3。
+
+1. 在项目根目录创建入口目录，将自己的视频复制进去，并命名为 `my-video.mp4`：
+
+   ```bash
+   mkdir -p .data/uploads
+   # 将视频复制到 .data/uploads/my-video.mp4
+   ```
+
+2. 将原视频切成约 2 秒的独立 MP4 片段，生成导入清单：
+
+   ```bash
+   bash scripts/media/segment_video.sh \
+     .data/uploads/my-video.mp4 \
+     .data/media/my-video/segments
+   python3 scripts/media/generate_manifest.py \
+     .data/media/my-video/segments \
+     --video-id my-video
+   ```
+
+   当前切片脚本会重新编码为 H.264，并去掉音轨。输出目录包含 `segment-*.mp4`、供上传使用的 `my-video--*.bin` 和 `manifest.json`；`.bin` 内容就是对应 MP4 片段的字节。不同视频应使用不同的视频 ID 和输出目录；ID 只允许字母、数字、下划线和连字符，长度为 1–96 个字符。
+
+3. 如果使用 Docker 集群，先在 Docker Desktop 运行的情况下启动服务（已启动则跳过），然后导入：
+
+   ```bash
+   make up
+   make ingest MANIFEST=.data/media/my-video/segments/manifest.json
+   ```
+
+   如果使用前文的本机单 Controller 模式，保持各服务运行，改用：
+
+   ```bash
+   python3 scripts/ingest/ingest.py \
+     .data/media/my-video/segments/manifest.json \
+     --controllers http://127.0.0.1:8001
+   ```
+
+4. 导入成功会输出 `status: READY` 的 JSON。在前端输入视频 ID `my-video`，即可启动下载与缓冲模拟 Session；当前不显示视频画面或播放音频。
+
+文件存放位置：
+
+| 内容 | 位置 |
+|---|---|
+| 原视频 | 本机项目目录 `.data/uploads/my-video.mp4`，导入不会移动原文件 |
+| 准备好的片段与清单 | 本机项目目录 `.data/media/my-video/segments/` |
+| Docker 模式下的片段副本 | 各 Peer 独立的 named volume，挂载到各自容器的 `/data/`；存为 `<sha256>.blob`，由 `index.json` 索引 |
+| 本机模式下的片段副本 | 按前文配置，分别在 `.data/peer-1/`、`.data/peer-2/`、`.data/peer-3/` |
+| 视频清单、发布状态和副本位置 | Controller 的持久化数据中 |
+
+导入工具会将每段上传到两个不同 Peer，并登记元数据；不要直接把 MP4 复制到 Peer 的 `/data`，那样不会完成索引与登记。Docker 的三个 `/data` 相互独立，也不对应本机 `.data/peer-*`。`make down` 保留数据卷，删除卷会丢失其中的副本。`.data/` 已被 Git 忽略，团队成员首次使用时需自行创建目录；不要将视频素材提交到仓库。
+
 ## 团队开发入口
 
 - Haoyu：`internal/metadata/`、`internal/control/`、公共协议、部署和集成。下一步是持久容量预留和任务生命周期。
