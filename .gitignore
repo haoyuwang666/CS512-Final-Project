@@ -1,0 +1,17 @@
+# TODO(Haoyu): Keep generated data, local dependencies, binaries and credentials out of version control.
+.data/
+bin/
+frontend/node_modules/
+frontend/dist/
+__pycache__/
+*.pyc
+.venv/
+.env
+results/*/
+!results/README.md
+.DS_Store
+
+# Local planning documents and reference material.
+.local-reference/
+
+.pnpm-store/

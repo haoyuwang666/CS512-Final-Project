@@ -1,0 +1,12 @@
+{
+  "_todo": "TODO(Tian): Set media bitrate, fresh cluster state, failure trace and matching resource budgets before formal experiments.",
+  "name": "baseline",
+  "strategy": "round_robin",
+  "placement": "fixed",
+  "video_id": "fixture",
+  "viewers": 1,
+  "window": 3,
+  "concurrency": 2,
+  "seeds": [11, 22, 33, 44, 55],
+  "timeout_seconds": 120
+}

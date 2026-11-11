@@ -1,0 +1,101 @@
+# TODO(Haoyu): Validate this topology with Docker; host smoke tests already exercise equivalent real processes.
+x-controller-environment: &controller-environment
+  HTTP_ADDR: 0.0.0.0:8000
+  RAFT_BIND: 0.0.0.0:7000
+  DATA_DIR: /data
+  BOOTSTRAP: 'false'
+  RAFT_MEMBERS: '[{"id":"controller-1","raft_address":"controller-1:7000","http_url":"http://controller-1:8000"},{"id":"controller-2","raft_address":"controller-2:7000","http_url":"http://controller-2:8000"},{"id":"controller-3","raft_address":"controller-3:7000","http_url":"http://controller-3:8000"}]'
+  PEERS: '[{"peer_id":"peer-1","url":"http://peer-1:9000"},{"peer_id":"peer-2","url":"http://peer-2:9000"},{"peer_id":"peer-3","url":"http://peer-3:9000"}]'
+x-peer-environment: &peer-environment
+  HTTP_ADDR: 0.0.0.0:9000
+  DATA_DIR: /data
+  QUOTA_BYTES: '1073741824'
+  UPLOAD_BYTES_PER_SECOND: '5000000'
+x-service: &service
+  image: cooperative-video:dev
+  build:
+    context: ..
+    dockerfile: deployments/dockerfiles/backend.Dockerfile
+services:
+  controller-1:
+    <<: *service
+    command: [controller]
+    environment:
+      <<: *controller-environment
+      NODE_ID: controller-1
+      BOOTSTRAP: 'true'
+      RAFT_ADVERTISE: controller-1:7000
+    ports: ['127.0.0.1:8001:8000']
+    volumes: ['controller-1:/data']
+  controller-2:
+    <<: *service
+    command: [controller]
+    environment:
+      <<: *controller-environment
+      NODE_ID: controller-2
+      RAFT_ADVERTISE: controller-2:7000
+    ports: ['127.0.0.1:8002:8000']
+    volumes: ['controller-2:/data']
+  controller-3:
+    <<: *service
+    command: [controller]
+    environment:
+      <<: *controller-environment
+      NODE_ID: controller-3
+      RAFT_ADVERTISE: controller-3:7000
+    ports: ['127.0.0.1:8003:8000']
+    volumes: ['controller-3:/data']
+  peer-1:
+    <<: *service
+    command: [peer]
+    environment:
+      <<: *peer-environment
+      PEER_ID: peer-1
+    ports: ['127.0.0.1:9001:9000']
+    volumes: ['peer-1:/data']
+  peer-2:
+    <<: *service
+    command: [peer]
+    environment:
+      <<: *peer-environment
+      PEER_ID: peer-2
+    ports: ['127.0.0.1:9002:9000']
+    volumes: ['peer-2:/data']
+  peer-3:
+    <<: *service
+    command: [peer]
+    environment:
+      <<: *peer-environment
+      PEER_ID: peer-3
+    ports: ['127.0.0.1:9003:9000']
+    volumes: ['peer-3:/data']
+  demo-api:
+    <<: *service
+    command: [demo-api]
+    environment:
+      HTTP_ADDR: 0.0.0.0:8080
+      CONTROLLERS: http://controller-1:8000,http://controller-2:8000,http://controller-3:8000
+    ports: ['127.0.0.1:8080:8080']
+  ingest:
+    <<: *service
+    profiles: [tools]
+    working_dir: /workspace
+    entrypoint: [python3, scripts/ingest/ingest.py]
+    volumes: ['..:/workspace:ro']
+  experiment-runner:
+    <<: *service
+    profiles: [tools]
+    working_dir: /workspace
+    entrypoint: [python3, experiments/run.py]
+    environment:
+      CLIENT_BIN: /usr/local/bin/client
+    volumes: ['..:/workspace']
+    # Explicit UID for mounted results; override when the host requires a different mapping.
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
+volumes:
+  controller-1:
+  controller-2:
+  controller-3:
+  peer-1:
+  peer-2:
+  peer-3:

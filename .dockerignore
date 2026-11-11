@@ -1,0 +1,15 @@
+# TODO(Haoyu): Keep host caches, large datasets and build outputs outside Docker build contexts.
+.git
+.data
+bin
+frontend/node_modules
+frontend/dist
+results
+**/__pycache__
+.venv
+
+.local-reference
+.env
+.DS_Store
+
+.pnpm-store
