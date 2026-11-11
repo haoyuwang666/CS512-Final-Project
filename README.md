@@ -1,8 +1,183 @@
-# Cooperative Video · 可扩展项目基础框架
+# Cooperative Video · 分布式视频传输实验框架
 
 TODO(Haoyu)：维护项目入口、构建约定和功能状态；每个负责人完成任务时同步相关文档。
 
-所有开发文件统一位于本目录。先读 `docs/ownership.md`，再读 `docs/api.md`。完整文件用途和 TODO 索引见 `FILE_INDEX.md`。仓库根目录即开发入口；计划材料和课程提交资料不纳入代码仓库。
+Go 后端提供 Raft 元数据服务、Peer 分片存储和播放 Session API；React + TypeScript 前端展示 Session 状态与下载指标。下面的本地快速开始使用 **1 个 Controller + 3 个 Peer + Demo API + 前端**，不需要 Docker。
+
+所有命令从仓库根目录开始执行，仓库中已没有 `code/` 这一层。已有本地项目可直接进入项目目录；新环境先克隆：
+
+```bash
+git clone https://github.com/haoyuwang666/CS512-Final-Project.git
+cd CS512-Final-Project
+```
+
+## 1. 准备环境
+
+| 工具 | 版本 / 用途 |
+|---|---|
+| Go | ≥ 1.24；后端编译与测试，本项目已使用 1.27.4 验证 |
+| Node.js | 24；本项目已使用 24.22.1 验证 |
+| pnpm | 11.25.0；安装前端依赖和运行 Vite |
+| Python | ≥ 3.10；生成测试数据、导入和实验脚本 |
+| make | 执行根目录 Makefile 的构建命令 |
+| FFmpeg / FFprobe | 可选，仅生成或切分真实视频时需要 |
+| Docker + Compose | 可选，仅容器集群启动时需要 |
+
+先确认终端能找到这些命令：
+
+```bash
+go version
+node -v
+pnpm -v
+python3 --version
+make --version
+```
+
+若已经安装 Node.js 和 npm，但提示 `pnpm: command not found`，执行：
+
+```bash
+npm install -g pnpm@11.25.0
+pnpm -v
+```
+
+如果 `node` 或 `npm` 也找不到，先安装 Node.js 24 并重新打开终端，再安装 pnpm。
+
+当前这台 Mac 也可以临时使用 Codex 已下载的工具（仅适用于这些路径存在的本机环境）：
+
+```bash
+export PATH="/private/tmp/cs512-toolchain/go/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:$PATH"
+```
+
+该设置只对当前终端生效；新开终端若找不到命令，需要重新执行。`/private/tmp` 下的 Go 可能被系统清理，长期开发应自行安装 Go。不要把这些本机路径当成团队成员的安装要求。
+
+Python 脚本当前全部只使用标准库，`requirements.txt` 因此仅包含说明，没有第三方包。它不负责安装 Go、Node.js 或 pnpm。若需要独立 Python 环境，可选执行：
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+```
+
+## 2. 首次安装依赖与编译
+
+在仓库根目录执行：
+
+```bash
+make setup
+make backend
+```
+
+`make setup` 下载 Go 依赖，并使用锁文件安装前端依赖；`make backend` 生成 `bin/controller`、`bin/peer`、`bin/client` 和 `bin/demo-api`。已经成功运行过这两条命令，可以直接进入下一步。
+
+## 3. 启动后端
+
+打开 **5 个终端标签页**，每个先进入同一个仓库根目录。当前本机路径为：
+
+```bash
+cd /Users/wanghaoyu/Desktop/cs512Project
+```
+
+其他机器请替换为自己的仓库路径。以下每个服务会持续运行，各占一个终端；看到监听日志后保留窗口，再打开下一个。
+
+**终端 1：Peer 1**
+
+```bash
+HTTP_ADDR=127.0.0.1:9001 PEER_ID=peer-1 DATA_DIR=.data/peer-1 ./bin/peer
+```
+
+**终端 2：Peer 2**
+
+```bash
+HTTP_ADDR=127.0.0.1:9002 PEER_ID=peer-2 DATA_DIR=.data/peer-2 ./bin/peer
+```
+
+**终端 3：Peer 3**
+
+```bash
+HTTP_ADDR=127.0.0.1:9003 PEER_ID=peer-3 DATA_DIR=.data/peer-3 ./bin/peer
+```
+
+**终端 4：Controller**
+
+```bash
+PEERS='[{"peer_id":"peer-1","url":"http://127.0.0.1:9001"},{"peer_id":"peer-2","url":"http://127.0.0.1:9002"},{"peer_id":"peer-3","url":"http://127.0.0.1:9003"}]' ./bin/controller
+```
+
+Controller 默认 HTTP 地址为 `127.0.0.1:8001`，Raft 地址为 `127.0.0.1:7001`。启动后等待数秒，让单节点完成选主。
+
+**终端 5：Demo API**
+
+```bash
+./bin/demo-api
+```
+
+Demo API 默认监听 `127.0.0.1:8080`，通过 Controller 查询元数据，供前端创建和查询 Session。服务直接读取进程环境变量，**不会自动加载 `.env` 或 `.env.example`**。
+
+这个模式适合本地前后端联调；三节点 Controller 高可用演示请使用下方 Docker 配置或参考 `docs/demo.md`。
+
+## 4. 导入测试数据并启动前端
+
+打开 **终端 6**，进入仓库根目录，然后执行：
+
+```bash
+python3 scripts/media/fixture.py
+python3 scripts/ingest/ingest.py .data/fixture/manifest.json --controllers http://127.0.0.1:8001
+
+cd frontend
+pnpm dev
+```
+
+打开 **http://localhost:5173**，输入视频 ID `fixture`，点击 **“开始 Session”**。Vite 会把 `/api` 请求代理到 `http://127.0.0.1:8080`，因此 Demo API 也必须保持运行。Vite 默认使用 5173；若端口被占用，请打开终端实际打印的地址。
+
+预期能看到 Session 指标和真实后端事件。`fixture` 只有 4 个短分片，Session 很快结束属于正常现象。它是确定性二进制测试数据，不是可播放的视频；目前前端展示传输与模拟消费过程，不提供视频画面或音频解码。
+
+数据已成功导入且后端仍在运行时，以后只需从根目录执行以下命令启动前端：
+
+```bash
+cd frontend
+pnpm dev
+```
+
+如果只想先查看页面，也可以直接启动前端；创建 Session 需要后端与已导入的数据。
+
+### 不使用 Vite 的前后端合并访问
+
+先停止正在运行的 Demo API，在根目录构建前端，再启动 API：
+
+```bash
+make frontend
+./bin/demo-api
+```
+
+此时直接打开 **http://localhost:8080**，无需 `pnpm dev`。Controller 和 Peer 仍需运行。前端源文件修改后需要重新执行 `make frontend`。
+
+## 5. 停止与再次启动
+
+在前端、Demo API、Controller 和 3 个 Peer 的各自终端按 `Ctrl+C` 即可停止。数据保存在 `.data/`，停止服务不会清空数据。下次使用相同配置启动后，通常无需重新生成或导入已经持久化的 `fixture`。
+
+常见问题：
+
+| 现象 | 处理方式 |
+|---|---|
+| `pnpm: command not found` | 按环境准备部分安装 pnpm，或在当前终端设置本机工具路径 |
+| `go: command not found` | 安装 Go 并加入 PATH，或使用上述本机临时 Go 路径 |
+| `./bin/peer: No such file or directory` | 回到仓库根目录，先运行 `make backend` |
+| 页面能打开，创建 Session 失败 / 代理连接被拒绝 | 确认 Demo API 在 8080、Controller 在 8001、Peer 在 9001–9003 运行，且测试数据已经导入 |
+| 导入时暂时找不到 Leader | 等待 Controller 选主完成，再重试导入；导入工具自身也会重试 |
+| `address already in use` | 检查并停止之前启动的同一个服务，避免重复运行 |
+
+## 验证与测试
+
+在仓库根目录执行：
+
+```bash
+make vet test test-race
+make build
+make smoke
+python3 scripts/check_scaffold.py
+```
+
+`make smoke` 自行启动临时的 3 Controller + 3 Peer，生成短时长字节素材、导入、模拟播放、停止一个 Peer、停止 Leader、重启 Controller、验证无多数派写入失败；最终关闭其进程。临时目录自动清理，不依赖已有集群，也不会留下长期运行的前后端。`make test-raft` 和 `make test-e2e` 目前复用这项检查，尚不是完整分区测试套件。
 
 ## 已有基础代码与边界
 
@@ -47,23 +222,6 @@ report/              按负责人拆开的报告章节
 ```
 
 相对 plan：公共 API 工具统一为 `internal/protocol/`，不再创建职责重复的 `internal/api/`；脚本按分工拆到 `scripts/media/` 与 `scripts/ingest/`。`control` 负责组合，不让策略包改 FSM。
-
-## 本地依赖
-
-- Go ≥ 1.24；当前编译/测试使用 Go 1.27.4。
-- Node.js 24、pnpm 11.25.0；本次使用 Node 24.22.1 验证。前端固定依赖及 `pnpm-lock.yaml`。与原 plan 的 npm 选择不同，仓库统一使用 pnpm，不混用 lockfile。
-- Python ≥ 3.10；测试、导入和基础分析只使用标准库。
-- FFmpeg / FFprobe 只用于真实媒体生成。二进制冒烟测试不需要它们。
-- Docker + Compose 用于容器演示；本机实际环境没有 Docker，因此容器镜像和 Compose 运行尚未验证。
-
-```bash
-make setup
-make vet test test-race
-make build
-make smoke
-```
-
-`make smoke` 自行启动临时的 3 Controller + 3 Peer，生成短时长字节素材、导入、模拟播放、停止一个 Peer、停止 Leader、重启 Controller、验证无多数派写入失败；最终关闭其进程。临时目录自动清理。不依赖已有集群，不删除项目数据。`make test-raft` 和 `make test-e2e` 目前复用这项检查，尚不是完整分区测试套件。
 
 ## Docker 演示入口（配置已提供，待在有 Docker 的机器验证）
 

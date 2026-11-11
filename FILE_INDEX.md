@@ -81,6 +81,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [report/integration.md](report/integration.md) | TODO(Haoyu)：说明架构、构建环境、端到端验证、实现与计划的差异和实际贡献。 |
 | [report/metadata.md](report/metadata.md) | TODO(Haoyu)：说明实际 Raft 配置、FSM 命令、持久化和故障测试；仅填写有日志支持的结果。 |
 | [report/storage.md](report/storage.md) | TODO(Yuquan)：说明对象安装、配额、完整性、放置和后续 Repair 的真实实现与局限。 |
+| [requirements.txt](requirements.txt) | # TODO(Haoyu): Keep Python runtime requirements aligned with scripts and experiments. |
 | [results/README.md](results/README.md) | TODO(Tian)：保存配置、原始事件、session 汇总、run 汇总和正式配对分析。大数据另存时记录地址与校验值。 |
 | [scripts/check_scaffold.py](scripts/check_scaffold.py) | """TODO(Haoyu): Maintain the per-file purpose index and audit owner TODO markers when extending the scaffold.""" |
 | [scripts/ingest/ingest.py](scripts/ingest/ingest.py) | """TODO(Yuquan): Replace advisory placement with durable reservations; preserve operation IDs on all retries.""" |
