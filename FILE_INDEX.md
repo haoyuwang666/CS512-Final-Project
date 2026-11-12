@@ -15,6 +15,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [cmd/client/main.go](cmd/client/main.go) | // TODO(Tian): Extend CLI configuration alongside the shared Go engine; never implement a separate CLI scheduler. |
 | [cmd/controller/main.go](cmd/controller/main.go) | // TODO(Haoyu): Keep controller startup/configuration here; protocol, FSM and policy logic belong in internal packages. |
 | [cmd/demo-api/main.go](cmd/demo-api/main.go) | // TODO(Tian): Extend demo routes with live Peer/buffer snapshots; the UI never bypasses the shared engine. |
+| [cmd/local-console/main.go](cmd/local-console/main.go) | // TODO(Haoyu): Keep the local console bound to loopback and stop only its own child processes. |
 | [cmd/peer/main.go](cmd/peer/main.go) | // TODO(Yuquan): Add heartbeat/inventory workers after their real controller endpoints are implemented. |
 | [deployments/compose.yaml](deployments/compose.yaml) | # TODO(Haoyu): Validate this topology with Docker; host smoke tests already exercise equivalent real processes. |
 | [deployments/dockerfiles/backend.Dockerfile](deployments/dockerfiles/backend.Dockerfile) | # TODO(Haoyu): Verify image tags/platforms in Docker CI; this one image supplies all four backend commands. |
@@ -40,6 +41,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [frontend/pnpm-workspace.yaml](frontend/pnpm-workspace.yaml) | # TODO(Tian): Review explicitly permitted dependency build scripts when updating the lockfile. |
 | [frontend/src/App.tsx](frontend/src/App.tsx) | // TODO(Tian): Keep app composition here; scheduling and metric calculations stay in Go. |
 | [frontend/src/api/client.ts](frontend/src/api/client.ts) | // TODO(Tian): Add versioned API capabilities; display server errors without generating local experimental metrics. |
+| [frontend/src/components/LocalConsole.tsx](frontend/src/components/LocalConsole.tsx) | // TODO(Haoyu): Keep local lifecycle and upload feedback tied to actual server responses. |
 | [frontend/src/components/MetricsPanel.tsx](frontend/src/components/MetricsPanel.tsx) | // TODO(Tian): Validate dashboard terminology alongside future metric schema changes. |
 | [frontend/src/components/VideoPlayer.tsx](frontend/src/components/VideoPlayer.tsx) | // TODO(Tian): Keep real decoder metrics separate from headless experiment summaries. |
 | [frontend/src/hooks/useSession.ts](frontend/src/hooks/useSession.ts) | // TODO(Tian): Keep snapshot recovery compatible with future event schema versions. |
@@ -60,6 +62,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/control/coordinator.go](internal/control/coordinator.go) | // TODO(Haoyu): Implement leader-only reservation/task coordination and replay; repair is deliberately unavailable until durable transitions exist. |
 | [internal/domain/models.go](internal/domain/models.go) | // TODO(Haoyu): Own the common domain model; extend versioned task and coding types here. |
 | [internal/domain/models_test.go](internal/domain/models_test.go) | // TODO(Haoyu): Extend manifest safety tests when additional media representations are introduced. |
+| [internal/localconsole/manager.go](internal/localconsole/manager.go) | // TODO(Haoyu): Extend local process supervision without changing distributed storage protocols. |
 | [internal/metadata/fsm.go](internal/metadata/fsm.go) | // TODO(Haoyu): Extend the real Raft FSM with reservations and durable repair transitions; never perform network I/O in Apply. |
 | [internal/metadata/fsm_test.go](internal/metadata/fsm_test.go) | // TODO(Haoyu): Extend safety tests to durable task transitions and concurrent removals when those features land. |
 | [internal/metadata/handlers.go](internal/metadata/handlers.go) | // TODO(Haoyu): Replace advisory placement with durable reservations; heartbeat, inventory and repair endpoints currently return 501. |
@@ -101,7 +104,9 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [scripts/media/generate_fixture.sh](scripts/media/generate_fixture.sh) | # TODO(Yuquan): Extend the licensed media fixture library; this generates a real 12-second test video locally. |
 | [scripts/media/generate_manifest.py](scripts/media/generate_manifest.py) | """TODO(Yuquan): Keep codec/track validation aligned with browser media support.""" |
 | [scripts/media/segment_video.sh](scripts/media/segment_video.sh) | # TODO(Yuquan): Preserve one encoder timeline when extending continuous fMP4 packaging. |
+| [scripts/run_console.sh](scripts/run_console.sh) | # TODO(Haoyu): Provide one local entry point while keeping tools in the user's own installation. |
 | [tests/e2e/README.md](tests/e2e/README.md) | TODO(Haoyu)：补充浏览器 UI 与服务 API 的联合验收；当前 make test-e2e 复用 tests/system/smoke.py。 |
 | [tests/integration/playback_test.go](tests/integration/playback_test.go) | // TODO(Tian): Add explicit failed-session, cancellation and controlled-stall metric cases to these real HTTP integration tests. |
+| [tests/system/console.py](tests/system/console.py) | """TODO(Haoyu): Exercise local orchestration, real upload/trim/ingest and verified Peer delivery in isolated data directories.""" |
 | [tests/system/media.py](tests/system/media.py) | """TODO(Tian): Add browser decoding automation when a supported browser runner is available.""" |
 | [tests/system/smoke.py](tests/system/smoke.py) | """TODO(Haoyu): Extend this real-process Raft smoke test with partitions, disk-loss faults and task recovery.""" |

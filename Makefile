@@ -7,7 +7,7 @@ CONTROLLERS ?= http://127.0.0.1:8001,http://127.0.0.1:8002,http://127.0.0.1:8003
 MANIFEST ?= .data/fixture/manifest.json
 INTERNAL_CONTROLLERS = http://controller-1:8000,http://controller-2:8000,http://controller-3:8000
 
-.PHONY: setup build backend frontend fmt vet test test-race test-integration smoke test-raft test-e2e test-media test-media-browser test-player up down fixture media ingest demo experiment-baseline experiment-main plot
+.PHONY: setup build backend frontend console fmt vet test test-race test-integration smoke test-raft test-e2e test-media test-media-browser test-player up down fixture media ingest demo experiment-baseline experiment-main plot
 setup:
 	$(GO) mod download
 	cd frontend && $(PNPM) install --frozen-lockfile
@@ -17,6 +17,9 @@ backend:
 	$(GO) build -o bin/peer ./cmd/peer
 	$(GO) build -o bin/client ./cmd/client
 	$(GO) build -o bin/demo-api ./cmd/demo-api
+	$(GO) build -o bin/local-console ./cmd/local-console
+console:
+	bash scripts/run_console.sh
 frontend:
 	cd frontend && $(PNPM) run build
 fmt:
