@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+var mediaMIME = regexp.MustCompile(`^video/mp4; codecs="avc1\.[0-9a-fA-F]{6}(, mp4a\.40\.2)?"$`)
+
 var identifier = regexp.MustCompile(`^[A-Za-z0-9_-]{1,128}$`)
 
 func ValidID(id string) bool { return identifier.MatchString(id) }
@@ -19,24 +21,45 @@ type Segment struct {
 	Size       int64  `json:"size_bytes"`
 	SHA256     string `json:"sha256"`
 }
+
+// MediaInfo describes one continuous encoded timeline shared by all fMP4 objects.
+type MediaInfo struct {
+	MIMEType   string `json:"mime_type"`
+	DurationMS int64  `json:"duration_ms"`
+}
 type Manifest struct {
-	SchemaVersion  int       `json:"schema_version"`
-	VideoID        string    `json:"video_id"`
-	Representation string    `json:"representation"`
-	Segments       []Segment `json:"segments"`
+	SchemaVersion  int        `json:"schema_version"`
+	VideoID        string     `json:"video_id"`
+	Representation string     `json:"representation"`
+	Segments       []Segment  `json:"segments"`
+	Media          *MediaInfo `json:"media,omitempty"`
 }
 
 func (m Manifest) Validate() error {
 	if m.SchemaVersion != 1 || !ValidID(m.VideoID) || m.Representation == "" || len(m.Segments) == 0 {
 		return fmt.Errorf("invalid manifest header")
 	}
+	continuous := strings.HasPrefix(m.Representation, "continuous-fmp4-")
+	if continuous && (m.Media == nil || m.Media.DurationMS <= 0 || len(m.Media.MIMEType) > 256 || !mediaMIME.MatchString(m.Media.MIMEType)) {
+		return fmt.Errorf("invalid continuous media configuration")
+	}
 	seen := map[string]bool{}
+	var total int64
 	for i, s := range m.Segments {
 		h, err := hex.DecodeString(s.SHA256)
 		if !ValidID(s.ID) || seen[s.ID] || s.Index != i || s.DurationMS <= 0 || s.Size <= 0 || s.Size > 64<<20 || err != nil || len(h) != 32 || strings.ToLower(s.SHA256) != s.SHA256 {
 			return fmt.Errorf("invalid segment at index %d", i)
 		}
 		seen[s.ID] = true
+		if continuous {
+			if s.DurationMS > m.Media.DurationMS-total {
+				return fmt.Errorf("invalid continuous media duration")
+			}
+			total += s.DurationMS
+		}
+	}
+	if continuous && total != m.Media.DurationMS {
+		return fmt.Errorf("continuous media duration mismatch")
 	}
 	return nil
 }

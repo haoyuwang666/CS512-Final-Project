@@ -20,6 +20,9 @@ type Locations struct {
 	Locations []domain.Location `json:"locations"`
 }
 type SessionRequest struct {
-	VideoID  string `json:"video_id"`
-	Strategy string `json:"strategy"`
+	VideoID         string `json:"video_id"`
+	Strategy        string `json:"strategy"`
+	Window          int    `json:"window,omitempty"`
+	Concurrency     int    `json:"concurrency,omitempty"`
+	StartupBufferMS int64  `json:"startup_buffer_ms,omitempty"`
 }

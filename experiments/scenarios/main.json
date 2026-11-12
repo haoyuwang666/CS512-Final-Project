@@ -1,5 +1,5 @@
 {
-  "_todo": "TODO(Tian/Yuquan): Enable the main study only after adaptive placement, deadline scheduling and matched-budget reset are implemented.",
+  "_todo": "TODO(Tian/Yuquan): Enable the main study only after adaptive placement and matched-budget reset are implemented.",
   "name": "main",
   "implemented": false,
   "groups": ["B0", "A1", "A2", "A3", "fixed-extra-budget"]

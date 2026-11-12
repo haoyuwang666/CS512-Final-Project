@@ -9,3 +9,5 @@ TODO(Tian)：完成独立随机工作负载、故障 trace、环境重置、资�
 聚合以 run 为单位，Completion 分母保留全部 session；失败/停止另外列出。当前 completed-only 平均卡顿明确在列名中标注，不能作为全体 session 的无条件收益。诊断 SVG 只是数据检查，不提供置信区间。
 
 每轮结果应附配置、实际代码 commit、工具和镜像版本、素材 Hash、随机 trace、实际存储峰值、Peer 上传计数和 controller recovery 事件。上述资源/环境全量记录尚未自动完成。
+
+Playback 已支持 Deadline、启动缓冲、请求事件与实时指标；当前 runner 仍限制为 fixed + round_robin，主实验依赖自适应放置与匹配预算，因此继续显式禁用。Session 的 verified_bytes 定义已扩展为所有验证成功的预取数据；跨代码版本的数据不可直接混合聚合。

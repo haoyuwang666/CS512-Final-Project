@@ -3,7 +3,8 @@
 set -euo pipefail
 output="${1:-.data/media}"
 mkdir -p "$output"
-ffmpeg -hide_banner -loglevel error -y -f lavfi -i 'testsrc2=size=320x180:rate=24' -t 12 \
-  -c:v libx264 -pix_fmt yuv420p -g 48 -keyint_min 48 -sc_threshold 0 "$output/source.mp4"
+ffmpeg -hide_banner -loglevel error -y -f lavfi -i 'testsrc2=size=320x180:rate=24' \
+  -f lavfi -i 'sine=frequency=440:sample_rate=48000' -t 12 \
+  -c:a aac -c:v libx264 -pix_fmt yuv420p -g 48 -keyint_min 48 -sc_threshold 0 "$output/source.mp4"
 bash scripts/media/segment_video.sh "$output/source.mp4" "$output/segments"
 python3 scripts/media/generate_manifest.py "$output/segments" --video-id demo-video

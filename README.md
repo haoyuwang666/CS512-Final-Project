@@ -2,7 +2,7 @@
 
 TODO(Haoyu)：维护项目入口、构建约定和功能状态；每个负责人完成任务时同步相关文档。
 
-Go 后端提供 Raft 元数据服务、Peer 分片存储和播放 Session API；React + TypeScript 前端展示 Session 状态与下载指标。下面的本地快速开始使用 **1 个 Controller + 3 个 Peer + Demo API + 前端**，不需要 Docker。
+Go 后端提供 Raft 元数据服务、Peer 分片存储和播放 Session API；React + TypeScript 前端支持浏览器视频播放，也可展示 headless Session 状态与下载指标。下面的本地快速开始使用 **1 个 Controller + 3 个 Peer + Demo API + 前端**，不需要 Docker。
 
 所有命令从仓库根目录开始执行，仓库中已没有 `code/` 这一层。已有本地项目可直接进入项目目录；新环境先克隆：
 
@@ -42,14 +42,6 @@ pnpm -v
 
 如果 `node` 或 `npm` 也找不到，先安装 Node.js 24 并重新打开终端，再安装 pnpm。
 
-当前这台 Mac 也可以临时使用 Codex 已下载的工具（仅适用于这些路径存在的本机环境）：
-
-```bash
-export PATH="/private/tmp/cs512-toolchain/go/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:$PATH"
-```
-
-该设置只对当前终端生效；新开终端若找不到命令，需要重新执行。`/private/tmp` 下的 Go 可能被系统清理，长期开发应自行安装 Go。不要把这些本机路径当成团队成员的安装要求。
-
 Python 脚本当前全部只使用标准库，`requirements.txt` 因此仅包含说明，没有第三方包。它不负责安装 Go、Node.js 或 pnpm。若需要独立 Python 环境，可选执行：
 
 ```bash
@@ -71,13 +63,7 @@ make backend
 
 ## 3. 启动后端
 
-打开 **5 个终端标签页**，每个先进入同一个仓库根目录。当前本机路径为：
-
-```bash
-cd /Users/wanghaoyu/Desktop/cs512Project
-```
-
-其他机器请替换为自己的仓库路径。以下每个服务会持续运行，各占一个终端；看到监听日志后保留窗口，再打开下一个。
+打开 **5 个终端标签页**，每个先进入自己克隆的 `CS512-Final-Project` 仓库根目录。以下服务会持续运行，各占一个终端；看到监听日志后保留窗口，再打开下一个。
 
 **终端 1：Peer 1**
 
@@ -115,30 +101,46 @@ Demo API 默认监听 `127.0.0.1:8080`，通过 Controller 查询元数据，供
 
 这个模式适合本地前后端联调；三节点 Controller 高可用演示请使用下方 Docker 配置或参考 `docs/demo.md`。
 
-## 4. 导入测试数据并启动前端
+## 4. 导入视频并启动前端
 
-打开 **终端 6**，进入仓库根目录，然后执行：
+### A. 播放真实视频（默认模式）
+
+保持第 3 节的后端运行，打开 **终端 6**，进入仓库根目录，首次生成并导入带声音的 12 秒测试视频：
+
+```bash
+make media
+python3 scripts/ingest/ingest.py \
+  .data/media/segments/manifest.json \
+  --controllers http://127.0.0.1:8001
+
+cd frontend
+pnpm dev
+```
+
+`make media` 需要 FFmpeg/FFprobe，会单次编码 H.264/AAC，生成用于无缝播放的连续 fMP4 分片。输出目录已有 `segment-*.mp4` 时脚本会拒绝覆盖：已有新版清单可以直接导入；旧的独立 MP4 请按下方“升级与旧视频迁移”使用新目录重新生成。
+
+打开 **http://localhost:5173**，选择 **“视频播放（画面与声音）”**，将视频 ID 改为 **`demo-video`**，点击 **“播放视频 / 重新加载”**。原生控件支持整段进度、暂停、音量和全屏；页面下方进度条也可跳转。若页面提示需要手动开始，点击播放器里的播放按钮。
+
+播放器通过同一个 MediaSource/SourceBuffer 连续追加分片，换段不重新加载视频源。使用支持清单中 H.264/AAC codec 的 MSE 浏览器，并通过 `localhost` 或 HTTPS 打开页面，让浏览器能执行 SHA-256 校验。网络供给不足或跳到未缓冲位置时仍可能等待。
+
+Vite 把 `/api` 代理到 `http://127.0.0.1:8080`，因此 Demo API 也必须保持运行。Vite 默认端口 5173；若被占用，请打开终端实际打印的地址。
+
+播放自己的视频见下方“使用自己的视频”。默认输入框为 `my-video`，需要先导入同名视频；它不是新环境自带的数据。
+
+### B. Headless 模拟实验（不需要 FFmpeg）
+
+用确定性字节素材验证分布式传输与模拟消费，在根目录执行：
 
 ```bash
 python3 scripts/media/fixture.py
-python3 scripts/ingest/ingest.py .data/fixture/manifest.json --controllers http://127.0.0.1:8001
-
-cd frontend
-pnpm dev
+python3 scripts/ingest/ingest.py \
+  .data/fixture/manifest.json \
+  --controllers http://127.0.0.1:8001
 ```
 
-打开 **http://localhost:5173**，输入视频 ID `fixture`，点击 **“开始 Session”**。Vite 会把 `/api` 请求代理到 `http://127.0.0.1:8080`，因此 Demo API 也必须保持运行。Vite 默认使用 5173；若端口被占用，请打开终端实际打印的地址。
+前端仍用 `cd frontend && pnpm dev` 启动。页面选择 **“Headless 模拟实验”**，输入 **`fixture`**，点击 **“开始模拟 Session”**。`fixture` 只有 4 个短分片，结束很快是正常现象。它不是视频，不能在视频模式解码。此模式显示 Go 引擎的模拟指标；真实播放模式显示浏览器的实际媒体状态。
 
-预期能看到 Session 指标和真实后端事件。`fixture` 只有 4 个短分片，Session 很快结束属于正常现象。它是确定性二进制测试数据，不是可播放的视频；目前前端展示传输与模拟消费过程，不提供视频画面或音频解码。
-
-数据已成功导入且后端仍在运行时，以后只需从根目录执行以下命令启动前端：
-
-```bash
-cd frontend
-pnpm dev
-```
-
-如果只想先查看页面，也可以直接启动前端；创建 Session 需要后端与已导入的数据。
+数据已导入、后端仍运行时，以后只需在根目录执行 `cd frontend && pnpm dev`。只查看页面无需后端；创建播放或模拟 Session 需要已导入的数据及后端服务。
 
 ### 不使用 Vite 的前后端合并访问
 
@@ -153,18 +155,72 @@ make frontend
 
 ## 5. 停止与再次启动
 
-在前端、Demo API、Controller 和 3 个 Peer 的各自终端按 `Ctrl+C` 即可停止。数据保存在 `.data/`，停止服务不会清空数据。下次使用相同配置启动后，通常无需重新生成或导入已经持久化的 `fixture`。
+在前端、Demo API、Controller 和 3 个 Peer 的各自终端按 `Ctrl+C` 即可停止。数据保存在 `.data/`，停止服务不会清空数据。下次使用相同配置启动后，通常无需重新生成或导入已经持久化的新版视频或 `fixture`。
 
 常见问题：
 
 | 现象 | 处理方式 |
 |---|---|
-| `pnpm: command not found` | 按环境准备部分安装 pnpm，或在当前终端设置本机工具路径 |
-| `go: command not found` | 安装 Go 并加入 PATH，或使用上述本机临时 Go 路径 |
+| `pnpm: command not found` | 按环境准备部分安装 pnpm |
+| `go: command not found` | 安装 Go 并加入 PATH |
 | `./bin/peer: No such file or directory` | 回到仓库根目录，先运行 `make backend` |
 | 页面能打开，创建 Session 失败 / 代理连接被拒绝 | 确认 Demo API 在 8080、Controller 在 8001、Peer 在 9001–9003 运行，且测试数据已经导入 |
 | 导入时暂时找不到 Leader | 等待 Controller 选主完成，再重试导入；导入工具自身也会重试 |
+| `metadata HTTP 404` / `video not found` | 确认输入 ID 与清单的 video_id 相同，并已向 Demo API 使用的 Controller 导入成功；仅复制原视频或生成分片还不算导入 |
+| `REPACKAGE_REQUIRED` | 旧独立 MP4 需要重新生成连续 fMP4；团队示例统一为 my-video，同名旧数据需隔离实验环境，见下一节 |
+| `UNSUPPORTED_MEDIA` | `fixture` 只能用于 Headless 模拟实验，视频模式需导入真实连续 fMP4 |
+| `unknown field "media"` | 运行中的 Controller 仍是旧二进制；重新编译并按原配置重启所有 Controller 和 Demo API |
+| 输出目录已有分片 | 改用新目录；已有有效清单可直接导入，不必再次切片 |
+| 启动缓冲超过预取窗口 | 降低启动缓冲时长，或增大窗口；0 表示首段准备好即可启动 |
+| Web Crypto / MSE 格式不支持 | 用 localhost 或 HTTPS 访问，并使用支持清单 codec 的 MSE 浏览器 |
 | `address already in use` | 检查并停止之前启动的同一个服务，避免重复运行 |
+
+## 升级与旧视频迁移到无缝播放
+
+团队文档、前端默认值和实验示例统一使用视频 ID **`my-video`**。新版清单新增 `media` 信息，真实播放需要 `continuous-fmp4-h264-v1` 或 `continuous-fmp4-h264-aac-v1`。旧 `independent-mp4-*` 分片需要从原始文件重新生成。
+
+如果原集群已发布旧格式的 `my-video`，该 ID 和 Peer 分片索引不能直接覆盖。请保留原数据，在独立、干净的实验环境中重新生成并导入统一的 `my-video`；Controller、全部 Peer 的数据目录和素材输出目录均需隔离，不能只清空或更换 Controller。以下命令针对没有同名旧数据的环境。
+
+以下 1–4 步用于**本机模式**；Docker 模式按第 3 步准备新分片后，使用本节末尾的 Docker 更新与导入命令。
+
+1. 在旧 Controller 和 Demo API 的终端按 `Ctrl+C`，然后从仓库根目录重新编译：
+
+   ```bash
+   make backend frontend
+   ```
+
+2. 按第 3 节或自己原有的配置重启 Controller 和 Demo API，没有同名旧数据时继续使用原来的 `DATA_DIR`、`PEERS` 和 Raft 配置；有同名旧数据时按上面的要求使用隔离环境。三 Controller 集群需更新并重启全部 Controller，再写入新版清单。
+
+3. 从原视频生成连续分片，统一使用视频 ID `my-video`（输出目录应为空）：
+
+   ```bash
+   bash scripts/media/segment_video.sh \
+     .data/uploads/my-video.mp4 \
+     .data/media/my-video/segments
+   python3 scripts/media/generate_manifest.py \
+     .data/media/my-video/segments \
+     --video-id my-video
+   ```
+
+   **若该目录已存在本次生成的新版 `manifest.json`，跳过此步，直接导入。** 新克隆的仓库不包含 `.data` 素材。
+
+4. 本机单 Controller 模式导入：
+
+   ```bash
+   python3 scripts/ingest/ingest.py \
+     .data/media/my-video/segments/manifest.json \
+     --controllers http://127.0.0.1:8001
+   ```
+
+   成功应输出 `"status": "READY"`。刷新前端，选择“视频播放”，输入 **`my-video`** 并开始播放。Vite 模式刷新页面即可；8080 合并访问使用第 1 步已构建的前端。
+
+Docker 模式用 `make up` 重建并更新服务，然后执行：
+
+```bash
+make ingest MANIFEST=.data/media/my-video/segments/manifest.json
+```
+
+导入必须与播放使用同一套 Controller。旧切片中删除的声音只能从含音轨的原视频恢复，不能靠修改清单或重命名分片恢复。
 
 ## 验证与测试
 
@@ -174,10 +230,38 @@ make frontend
 make vet test test-race
 make build
 make smoke
+make test-player
+make test-media
 python3 scripts/check_scaffold.py
 ```
 
 `make smoke` 自行启动临时的 3 Controller + 3 Peer，生成短时长字节素材、导入、模拟播放、停止一个 Peer、停止 Leader、重启 Controller、验证无多数派写入失败；最终关闭其进程。临时目录自动清理，不依赖已有集群，也不会留下长期运行的前后端。`make test-raft` 和 `make test-e2e` 目前复用这项检查，尚不是完整分区测试套件。
+
+`make test-player` 检查客户端有界预取、跳转取消、SourceBuffer 串行更新和媒体源复用。`make test-media` 需要 FFmpeg/FFprobe，启动独立临时集群，验证带声音视频的导入、故障切源、哈希、音视频时间戳连续性和解码；不修改已有集群。
+
+### 可选：真实浏览器验收
+
+从仓库根目录安装独立的测试工具并运行：
+
+```bash
+npm install --prefix .data/browser-tools playwright
+export PLAYWRIGHT_MODULE="$PWD/.data/browser-tools/node_modules/playwright/index.mjs"
+export PLAYWRIGHT_BROWSERS_PATH="$PWD/.data/browser-tools/browsers"
+.data/browser-tools/node_modules/.bin/playwright install chromium
+make test-media-browser
+```
+
+若 Playwright 提示缺少系统依赖，按其提示安装后重试。工具仅用于测试，不是应用运行时依赖。验收会启动临时集群，在 Chromium 中验证完整播放只有一次媒体源加载、跨分片无新增等待，以及暂停、结束后回跳、前跳和停止。
+
+如需检查本文已生成的带音轨短视频 `my-video`，沿用上述环境变量后执行：
+
+```bash
+BROWSER_TEST=1 \
+MEDIA_MANIFEST=.data/media/my-video/segments/manifest.json \
+python3 tests/system/media.py
+```
+
+此命令把指定清单导入临时集群进行检查，不依赖当前正在运行的服务。
 
 ## 已有基础代码与边界
 
@@ -189,10 +273,12 @@ python3 scripts/check_scaffold.py
 | Peer 共享上传限速 / 已写出字节统计 | 已实现基础版本；计量在应用 ResponseWriter 层，不是 TCP 实际到达字节 |
 | 静态双副本放置 / Python 导入 | 已实现；放置建议会扣除本次计划预计空间，但没有跨请求持久预留 |
 | Headless Round Robin / 并发预取 / 校验 / 失败切源 | 已实现；真实 HTTP 与模拟媒体消费，默认首段即可启动 |
-| Session REST / SSE / React 单页 | 已实现基础版本；前端用快照轮询，完整指标在结束后更新 |
+| Session REST / SSE / React 单页 | 实时 Summary/Buffer/来源估计、SSE 续传、持久 Session 与有界保留 |
 | Heartbeat / Inventory / 任务 API | 501，未实现；Peer 不会虚假上报成功 |
-| Repair / 自适应放置 / Deadline 策略 | 接口与 TODO 已建立，未实现；不能用于正式对比 |
-| 正式配对实验 / Hedging / Coding / 真实解码 | 未实现；baseline runner 仅检查数据流水线 |
+| Deadline / 吞吐预测 / 启动缓冲 / 元数据缓存 | 已实现 headless 引擎版本；配置和指标边界见 docs/playback.md |
+| Repair / 自适应放置 | 接口与 TODO 已建立，未实现；不能用于正式对比 |
+| 浏览器视频播放 | 已实现 MSE 连续 fMP4、连续音视频时间戳、音量/暂停/全屏、整段跳转、有界预取与哈希校验 |
+| 正式配对实验 / Hedging / Coding | 未实现；baseline runner 仅检查数据流水线 |
 
 这是基础框架，不是完整项目交付。当前固定三节点集群是实际共识服务，不使用内存 Map 假扮 Raft；FSM 内存视图由真实日志复制和持久恢复驱动。
 
@@ -229,7 +315,7 @@ report/              按负责人拆开的报告章节
 make up
 make fixture
 make ingest
-# 打开 http://localhost:8080，使用 fixture 启动 Session
+# 打开 http://localhost:8080，选择 Headless 模拟实验，使用 fixture
 make experiment-baseline
 make plot
 make down
@@ -244,16 +330,16 @@ Controller 对外端口 8001–8003；Peer 9001–9003；Dashboard 8080。只绑
 ```bash
 make media
 make ingest MANIFEST=.data/media/segments/manifest.json
-# Dashboard 中改用 demo-video
+# Dashboard 选择视频播放，输入 demo-video
 ```
 
-`fixture` 是确定性二进制协议测试数据，不是视频；`demo-video` 是 FFmpeg 生成的真实 MP4 片段。两者都通过相同传输代码，但本框架均不解码。独立 MP4 不能直接拼接成无缝浏览器流。
+`fixture` 是确定性二进制协议测试数据，不是视频；`demo-video` 是 FFmpeg 单次编码生成的连续 fMP4 片段。`fixture` 使用 headless 模拟实验；`demo-video` 可在“视频播放”模式下由浏览器解码画面与声音。新播放器通过同一 MediaSource/SourceBuffer 追加连续片段，换段不重置视频源或解码器。网络供给不足时仍会缓冲。
 
 本机手动运行服务的配置见 `docs/demo.md`。前端开发在已有 Demo API 上执行 `cd frontend && pnpm dev`，默认端口 5173 代理到 8080。
 
-### 上传自己的视频
+## 使用自己的视频（本机 / Docker）
 
-原视频统一放在项目根目录的 `.data/uploads/`。当前 Mac 的完整路径是 `/Users/wanghaoyu/Desktop/cs512Project/.data/uploads/`；其他机器使用自己的项目路径。`.data` 是隐藏目录，Finder 中按 `Command + Shift + .` 可显示隐藏文件，也可以按 `Command + Shift + G` 输入完整路径前往。
+原视频统一放在项目根目录的 `.data/uploads/`。`.data` 是隐藏目录；macOS Finder 可用 `Command + Shift + .` 显示隐藏文件。所有路径均相对于仓库根目录。
 
 **目前没有自动监控目录或前端上传按钮。复制文件后，需要手动切片并执行导入。** 以下以 `my-video.mp4`、视频 ID `my-video` 为例；需要本机已安装 FFmpeg、FFprobe 和 Python 3。
 
@@ -264,7 +350,7 @@ make ingest MANIFEST=.data/media/segments/manifest.json
    # 将视频复制到 .data/uploads/my-video.mp4
    ```
 
-2. 将原视频切成约 2 秒的独立 MP4 片段，生成导入清单：
+2. 将原视频单次编码并拆成约 2 秒的连续 fMP4 片段，生成导入清单（输出目录须为空）：
 
    ```bash
    bash scripts/media/segment_video.sh \
@@ -275,9 +361,9 @@ make ingest MANIFEST=.data/media/segments/manifest.json
      --video-id my-video
    ```
 
-   当前切片脚本会重新编码为 H.264，并去掉音轨。输出目录包含 `segment-*.mp4`、供上传使用的 `my-video--*.bin` 和 `manifest.json`；`.bin` 内容就是对应 MP4 片段的字节。不同视频应使用不同的视频 ID 和输出目录；ID 只允许字母、数字、下划线和连字符，长度为 1–96 个字符。
+   当前切片脚本只编码一次 H.264/yuv420p 与 AAC，按关键帧拆分并保留连续 tfdt 时间戳，避免每段重启 AAC 编码器产生重复填充（无音轨的视频同样支持）。输出目录包含 `segment-*.mp4`、记录连续媒体时间线的 `stream.json`、供上传使用的 `my-video--*.bin` 和 `manifest.json`；`.bin` 内容就是对应 MP4 片段的字节。本文示例 ID 固定为 `my-video`；重新编码的版本若与原集群同名，应在隔离实验环境重新导入，避免覆盖不可变对象。如果该示例目录已有有效的连续 fMP4 清单，可跳过切片直接导入。ID 只允许字母、数字、下划线和连字符，长度为 1–96 个字符。
 
-3. 如果使用 Docker 集群，先在 Docker Desktop 运行的情况下启动服务（已启动则跳过），然后导入：
+3. 如果使用 Docker 集群，先确保 Docker 服务运行并启动集群（已启动则跳过），然后导入：
 
    ```bash
    make up
@@ -292,7 +378,7 @@ make ingest MANIFEST=.data/media/segments/manifest.json
      --controllers http://127.0.0.1:8001
    ```
 
-4. 导入成功会输出 `status: READY` 的 JSON。在前端输入视频 ID `my-video`，即可启动下载与缓冲模拟 Session；当前不显示视频画面或播放音频。
+4. 导入成功会输出 `status: READY` 的 JSON。在前端输入视频 ID `my-video`，选择“视频播放”并点击“播放视频 / 重新加载”，即可播放画面和已有音轨。原生控件支持整段进度、暂停、音量和全屏，下方进度条也可整段跳转。若浏览器阻止有声自动播放，点击播放器中的播放按钮。
 
 文件存放位置：
 
@@ -310,7 +396,7 @@ make ingest MANIFEST=.data/media/segments/manifest.json
 
 - Haoyu：`internal/metadata/`、`internal/control/`、公共协议、部署和集成。下一步是持久容量预留和任务生命周期。
 - Yuquan：`internal/storage/`、`internal/placement/`、`internal/repair/`、素材和导入。下一步是 Inventory、Heartbeat 和 Repair 执行。
-- Tian：`internal/playback/`、`frontend/`、`experiments/`。下一步是准确 deadline/吞吐估计、完整事件数据与实验重置。
+- Tian：`internal/playback/`、`frontend/`、`experiments/`。已补齐 MSE 无缝视频播放、浏览器验收，以及 headless Deadline/吞吐估计、实时快照与事件持久化；下一步是正式实验 trace、资源预算与环境重置。
 
 接手代码应先运行现有验证，再认领 TODO；不要重写另一套 Raft、导入器或指标实现。目录的具体负责人见 `docs/ownership.md`。
 

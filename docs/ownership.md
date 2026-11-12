@@ -6,7 +6,7 @@ TODO(Haoyu)：任务转交时同步本表；这份表记录团队约定的分工
 |---|---|---|
 | Haoyu | cmd/controller、internal/domain、internal/protocol、internal/metadata、internal/control、deployments、.github、根级配置/构建/索引/README、tests/system、tests/e2e | 预留、任务状态、故障恢复、Docker 验证 |
 | Yuquan | cmd/peer、internal/storage、internal/placement、internal/repair、scripts/media、scripts/ingest | Inventory/Heartbeat、Repair 执行、自适应额外副本 |
-| Tian | cmd/client、cmd/demo-api、internal/playback、frontend、experiments、results、tests/integration | 来源预测、deadline、指标测试、正式实验、UI |
+| Tian | cmd/client、cmd/demo-api、internal/playback、frontend、experiments、results、tests/integration | 来源预测与 deadline 校准、正式实验 trace/重置、性能评估 |
 
 文档：Haoyu 维护 architecture/api/invariants/decisions/ownership/verification，Yuquan 维护 storage，Tian 维护 playback/experiments/demo。报告：Haoyu metadata/integration/final，Yuquan storage，Tian evaluation。
 

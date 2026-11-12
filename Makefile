@@ -7,7 +7,7 @@ CONTROLLERS ?= http://127.0.0.1:8001,http://127.0.0.1:8002,http://127.0.0.1:8003
 MANIFEST ?= .data/fixture/manifest.json
 INTERNAL_CONTROLLERS = http://controller-1:8000,http://controller-2:8000,http://controller-3:8000
 
-.PHONY: setup build backend frontend fmt vet test test-race test-integration smoke test-raft test-e2e up down fixture media ingest demo experiment-baseline experiment-main plot
+.PHONY: setup build backend frontend fmt vet test test-race test-integration smoke test-raft test-e2e test-media test-media-browser test-player up down fixture media ingest demo experiment-baseline experiment-main plot
 setup:
 	$(GO) mod download
 	cd frontend && $(PNPM) install --frozen-lockfile
@@ -31,6 +31,12 @@ test-integration:
 	$(GO) test ./tests/integration/...
 smoke: backend
 	$(PYTHON) tests/system/smoke.py
+test-media: backend
+	$(PYTHON) tests/system/media.py
+test-media-browser: backend frontend
+	BROWSER_TEST=1 $(PYTHON) tests/system/media.py
+test-player:
+	cd frontend && $(PNPM) test
 test-raft: smoke
 test-e2e: smoke
 up:

@@ -112,7 +112,7 @@ def main():
             first = play()
             demo_port = ports(1)[0]
             demo_url = f"http://127.0.0.1:{demo_port}"
-            start("demo-api", "demo-api", {"HTTP_ADDR": f"127.0.0.1:{demo_port}", "CONTROLLERS": ",".join(controllers)})
+            start("demo-api", "demo-api", {"HTTP_ADDR": f"127.0.0.1:{demo_port}", "CONTROLLERS": ",".join(controllers), "SESSION_DIR": str(temp / "sessions")})
             eventually(lambda: ing.request(demo_url + "/api/v1/health"))
             session_id = ing.request(demo_url + "/api/v1/sessions", "POST", {"video_id": "fixture", "strategy": "round_robin"})["session_id"]
 
@@ -125,10 +125,16 @@ def main():
             with urllib.request.urlopen(demo_url + f"/api/v1/sessions/{session_id}/events", timeout=5) as response:
                 assert "session_completed" in response.read().decode()
             try:
-                ing.request(demo_url + "/api/v1/sessions", "POST", {"video_id": "fixture", "strategy": "deadline"})
-                raise AssertionError("unimplemented strategy was accepted")
+                ing.request(demo_url + "/api/v1/sessions", "POST", {"video_id": "fixture", "strategy": "unknown"})
+                raise AssertionError("unknown strategy was accepted")
             except urllib.error.HTTPError as error:
-                assert error.code == 501
+                assert error.code == 400
+            deadline_id = ing.request(demo_url + "/api/v1/sessions", "POST", {"video_id": "fixture", "strategy": "deadline", "startup_buffer_ms": 200})["session_id"]
+            def completed_deadline():
+                session = ing.request(demo_url + f"/api/v1/sessions/{deadline_id}")
+                assert session["summary"]["status"] == "completed", session
+                return session
+            eventually(completed_deadline)
             experiment_output = temp / "experiment"
             subprocess.run([os.environ.get("PYTHON", "python3"), str(ROOT / "experiments/run.py"), "--scenario", str(ROOT / "experiments/scenarios/baseline.json"), "--controllers", ",".join(controllers), "--output-dir", str(experiment_output)], env={**os.environ, "CLIENT_BIN": str(args.bin_dir / "client")}, check=True, capture_output=True, text=True, timeout=30)
             rows = [json.loads(line) for line in (experiment_output / "sessions.jsonl").read_text().splitlines()]
@@ -156,7 +162,7 @@ def main():
                 raise AssertionError("write unexpectedly succeeded without quorum")
             except urllib.error.HTTPError as error:
                 assert error.code == 503, error.code
-            print(json.dumps({"status": "PASS", "checks": ["3-node Raft", "durable dual-replica ingestion", "idempotent retry", "real HTTP playback", "session REST/SSE", "unimplemented strategy rejection", "baseline runner and CSV/SVG pipeline", "peer fallback", "leader failover", "controller restart", "no-quorum write rejection"], "baseline": first}, indent=2))
+            print(json.dumps({"status": "PASS", "checks": ["3-node Raft", "durable dual-replica ingestion", "idempotent retry", "real HTTP playback", "session REST/SSE", "deadline playback with startup buffering", "unknown strategy rejection", "baseline runner and CSV/SVG pipeline", "peer fallback", "leader failover", "controller restart", "no-quorum write rejection"], "baseline": first}, indent=2))
         except Exception:
             for path in temp.glob("*.log"):
                 print(f"\n{path.name}:\n{path.read_text()[-5000:]}")
