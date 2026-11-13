@@ -7,6 +7,7 @@ x-controller-environment: &controller-environment
   RAFT_MEMBERS: '[{"id":"controller-1","raft_address":"controller-1:7000","http_url":"http://controller-1:8000"},{"id":"controller-2","raft_address":"controller-2:7000","http_url":"http://controller-2:8000"},{"id":"controller-3","raft_address":"controller-3:7000","http_url":"http://controller-3:8000"}]'
   PEERS: '[{"peer_id":"peer-1","url":"http://peer-1:9000"},{"peer_id":"peer-2","url":"http://peer-2:9000"},{"peer_id":"peer-3","url":"http://peer-3:9000"}]'
 x-peer-environment: &peer-environment
+  CONTROLLERS: http://controller-1:8000,http://controller-2:8000,http://controller-3:8000
   HTTP_ADDR: 0.0.0.0:9000
   DATA_DIR: /data
   QUOTA_BYTES: '1073741824'

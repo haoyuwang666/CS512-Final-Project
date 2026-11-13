@@ -50,6 +50,8 @@ type Manager struct {
 	peers, controllers int
 	dir                string
 	client             *http.Client
+	faultEvents        []FaultEvent
+	faultSequence      uint64
 }
 
 func New(parent context.Context) *Manager {
@@ -85,6 +87,9 @@ func (m *Manager) Handler() http.Handler {
 	mux.HandleFunc("POST /api/local/stop", m.stop)
 	mux.HandleFunc("POST /api/local/upload", m.upload)
 	mux.HandleFunc("GET /api/local/videos", m.videos)
+	mux.HandleFunc("POST /api/local/peers/{id}/{action}", m.peerFault)
+	mux.HandleFunc("POST /api/local/nodes/{id}/{action}", m.nodeFault)
+	mux.HandleFunc("GET /api/local/maintenance", m.maintenance)
 	target, _ := url.Parse("http://127.0.0.1:18080")
 	proxy := httputil.NewSingleHostReverseProxy(target)
 	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
@@ -208,7 +213,7 @@ func (m *Manager) start(w http.ResponseWriter, r *http.Request) {
 	for i := 1; i <= body.Peers; i++ {
 		id := fmt.Sprintf("peer-%d", i)
 		port := 19000 + i
-		if !launch(id, "peer", port, map[string]string{"HTTP_ADDR": fmt.Sprintf("127.0.0.1:%d", port), "PEER_ID": id, "DATA_DIR": filepath.Join(m.dir, id)}) {
+		if !launch(id, "peer", port, map[string]string{"HTTP_ADDR": fmt.Sprintf("127.0.0.1:%d", port), "PEER_ID": id, "DATA_DIR": filepath.Join(m.dir, id), "CONTROLLERS": strings.Join(urls, ",")}) {
 			return
 		}
 	}

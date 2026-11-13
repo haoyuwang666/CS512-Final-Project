@@ -4,9 +4,12 @@ package main
 import (
 	"cooperative.video/internal/domain"
 	"cooperative.video/internal/metadata"
+	"cooperative.video/internal/placement"
 	"cooperative.video/internal/protocol"
 	"encoding/json"
 	"log"
+	"strconv"
+	"time"
 )
 
 func main() {
@@ -38,7 +41,28 @@ func main() {
 	ctx, cancel := protocol.SignalContext()
 	defer cancel()
 	log.Printf("controller %s listening on %s", id, address)
-	if err := protocol.Serve(ctx, address, (&metadata.HTTPServer{Node: node, Peers: peers}).Handler()); err != nil {
+	server := &metadata.HTTPServer{Node: node, Peers: peers}
+	extra, err := strconv.ParseInt(protocol.Environment("EXTRA_REPLICA_BYTES", "0"), 10, 64)
+	if err != nil || extra < 0 {
+		log.Fatal("invalid EXTRA_REPLICA_BYTES")
+	}
+	server.ExtraReplicaBytes = extra
+	switch protocol.Environment("PLACEMENT_POLICY", "fixed") {
+	case "adaptive":
+		server.Placement = placement.Adaptive{}
+	case "fixed":
+	default:
+		log.Fatal("PLACEMENT_POLICY must be fixed or adaptive")
+	}
+	handler := server.Handler()
+	grace, err := time.ParseDuration(protocol.Environment("REPAIR_GRACE", "6s"))
+	if err != nil || grace <= 0 {
+		log.Fatal("invalid REPAIR_GRACE")
+	}
+	if protocol.Environment("REPAIR_ENABLED", "true") == "true" {
+		go server.RunMaintenance(ctx, grace)
+	}
+	if err := protocol.Serve(ctx, address, handler); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -10,7 +10,7 @@ TODO(Haoyu)：在引入持久任务和预留时更新交互流程；保持公共
 
 显示平面：模拟模式通过 Demo API 调用 Go Engine；视频模式通过独立 Media API 获取已校验 MP4，React 通过 MSE 的同一 MediaSource/SourceBuffer 持续解码播放，浏览器持有有界 ArrayBuffer 与媒体缓冲窗口。已展示逻辑 Buffer 与 Session 内 Peer 吞吐估计；Controller 集群及 Peer 存储全量面板尚未实现。
 
-扩展边界：Placement 与 Repair 只输入快照、输出计划；Control 将计划变成持久任务；Storage 执行复制。此任务闭环尚未实现，不能自动修复或回收。
+扩展边界：Placement 与 Repair 只输入快照、输出计划；Control 通过元数据回调创建 Raft 持久任务，并协调 Peer HTTP GET/PUT 复制。任务完成与副本登记原子提交，Leader 切换后恢复。已有最少双副本自动修复，无自动回收；容量预留仍有限制，详见 reliability.md。
 
 故障边界：Raft 保护元数据，不保护视频字节；双副本只能容忍每个对象丢失一个持有者。Manifest/Locations 有有界内存缓存，短时故障可回退；冷缓存、过期缓存或尚未查询的片段仍依赖可用 Controller，不能保证完全离线播放。
 

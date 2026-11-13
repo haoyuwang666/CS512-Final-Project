@@ -98,4 +98,17 @@ type Task struct {
 	Source    Peer   `json:"source"`
 	Target    Peer   `json:"target"`
 	State     string `json:"state"`
+	Size      int64  `json:"size_bytes"`
+	SHA256    string `json:"sha256"`
+	Reason    string `json:"reason,omitempty"`
+}
+
+// PeerReport is an observation, never proof of a committed replica.
+type PeerReport struct {
+	PeerID               string    `json:"peer_id"`
+	InstanceID           string    `json:"instance_id"`
+	StoredBytes          int64     `json:"stored_bytes"`
+	QuotaBytes           int64     `json:"quota_bytes"`
+	UploadBytesPerSecond float64   `json:"upload_bytes_per_second"`
+	Receipts             []Receipt `json:"receipts"`
 }

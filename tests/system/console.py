@@ -95,11 +95,29 @@ def main():
                 assert len(sources) == 2, sources
                 assert request('/api/local/videos')[0]['id'] == vid
                 # A failed Peer must cause retry against the surviving replica.
-                peer = next(n for n in request('/api/local/status')['nodes'] if n['id'] == 'peer-2')
-                os.kill(peer['pid'], signal.SIGTERM)
+                request('/api/local/peers/peer-2/stop', {})
                 time.sleep(.3)
                 data, headers = request(f'/api/v1/media/sessions/{session["session_id"]}/segments/1')
                 assert headers['X-Peer-ID'] == 'peer-1'
+                request('/api/local/peers/peer-2/start', {})
+                wait(ready)
+                request('/api/local/nodes/peer-1/restart', {})
+                wait(ready)
+                request('/api/local/nodes/demo-api/stop', {})
+                assert request('/api/local/maintenance')['available']
+                request('/api/local/nodes/demo-api/start', {})
+                wait(ready)
+                request('/api/local/nodes/controller-1/stop', {'expected_role': 'Leader'})
+                assert not request('/api/local/maintenance')['available']
+                assert request('/')[0]
+                request('/api/local/nodes/controller-1/start', {})
+                wait(ready)
+                assert request('/api/local/maintenance')['available']
+                try:
+                    request('/api/local/peers/unknown/stop', {})
+                    raise AssertionError('Must not control unowned processes')
+                except urllib.error.HTTPError as e:
+                    assert e.code == 404
                 request('/api/local/stop', {})
                 assert not request('/api/local/status')['nodes']
                 request('/api/local/start', {'peers': 2, 'controllers': 1})
@@ -108,6 +126,18 @@ def main():
                 request('/api/local/stop', {})
                 request('/api/local/start', {'peers': 3, 'controllers': 3})
                 assert len(wait(ready)['nodes']) == 7
+                leader=next(n for n in request('/api/local/status')['nodes'] if n.get('details',{}).get('state')=='Leader')
+                follower=next(n for n in request('/api/local/status')['nodes'] if n['kind']=='controller' and n['id']!=leader['id'])
+                try:
+                    request(f'/api/local/nodes/{follower["id"]}/stop', {'expected_role':'Leader'})
+                    raise AssertionError('Stale Leader selection must be rejected')
+                except urllib.error.HTTPError as e:
+                    assert e.code==409
+                request(f'/api/local/nodes/{leader["id"]}/stop', {'expected_role':'Leader'})
+                wait(lambda:request('/api/local/maintenance')['available'])
+                assert any(event['node_id']==leader['id'] and event['action']=='stop' for event in request('/api/local/maintenance')['events'])
+                request(f'/api/local/nodes/{leader["id"]}/start', {})
+                wait(ready)
                 assert request('/api/local/videos') == []
                 upload(b'not a video')
                 job = wait(finished)

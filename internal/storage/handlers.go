@@ -33,6 +33,7 @@ func (s *Server) Handler() http.Handler {
 	m.HandleFunc("GET /api/v1/segments/{id}", s.get)
 	m.HandleFunc("GET /api/v1/segments/{id}/receipt", s.receipt)
 	m.HandleFunc("GET /api/v1/stats", s.stats)
+	m.HandleFunc("GET /api/v1/inventory", func(w http.ResponseWriter, r *http.Request) { protocol.JSON(w, 200, s.Report()) })
 	return m
 }
 func (s *Server) put(w http.ResponseWriter, r *http.Request) {
@@ -47,11 +48,15 @@ func (s *Server) put(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	a, err = s.Store.Put(a, r.Body)
 	if err != nil {
-		status, code := 400, "INVALID_ARGUMENT"
+		status, code := 500, "STORAGE_ERROR"
+		if errors.Is(err, ErrInvalid) {
+			status, code = 400, "INVALID_ARGUMENT"
+		}
 		if errors.Is(err, ErrCapacity) {
 			status, code = 507, "CAPACITY_EXCEEDED"
 		}
 		if errors.Is(err, ErrHash) {
+			status = 400
 			code = "HASH_MISMATCH"
 		}
 		if errors.Is(err, ErrConflict) {
@@ -62,10 +67,19 @@ func (s *Server) put(w http.ResponseWriter, r *http.Request) {
 	}
 	protocol.JSON(w, 200, a)
 }
+
+func (s *Server) Report() domain.PeerReport {
+	used, quota, _ := s.Store.Stats()
+	return domain.PeerReport{PeerID: s.PeerID, InstanceID: s.InstanceID, StoredBytes: used, QuotaBytes: quota, UploadBytesPerSecond: float64(s.Limiter.Limit()), Receipts: s.Store.Inventory()}
+}
 func (s *Server) receipt(w http.ResponseWriter, r *http.Request) {
 	a, _, ok := s.Store.Lookup(r.PathValue("id"))
 	if !ok {
 		protocol.Fail(w, 404, "NOT_FOUND", "object not found")
+		return
+	}
+	if !s.Store.Verified(a.SegmentID) {
+		protocol.Fail(w, 409, "HASH_MISMATCH", "stored object no longer matches receipt")
 		return
 	}
 	protocol.JSON(w, 200, a)

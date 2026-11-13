@@ -1,4 +1,4 @@
-// TODO(Yuquan): Add heartbeat/inventory workers after their real controller endpoints are implemented.
+// TODO(Yuquan): Add report interval controls and inventory pagination for larger libraries.
 package main
 
 import (
@@ -6,6 +6,7 @@ import (
 	"cooperative.video/internal/storage"
 	"log"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -26,7 +27,11 @@ func main() {
 	defer cancel()
 	address := protocol.Environment("HTTP_ADDR", "127.0.0.1:9001")
 	log.Printf("peer %s listening on %s", id, address)
-	if err := protocol.Serve(ctx, address, storage.NewServer(store, id, upload).Handler()); err != nil {
+	server := storage.NewServer(store, id, upload)
+	if raw := protocol.Environment("CONTROLLERS", ""); raw != "" {
+		go server.RunReports(ctx, strings.Split(raw, ","))
+	}
+	if err := protocol.Serve(ctx, address, server.Handler()); err != nil {
 		log.Fatal(err)
 	}
 }

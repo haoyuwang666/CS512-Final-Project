@@ -1,5 +1,6 @@
 // TODO(Haoyu): Keep local lifecycle and upload feedback tied to actual server responses.
 import { useEffect, useState } from 'react';
+import FaultLab from './FaultLab';
 
 interface Node { id: string; kind: string; port: number; pid: number; status: string; details?: { state?: string; objects?: number; stored_bytes?: number; uploaded_bytes?: number } }
 interface Job { id: string; name: string; stage: string; segments: number; error?: string }
@@ -67,5 +68,6 @@ export default function LocalConsole({ onSelect, onReset }: { onSelect: (id: str
     {notice && <p className="notice" role="status">{notice}</p>}{error && <p className="notice failed" role="alert">{error}</p>}
     {active && <details className="node-details"><summary>查看节点状态、端口与传输量</summary><section><div className="section-title"><h2>节点与传输</h2><span className="muted small">每 1.5 秒查询实际状态 · Peer 发送量包含本次进程全部请求</span></div><div className="table-scroll"><table><thead><tr><th>节点</th><th>状态</th><th>本机端口</th><th>分片对象</th><th>已存储</th><th>累计发送</th></tr></thead><tbody>{status.nodes.map(n => <tr key={n.id}><td>{n.id}</td><td><span className={`badge ${n.status === 'running' ? 'good' : ''}`}>{n.status === 'running' ? n.details?.state ?? '运行中' : n.status === 'exited' ? '已退出' : '未就绪'}</span></td><td><code>{n.port}</code></td><td>{n.details?.objects ?? '—'}</td><td>{n.kind === 'peer' ? size(n.details?.stored_bytes) : '—'}</td><td>{n.kind === 'peer' ? size(n.details?.uploaded_bytes) : '—'}</td></tr>)}</tbody></table></div></section></details>}
     <section><div className="section-title"><div><span className="step">03 / LIBRARY</span><h2>③ 选择视频播放</h2></div><span className="badge">{videos.length} 个已导入</span></div>{videos.length ? <div className="library">{videos.map(v => <div className="video-item" key={v.id}><div><strong>{v.name}</strong><p className="muted small">{v.segments} 个分片 · 双副本已确认</p><details><summary>查看视频 ID</summary><code>{v.id}</code></details></div><button className="secondary" disabled={!active || !connected} onClick={() => onSelect(v.id, v.name)}>播放</button></div>)}</div> : <p className="muted">完成前两步后，视频会显示在这里。点击“播放”即可，不需要填写参数或视频 ID。</p>}</section>
+    <FaultLab nodes={status.nodes} busy={status.busy} disabled={pending} connected={connected} onPending={setPending} onRefresh={refresh}/>
   </>;
 }

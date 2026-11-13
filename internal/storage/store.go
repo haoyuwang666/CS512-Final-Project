@@ -3,12 +3,14 @@ package storage
 
 import (
 	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 
 	"cooperative.video/internal/domain"
@@ -17,6 +19,7 @@ import (
 var ErrCapacity = errors.New("capacity exceeded")
 var ErrHash = errors.New("size or SHA-256 mismatch")
 var ErrConflict = errors.New("immutable object or operation conflict")
+var ErrInvalid = errors.New("invalid receipt fields")
 
 type diskIndex struct {
 	Objects    map[string]domain.Receipt `json:"objects"`
@@ -65,8 +68,9 @@ func Open(dir, peer string, quota int64) (*Store, error) {
 func (s *Store) Put(a domain.Receipt, reader io.Reader) (domain.Receipt, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	if !domain.ValidID(a.SegmentID) || !domain.ValidID(a.OperationID) || a.PeerID != s.peer || a.Version != 1 || a.Size <= 0 || a.Size > 64<<20 || len(a.SHA256) != 64 {
-		return a, fmt.Errorf("invalid receipt fields")
+	hash, hashErr := hex.DecodeString(a.SHA256)
+	if !domain.ValidID(a.SegmentID) || !domain.ValidID(a.OperationID) || a.PeerID != s.peer || a.Version != 1 || a.Size <= 0 || a.Size > 64<<20 || hashErr != nil || len(hash) != 32 || fmt.Sprintf("%x", hash) != a.SHA256 {
+		return a, ErrInvalid
 	}
 	if old, ok := s.index.Operations[a.OperationID]; ok && old != a {
 		return a, ErrConflict
@@ -79,6 +83,19 @@ func (s *Store) Put(a domain.Receipt, reader io.Reader) (domain.Receipt, error) 
 	exists := err == nil
 	if err != nil && !os.IsNotExist(err) {
 		return a, err
+	}
+	// Never acknowledge an existing damaged blob as a valid idempotent retry.
+	if exists {
+		f, e := os.Open(path)
+		if e != nil {
+			return a, e
+		}
+		h := sha256.New()
+		n, e := io.Copy(h, f)
+		f.Close()
+		if e != nil || n != a.Size || fmt.Sprintf("%x", h.Sum(nil)) != a.SHA256 {
+			return a, ErrHash
+		}
 	}
 	if !exists && s.used+a.Size > s.quota {
 		return a, ErrCapacity
@@ -138,6 +155,47 @@ func (s *Store) Stats() (int64, int64, int) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return s.used, s.quota, len(s.index.Objects)
+}
+
+// Inventory returns only objects that still match their durable receipts.
+// Corrupt/orphan objects are retained and continue to consume quota.
+func (s *Store) Inventory() []domain.Receipt {
+	s.mu.Lock()
+	items := make([]domain.Receipt, 0, len(s.index.Objects))
+	for _, a := range s.index.Objects {
+		items = append(items, a)
+	}
+	s.mu.Unlock()
+	out := []domain.Receipt{}
+	for _, a := range items {
+		f, err := os.Open(filepath.Join(s.dir, a.SHA256+".blob"))
+		if err != nil {
+			continue
+		}
+		h := sha256.New()
+		n, err := io.Copy(h, f)
+		f.Close()
+		if err == nil && n == a.Size && fmt.Sprintf("%x", h.Sum(nil)) == a.SHA256 {
+			out = append(out, a)
+		}
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].SegmentID < out[j].SegmentID })
+	return out
+}
+
+func (s *Store) Verified(id string) bool {
+	a, path, ok := s.Lookup(id)
+	if !ok {
+		return false
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+	h := sha256.New()
+	n, err := io.Copy(h, f)
+	return err == nil && n == a.Size && fmt.Sprintf("%x", h.Sum(nil)) == a.SHA256
 }
 func syncDir(dir string) error {
 	f, err := os.Open(dir)

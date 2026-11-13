@@ -2,6 +2,50 @@
 
 TODO(Haoyu)：后续每次修改按风险更新验证证据；Docker、分区和新研究策略需分别验收。
 
+## Yuquan 存储与修复扩展（2026-11-12）
+
+后续故障测试台：前端 TypeScript/Vite 构建及 5 项播放器测试通过；全量 Go race/vet
+和扩展 Console 系统回归通过。覆盖单节点 restart、播放 API 停止期间维护查询、
+单 Controller 停止后的管理可达及恢复、3 Controller Leader 停止后重新选主、
+过期 Leader 选择拒绝和操作记录。已在宿主 Edge 实际点击 peer-1 挂掉/恢复按钮，
+确认退出/恢复反馈和后端操作日志一致，交付时所有节点已恢复 running。
+
+环境：Windows 宿主、Ubuntu 22.04 WSL x86_64、Go 1.24.0、Python 3.10。
+以下是当前分支工作区验证，尚未提交，不把主分支历史验证当作本次执行。
+
+通过全量 `go test -race ./...`、`go vet ./...`、五个后端入口构建。
+新增覆盖并发配额、上传中断、损坏 blob 不能重复 ACK、重启字节恢复、孤儿占用、
+非法哈希、资源感知放置、无有效来源不修复、失去领导权不发目标 PUT、
+Raft 任务互斥/错误 ACK/完成幂等/快照恢复，以及旧版本 operation ID 摘要兼容。
+
+`tests/system/repair.py` 已通过：真实三 Controller/三 Peer，库存上报、
+故障宽限后的自动修复，在任务 pending 时停 Leader，新 Leader 接续同一任务，
+两原始持有者停止后从第三个 Peer 返回正确 SHA-256；重启/再次选主后任务持久存在，
+无多数派 ACK 返回 503。临时目录和进程由测试清理，不操作用户视频。
+
+更新后的 `tests/system/console.py` 已通过：自有 Peer 的 stop/start API、
+拒绝未托管节点，及原有上传/裁剪/切片/校验/切源/持久重启/三 Controller/错误反馈。
+`tests/system/smoke.py` 已通过，包括原有幂等导入、Deadline、SSE、Leader 故障和无多数派写入拒绝。
+Edge 中用户已确认实际上传视频能播放；其他浏览器兼容性不作保证。
+
+配对入口初次诊断完成五 seed × 四组共 20 个隔离运行、60 个会话：
+
+| 组 | 完成 / 总数 |
+|---|---|
+| fixed-round_robin | 15 / 15 |
+| fixed-deadline | 14 / 15 |
+| adaptive-round_robin | 15 / 15 |
+| adaptive-deadline | 15 / 15 |
+
+输出在 `results/paired-validation/`（Git 忽略），包含完整失败会话；
+fixed-deadline seed 22 有一次片段 GET deadline 超时。此轮同时存在其他系统验收任务，
+只能用于流水线诊断，不能作性能收益论据。后续归档检查在独立输出目录验证源码快照、
+文件/二进制 SHA-256、trace/预算匹配及配对分析；数据始终标记 formal_experiment=false。
+
+当前边界：无全局持久容量预留、逐 fsync 真实掉电、持续分区、任务 GC、库存分页、
+热度学习、动态迁移、warm-up 或完整负载/故障实验矩阵。原生 Windows 尚不支持；
+本机运行使用 WSL，依赖工具缓存改为持久用户缓存。使用方法见 reliability.md。
+
 ## 本机网页控制台（2026-11-12）
 
 新增 local-console 进程管理入口与网页上传。已运行后端全量 `go test -race ./...`、前端 TypeScript 检查、5 项播放器测试和生产构建。

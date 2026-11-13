@@ -1,0 +1,2 @@
+# TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts.
+*.sh text eol=lf

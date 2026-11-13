@@ -1,4 +1,4 @@
-// TODO(Haoyu): Replace advisory placement with durable reservations; heartbeat, inventory and repair endpoints currently return 501.
+// TODO(Yuquan): Replace advisory ingestion plans with global persistent capacity reservations.
 package metadata
 
 import (
@@ -14,13 +14,16 @@ import (
 )
 
 type HTTPServer struct {
-	Node      *Node
-	Peers     []domain.Peer
-	Client    *http.Client
-	Placement placement.Policy
+	Node              *Node
+	Peers             []domain.Peer
+	Client            *http.Client
+	Placement         placement.Policy
+	Reports           *reportStore
+	ExtraReplicaBytes int64
 }
 
 func (s *HTTPServer) Handler() http.Handler {
+	s.Reports = &reportStore{reports: map[string]reportedPeer{}}
 	if s.Placement == nil {
 		s.Placement = placement.Static{}
 	}
@@ -38,9 +41,11 @@ func (s *HTTPServer) Handler() http.Handler {
 	m.HandleFunc("POST /api/v1/videos/{id}/placement-plan", s.plan)
 	m.HandleFunc("POST /api/v1/segments/{id}/replicas", s.confirm)
 	m.HandleFunc("GET /api/v1/segments/{id}/locations", s.locations)
-	for _, p := range []string{"POST /api/v1/peers/{id}/heartbeat", "POST /api/v1/peers/{id}/inventory", "GET /api/v1/peers/{id}/tasks", "POST /api/v1/tasks/{id}/ack"} {
-		m.HandleFunc(p, protocol.NotImplemented)
-	}
+	m.HandleFunc("POST /api/v1/peers/{id}/heartbeat", s.peerReport)
+	m.HandleFunc("POST /api/v1/peers/{id}/inventory", s.peerReport)
+	m.HandleFunc("GET /api/v1/peers/{id}/tasks", s.peerTasks)
+	m.HandleFunc("POST /api/v1/tasks/{id}/ack", s.taskAck)
+	m.HandleFunc("GET /api/v1/maintenance", s.maintenanceStatus)
 	return m
 }
 func (s *HTTPServer) readable(w http.ResponseWriter) bool {
@@ -188,30 +193,20 @@ func (s *HTTPServer) plan(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 		var stats struct {
-			Used  int64 `json:"stored_bytes"`
-			Quota int64 `json:"quota_bytes"`
+			Used  int64   `json:"stored_bytes"`
+			Quota int64   `json:"quota_bytes"`
+			Rate  float64 `json:"upload_bytes_per_second"`
 		}
 		err = json.NewDecoder(res.Body).Decode(&stats)
 		res.Body.Close()
 		if err == nil && res.StatusCode == 200 {
-			observations = append(observations, domain.PeerObservation{Peer: p, FreeBytes: stats.Quota - stats.Used})
+			observations = append(observations, domain.PeerObservation{Peer: p, FreeBytes: stats.Quota - stats.Used, UploadBytesPerSecond: stats.Rate, OnlineFraction: 1})
 		}
 	}
-	plans := map[string][]domain.Peer{}
-	for _, seg := range v.Manifest.Segments {
-		targets, err := s.Placement.Choose(seg, observations, 2)
-		if err != nil {
-			protocol.Fail(w, 507, "CAPACITY_EXCEEDED", fmt.Sprint(err))
-			return
-		}
-		plans[seg.ID] = targets
-		for i := range observations {
-			for _, p := range targets {
-				if observations[i].Peer.ID == p.ID {
-					observations[i].FreeBytes -= seg.Size
-				}
-			}
-		}
+	plans, extraUsed, err := placement.Plan(v.Manifest.Segments, observations, s.Placement, s.ExtraReplicaBytes)
+	if err != nil {
+		protocol.Fail(w, 507, "CAPACITY_EXCEEDED", fmt.Sprint(err))
+		return
 	}
-	protocol.JSON(w, 200, map[string]any{"advisory": true, "placements": plans})
+	protocol.JSON(w, 200, map[string]any{"advisory": true, "placements": plans, "extra_replica_bytes": extraUsed})
 }

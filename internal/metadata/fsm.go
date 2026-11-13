@@ -1,4 +1,4 @@
-// TODO(Haoyu): Extend the real Raft FSM with reservations and durable repair transitions; never perform network I/O in Apply.
+// TODO(Yuquan): Add global capacity reservations and bounded task retention; never perform network I/O in Apply.
 package metadata
 
 import (
@@ -19,6 +19,8 @@ type Command struct {
 	Receipt         domain.Receipt  `json:"receipt,omitempty"`
 	VideoID         string          `json:"video_id,omitempty"`
 	ExpectedVersion int             `json:"expected_version,omitempty"`
+	Task            *domain.Task    `json:"task,omitempty"`
+	TaskID          string          `json:"task_id,omitempty"`
 }
 type Result struct {
 	Code    string `json:"code,omitempty"`
@@ -32,6 +34,7 @@ type State struct {
 	Videos     map[string]domain.Video              `json:"videos"`
 	Replicas   map[string]map[string]domain.Receipt `json:"replicas"`
 	Operations map[string]Operation                 `json:"operations"`
+	Tasks      map[string]domain.Task               `json:"tasks"`
 }
 type FSM struct {
 	mu    sync.RWMutex
@@ -39,7 +42,7 @@ type FSM struct {
 }
 
 func NewFSM() *FSM {
-	return &FSM{state: State{Videos: map[string]domain.Video{}, Replicas: map[string]map[string]domain.Receipt{}, Operations: map[string]Operation{}}}
+	return &FSM{state: State{Videos: map[string]domain.Video{}, Replicas: map[string]map[string]domain.Receipt{}, Operations: map[string]Operation{}, Tasks: map[string]domain.Task{}}}
 }
 func (f *FSM) Apply(log *raft.Log) any {
 	f.mu.Lock()
@@ -63,7 +66,63 @@ func (f *FSM) Apply(log *raft.Log) any {
 	return result
 }
 func (f *FSM) applyCommand(c Command) Result {
+	if f.state.Tasks == nil {
+		f.state.Tasks = map[string]domain.Task{}
+	}
 	switch c.Kind {
+	case "task-create":
+		if c.Task == nil {
+			return Result{"INVALID_ARGUMENT", "missing task"}
+		}
+		t := *c.Task
+		if !domain.ValidID(t.ID) || !domain.ValidID(t.Source.ID) || !domain.ValidID(t.Target.ID) || t.Source.ID == t.Target.ID || t.State != "pending" || t.Version != 1 {
+			return Result{"INVALID_ARGUMENT", "invalid repair task"}
+		}
+		if _, ok := f.state.Tasks[t.ID]; ok {
+			return Result{"VERSION_CONFLICT", "task already exists"}
+		}
+		valid := false
+		for _, v := range f.state.Videos {
+			for _, seg := range v.Manifest.Segments {
+				if v.Status == "READY" && seg.ID == t.SegmentID && seg.Size == t.Size && seg.SHA256 == t.SHA256 {
+					valid = true
+				}
+			}
+		}
+		if !valid {
+			return Result{"VERSION_CONFLICT", "task must match a published segment"}
+		}
+		if a, ok := f.state.Replicas[t.SegmentID][t.Source.ID]; !ok || a.SHA256 != t.SHA256 {
+			return Result{"NOT_READY", "source is not committed"}
+		}
+		for _, old := range f.state.Tasks {
+			if old.State == "pending" && old.SegmentID == t.SegmentID {
+				return Result{"VERSION_CONFLICT", "segment already has a pending task"}
+			}
+		}
+		f.state.Tasks[t.ID] = t
+	case "task-complete":
+		t, ok := f.state.Tasks[c.TaskID]
+		if !ok {
+			return Result{"NOT_FOUND", "task not found"}
+		}
+		a := c.Receipt
+		if t.State != "pending" || a.PeerID != t.Target.ID || a.SegmentID != t.SegmentID || a.Size != t.Size || a.SHA256 != t.SHA256 || a.Version != t.Version || a.OperationID != t.ID {
+			return Result{"VERSION_CONFLICT", "receipt does not match pending task"}
+		}
+		if f.state.Replicas[t.SegmentID] == nil {
+			f.state.Replicas[t.SegmentID] = map[string]domain.Receipt{}
+		}
+		f.state.Replicas[t.SegmentID][a.PeerID] = a
+		t.State = "completed"
+		f.state.Tasks[t.ID] = t
+	case "task-fail":
+		t, ok := f.state.Tasks[c.TaskID]
+		if !ok || t.State != "pending" {
+			return Result{"VERSION_CONFLICT", "task is not pending"}
+		}
+		t.State = "failed"
+		f.state.Tasks[t.ID] = t
 	case "create":
 		if err := c.Manifest.Validate(); err != nil {
 			return Result{"INVALID_ARGUMENT", err.Error()}
@@ -153,6 +212,9 @@ func (f *FSM) Restore(reader io.ReadCloser) error {
 	}
 	if state.Videos == nil || state.Replicas == nil || state.Operations == nil {
 		return fmt.Errorf("invalid snapshot")
+	}
+	if state.Tasks == nil {
+		state.Tasks = map[string]domain.Task{}
 	}
 	f.mu.Lock()
 	defer f.mu.Unlock()

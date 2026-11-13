@@ -1,6 +1,20 @@
 {
-  "_todo": "TODO(Tian/Yuquan): Enable the main study only after adaptive placement and matched-budget reset are implemented.",
-  "name": "main",
-  "implemented": false,
-  "groups": ["B0", "A1", "A2", "A3", "fixed-extra-budget"]
+  "_todo": "TODO(Yuquan): Extend this controlled cold-start scenario with warm-up, fault traces and a broader load matrix before calling it the final study.",
+  "name": "paired-resource-placement",
+  "implemented": true,
+  "runner": "experiments/paired.py",
+  "groups": ["fixed-round_robin", "fixed-deadline", "adaptive-round_robin", "adaptive-deadline"],
+  "seeds": [11, 22, 33, 44, 55],
+  "videos": 3,
+  "viewers": 3,
+  "arrival_span_ms": 500,
+  "segments": 6,
+  "segment_duration_ms": 150,
+  "segment_bytes": 32768,
+  "peer_upload_caps": [65536, 131072, 524288],
+  "extra_replica_bytes": 65536,
+  "window": 3,
+  "concurrency": 2,
+  "startup_buffer_ms": 150,
+  "timeout_seconds": 20
 }

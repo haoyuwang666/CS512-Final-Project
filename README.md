@@ -6,6 +6,9 @@ Go 后端提供 Raft 元数据服务、Peer 分片存储和播放 Session API；
 
 ## 推荐：本机网页控制台
 
+存储与修复扩展：已接入 Heartbeat/校验库存、Raft 持久修复任务、资源感知放置和隔离配对实验。
+运行与边界见 [docs/reliability.md](docs/reliability.md)。原生 Windows 请使用 WSL；浏览器播放已在 Edge 手工验证。
+
 安装 Go ≥ 1.24、Node.js、pnpm 11.25.0、Python 3、FFmpeg/FFprobe 后，在项目根目录只需运行：
 
 ```bash
@@ -292,11 +295,11 @@ python3 tests/system/media.py
 | 静态双副本放置 / Python 导入 | 已实现；放置建议会扣除本次计划预计空间，但没有跨请求持久预留 |
 | Headless Round Robin / 并发预取 / 校验 / 失败切源 | 已实现；真实 HTTP 与模拟媒体消费，默认首段即可启动 |
 | Session REST / SSE / React 单页 | 实时 Summary/Buffer/来源估计、SSE 续传、持久 Session 与有界保留 |
-| Heartbeat / Inventory / 任务 API | 501，未实现；Peer 不会虚假上报成功 |
+| Heartbeat / Inventory / 任务 API | 已实现；上报是临时观测，维修任务与完成状态通过 Raft 持久化 |
 | Deadline / 吞吐预测 / 启动缓冲 / 元数据缓存 | 已实现 headless 引擎版本；配置和指标边界见 docs/playback.md |
-| Repair / 自适应放置 | 接口与 TODO 已建立，未实现；不能用于正式对比 |
+| Repair / 自适应放置 | 已实现最少双副本修复、任务跨 Leader 恢复、资源感知导入放置；未实现热度学习或迁移 |
 | 浏览器视频播放 | 已实现 MSE 连续 fMP4、连续音视频时间戳、音量/暂停/全屏、整段跳转、有界预取与哈希校验 |
-| 正式配对实验 / Hedging / Coding | 未实现；baseline runner 仅检查数据流水线 |
+| 配对实验 / Hedging / Coding | 已有独立重置、真实 seeded trace 和同预算对比入口；完整正式研究、Hedging、Coding 仍未完成 |
 
 这是基础框架，不是完整项目交付。当前固定三节点集群是实际共识服务，不使用内存 Map 假扮 Raft；FSM 内存视图由真实日志复制和持久恢复驱动。
 
@@ -413,7 +416,7 @@ make ingest MANIFEST=.data/media/segments/manifest.json
 ## 团队开发入口
 
 - Haoyu：`internal/metadata/`、`internal/control/`、公共协议、部署和集成。下一步是持久容量预留和任务生命周期。
-- Yuquan：`internal/storage/`、`internal/placement/`、`internal/repair/`、素材和导入。下一步是 Inventory、Heartbeat 和 Repair 执行。
+- Yuquan：存储可靠性、库存上报、修复闭环与资源感知放置；下一步为分区/掉电覆盖、全局预留和热度策略。当前实现跨原分工目录，按实际变更复核。
 - Tian：`internal/playback/`、`frontend/`、`experiments/`。已补齐 MSE 无缝视频播放、浏览器验收，以及 headless Deadline/吞吐估计、实时快照与事件持久化；下一步是正式实验 trace、资源预算与环境重置。
 
 接手代码应先运行现有验证，再认领 TODO；不要重写另一套 Raft、导入器或指标实现。目录的具体负责人见 `docs/ownership.md`。

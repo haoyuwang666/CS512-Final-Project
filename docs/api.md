@@ -33,9 +33,9 @@ Manifest：`schema_version:1, video_id, representation, segments`。每段：`se
 
 错误格式：`{error:{code,message,retryable,leader_url?}}`。参数错误 400、缺失 404、版本冲突/未就绪 409、尚未实现 501、不可服务/结果未知 503、容量不足 507。Leader 只做提示，不自动将视频 PUT 重定向。客户端向已配置 Controller 重试；写结果未知保留原 operation_id。
 
-## 明确未实现
+## 维护接口与当前边界
 
-`POST /peers/{id}/heartbeat`、`POST /peers/{id}/inventory`、`GET /peers/{id}/tasks`、`POST /tasks/{id}/ack` 返回 501。无 DELETE。未知播放策略返回 400；`round_robin` 和 `deadline` 均可用。放置没有持久预留 ID；不宣称支持并发导入的全局预留保证。Peer 自身原子配额检查始终生效。
+Heartbeat、Inventory、任务查询/ACK 和维护状态已实现，完整契约与样例见 [reliability.md](reliability.md)。无 DELETE。未知播放策略返回 400；`round_robin` 和 `deadline` 均可用。放置没有持久预留 ID；不宣称支持并发导入的全局预留保证。Peer 自身原子配额检查始终生效。
 
 SSE 使用 Last-Event-ID 精确续传；无效或超前序号返回 400，无磁盘历史且已超出事件环返回 409 EVENT_HISTORY_EXPIRED。连接期间落后过多会收到 reset 事件，前端重新读取快照。默认持久化目录为 .data/sessions，详情见 docs/playback.md。未来新增 Heartbeat、Task、Inventory DTO 应统一放 `internal/protocol`，不由消费者各自定义协议。
 
