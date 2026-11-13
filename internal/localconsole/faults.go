@@ -2,10 +2,12 @@
 package localconsole
 
 import (
+	"bytes"
 	"context"
 	"cooperative.video/internal/protocol"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -152,4 +154,40 @@ func (m *Manager) maintenance(w http.ResponseWriter, r *http.Request) {
 		cancel()
 	}
 	protocol.JSON(w, 200, result)
+}
+
+// Forward the reviewed plan unchanged; only the current Raft leader executes it.
+func (m *Manager) cleanup(w http.ResponseWriter, r *http.Request) {
+	m.mu.Lock()
+	nodes := append([]*node(nil), m.nodes...)
+	m.mu.Unlock()
+	body, err := io.ReadAll(io.LimitReader(r.Body, 4<<20))
+	if err != nil {
+		fail(w, 400, err)
+		return
+	}
+	for _, n := range nodes {
+		if n.Kind != "controller" {
+			continue
+		}
+		req, err := http.NewRequestWithContext(r.Context(), r.Method, fmt.Sprintf("http://127.0.0.1:%d/api/v1/videos/%s/cleanup", n.Port, r.PathValue("id")), bytes.NewReader(body))
+		if err != nil {
+			continue
+		}
+		req.Header.Set("Content-Type", "application/json")
+		res, err := (&http.Client{Timeout: 30 * time.Second}).Do(req)
+		if err != nil {
+			continue
+		}
+		data, err := io.ReadAll(io.LimitReader(res.Body, 4<<20))
+		res.Body.Close()
+		if err != nil || res.StatusCode == 503 {
+			continue
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(res.StatusCode)
+		w.Write(data)
+		return
+	}
+	fail(w, 503, fmt.Errorf("没有可用 Leader；请恢复 Controller 后重试"))
 }

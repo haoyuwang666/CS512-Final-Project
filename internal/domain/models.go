@@ -92,15 +92,18 @@ type PeerObservation struct {
 	OnlineFraction       float64 `json:"online_fraction"`
 }
 type Task struct {
-	ID        string `json:"task_id"`
-	SegmentID string `json:"segment_id"`
-	Version   int    `json:"representation_version"`
-	Source    Peer   `json:"source"`
-	Target    Peer   `json:"target"`
-	State     string `json:"state"`
-	Size      int64  `json:"size_bytes"`
-	SHA256    string `json:"sha256"`
-	Reason    string `json:"reason,omitempty"`
+	VideoID   string    `json:"video_id,omitempty"`
+	Keep      []Receipt `json:"keep,omitempty"`
+	Removed   *Receipt  `json:"removed,omitempty"`
+	ID        string    `json:"task_id"`
+	SegmentID string    `json:"segment_id"`
+	Version   int       `json:"representation_version"`
+	Source    Peer      `json:"source"`
+	Target    Peer      `json:"target"`
+	State     string    `json:"state"`
+	Size      int64     `json:"size_bytes"`
+	SHA256    string    `json:"sha256"`
+	Reason    string    `json:"reason,omitempty"`
 }
 
 // PeerReport is an observation, never proof of a committed replica.

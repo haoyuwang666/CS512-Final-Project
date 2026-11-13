@@ -32,6 +32,11 @@ func (s *HTTPServer) Handler() http.Handler {
 	}
 	m := http.NewServeMux()
 	m.HandleFunc("GET /api/v1/health", protocol.Health)
+	m.HandleFunc("POST /api/v1/videos/{id}/delete", s.deleteVideo)
+	m.HandleFunc("GET /api/v1/videos/{id}/delete", s.deleteVideoStatus)
+	m.HandleFunc("GET /api/v1/videos/{id}/cleanup", s.cleanupPreview)
+	m.HandleFunc("POST /api/v1/videos/{id}/cleanup", s.cleanupSubmit)
+	m.HandleFunc("GET /api/v1/cleanup/{id}/authorize", s.cleanupAuthorize)
 	m.HandleFunc("GET /api/v1/cluster", func(w http.ResponseWriter, r *http.Request) {
 		protocol.JSON(w, 200, map[string]any{"leader_url": s.Node.LeaderURL(), "state": s.Node.Raft.State().String(), "members": s.Node.Members, "stats": s.Node.Raft.Stats(), "peers": s.Peers})
 	})

@@ -49,6 +49,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [frontend/src/components/FaultLab.tsx](frontend/src/components/FaultLab.tsx) | // TODO(Yuquan): Add replayable network-fault traces after process-fault workflows are validated. |
 | [frontend/src/components/LocalConsole.tsx](frontend/src/components/LocalConsole.tsx) | // TODO(Haoyu): Keep local lifecycle and upload feedback tied to actual server responses. |
 | [frontend/src/components/MetricsPanel.tsx](frontend/src/components/MetricsPanel.tsx) | // TODO(Tian): Validate dashboard terminology alongside future metric schema changes. |
+| [frontend/src/components/ReplicaCleanup.tsx](frontend/src/components/ReplicaCleanup.tsx) | // TODO(Yuquan): Add keeper preferences when placement policies expose stable rankings. |
 | [frontend/src/components/VideoPlayer.tsx](frontend/src/components/VideoPlayer.tsx) | // TODO(Tian): Keep real decoder metrics separate from headless experiment summaries. |
 | [frontend/src/hooks/useSession.ts](frontend/src/hooks/useSession.ts) | // TODO(Tian): Keep snapshot recovery compatible with future event schema versions. |
 | [frontend/src/main.tsx](frontend/src/main.tsx) | // TODO(Tian): Add top-level error boundaries as dashboard routes grow. |
@@ -69,9 +70,15 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/control/coordinator_test.go](internal/control/coordinator_test.go) | // TODO(Yuquan): Extend coordinator tests with bandwidth stalls and retry backoff. |
 | [internal/domain/models.go](internal/domain/models.go) | // TODO(Haoyu): Own the common domain model; extend versioned task and coding types here. |
 | [internal/domain/models_test.go](internal/domain/models_test.go) | // TODO(Haoyu): Extend manifest safety tests when additional media representations are introduced. |
+| [internal/localconsole/delete_video.go](internal/localconsole/delete_video.go) | // TODO(Haoyu): Move deletion reconciliation to a background worker for large libraries. |
+| [internal/localconsole/delete_video_test.go](internal/localconsole/delete_video_test.go) | // TODO(Haoyu): Exercise deletion reconciliation with a real browser console. |
 | [internal/localconsole/faults.go](internal/localconsole/faults.go) | // TODO(Yuquan): Extend supervised faults with explicit trace logging and network faults. |
 | [internal/localconsole/faults_test.go](internal/localconsole/faults_test.go) | // TODO(Yuquan): Add long-running concurrency tests for simultaneous browser sessions. |
 | [internal/localconsole/manager.go](internal/localconsole/manager.go) | // TODO(Haoyu): Extend local process supervision without changing distributed storage protocols. |
+| [internal/metadata/cleanup.go](internal/metadata/cleanup.go) | // TODO(Yuquan): Add paginated cleanup previews for large video libraries. |
+| [internal/metadata/cleanup_test.go](internal/metadata/cleanup_test.go) | // TODO(Yuquan): Extend cleanup concurrency tests alongside future membership changes. |
+| [internal/metadata/delete_video.go](internal/metadata/delete_video.go) | // TODO(Haoyu): Add bounded retention for deleted video manifests and task history. |
+| [internal/metadata/delete_video_test.go](internal/metadata/delete_video_test.go) | // TODO(Haoyu): Extend video deletion tests when replica generations are introduced. |
 | [internal/metadata/fsm.go](internal/metadata/fsm.go) | // TODO(Yuquan): Add global capacity reservations and bounded task retention; never perform network I/O in Apply. |
 | [internal/metadata/fsm_test.go](internal/metadata/fsm_test.go) | // TODO(Haoyu): Extend safety tests to durable task transitions and concurrent removals when those features land. |
 | [internal/metadata/handlers.go](internal/metadata/handlers.go) | // TODO(Yuquan): Replace advisory ingestion plans with global persistent capacity reservations. |
@@ -102,6 +109,8 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/protocol/serve.go](internal/protocol/serve.go) | // TODO(Haoyu): Add structured request logging and per-route deadlines; SSE intentionally has no global write timeout. |
 | [internal/repair/policy.go](internal/repair/policy.go) | // TODO(Yuquan): Implement grace-period repair planning from verified inventory; this policy must not mutate Raft or delete data. |
 | [internal/repair/policy_test.go](internal/repair/policy_test.go) | // TODO(Yuquan): Extend repair policy checks when replica budgets become configurable. |
+| [internal/storage/cleanup.go](internal/storage/cleanup.go) | // TODO(Yuquan): Add generation-based cleanup retention before pruning tombstones. |
+| [internal/storage/cleanup_test.go](internal/storage/cleanup_test.go) | // TODO(Yuquan): Expand cleanup tests with injected fsync failures. |
 | [internal/storage/handlers.go](internal/storage/handlers.go) | // TODO(Yuquan): Add authenticated task execution/telemetry; upload bytes are counted at ResponseWriter, not TCP-wire level. |
 | [internal/storage/reliability_test.go](internal/storage/reliability_test.go) | // TODO(Yuquan): Add subprocess power-loss injection at each persistence boundary. |
 | [internal/storage/reporting.go](internal/storage/reporting.go) | // TODO(Yuquan): Bound/paginate reports for inventories larger than the lab JSON limit. |
@@ -124,8 +133,10 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [scripts/run_console.sh](scripts/run_console.sh) | # TODO(Haoyu): Provide one local entry point while keeping tools in the user's own installation. |
 | [tests/e2e/README.md](tests/e2e/README.md) | TODO(Haoyu)：补充浏览器 UI 与服务 API 的联合验收；当前 make test-e2e 复用 tests/system/smoke.py。 |
 | [tests/integration/playback_test.go](tests/integration/playback_test.go) | // TODO(Tian): Add explicit failed-session, cancellation and controlled-stall metric cases to these real HTTP integration tests. |
+| [tests/system/cleanup.py](tests/system/cleanup.py) | """TODO(Yuquan): Extend cleanup acceptance with disk failure injection.""" |
 | [tests/system/cluster.py](tests/system/cluster.py) | """TODO(Yuquan): Share isolated real-process fixtures without attaching to user clusters.""" |
 | [tests/system/console.py](tests/system/console.py) | """TODO(Haoyu): Exercise local orchestration, real upload/trim/ingest and verified Peer delivery in isolated data directories.""" |
+| [tests/system/delete_video.py](tests/system/delete_video.py) | """TODO(Haoyu): Add partial-ingest orphan collection to deletion acceptance.""" |
 | [tests/system/media.py](tests/system/media.py) | """TODO(Tian): Add browser decoding automation when a supported browser runner is available.""" |
 | [tests/system/repair.py](tests/system/repair.py) | """TODO(Yuquan): Extend repair acceptance with sustained network partitions and power-loss faults.""" |
 | [tests/system/smoke.py](tests/system/smoke.py) | """TODO(Haoyu): Extend this real-process Raft smoke test with partitions, disk-loss faults and task recovery.""" |

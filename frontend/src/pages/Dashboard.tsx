@@ -5,6 +5,7 @@ import { useSession } from '../hooks/useSession';
 import MetricsPanel from '../components/MetricsPanel';
 import VideoPlayer from '../components/VideoPlayer';
 import LocalConsole from '../components/LocalConsole';
+import ReplicaCleanup from '../components/ReplicaCleanup';
 import type { MediaConfig } from '../types/api';
 export default function Dashboard() {
   const [video, setVideo] = useState('');
@@ -48,6 +49,7 @@ export default function Dashboard() {
       setMedia({ config: { video_id: value, strategy, window, concurrency, startup_buffer_ms: startup }, key: Date.now() });
       document.getElementById('playback')?.scrollIntoView({ behavior: 'smooth' });
     }}/>
+    {video && <ReplicaCleanup key={video} video={video}/> }
     <section id="playback"><div className="section-title"><div><span className="step">PLAYER</span><h2>{videoName || '视频播放器'}</h2></div><span className="badge">{video ? '已选择视频' : '等待选择'}</span></div>
       <p className="muted">{video ? '使用下方默认设置即可观看。调整高级设置后，点击“应用设置并重新播放”。' : '在上方视频库点击“播放”，会自动填入视频并开始加载，无需手动输入 ID。'}</p>
       <details className="advanced"><summary>高级设置 · 下载与缓冲（可保持默认）</summary>

@@ -22,6 +22,7 @@ var ErrConflict = errors.New("immutable object or operation conflict")
 var ErrInvalid = errors.New("invalid receipt fields")
 
 type diskIndex struct {
+	Deleted    map[string]domain.Receipt `json:"deleted,omitempty"`
 	Objects    map[string]domain.Receipt `json:"objects"`
 	Operations map[string]domain.Receipt `json:"operations"`
 }
@@ -39,7 +40,7 @@ func Open(dir, peer string, quota int64) (*Store, error) {
 	if err := os.MkdirAll(dir, 0700); err != nil {
 		return nil, err
 	}
-	s := &Store{dir: dir, peer: peer, quota: quota, index: diskIndex{map[string]domain.Receipt{}, map[string]domain.Receipt{}}}
+	s := &Store{dir: dir, peer: peer, quota: quota, index: diskIndex{Objects: map[string]domain.Receipt{}, Operations: map[string]domain.Receipt{}}}
 	b, err := os.ReadFile(filepath.Join(dir, "index.json"))
 	if err == nil {
 		if err = json.Unmarshal(b, &s.index); err != nil {
@@ -77,6 +78,11 @@ func (s *Store) Put(a domain.Receipt, reader io.Reader) (domain.Receipt, error) 
 	}
 	if old, ok := s.index.Objects[a.SegmentID]; ok && (old.SHA256 != a.SHA256 || old.Size != a.Size || old.Version != a.Version) {
 		return a, ErrConflict
+	}
+	for _, removed := range s.index.Deleted {
+		if removed.OperationID == a.OperationID {
+			return a, ErrConflict
+		}
 	}
 	path := filepath.Join(s.dir, a.SHA256+".blob")
 	_, err := os.Stat(path)

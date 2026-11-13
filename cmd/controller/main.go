@@ -59,6 +59,7 @@ func main() {
 	if err != nil || grace <= 0 {
 		log.Fatal("invalid REPAIR_GRACE")
 	}
+	go server.RunCleanup(ctx)
 	if protocol.Environment("REPAIR_ENABLED", "true") == "true" {
 		go server.RunMaintenance(ctx, grace)
 	}

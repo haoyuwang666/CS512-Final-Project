@@ -7,7 +7,7 @@ interface FaultEvent { sequence: number; node_id: string; action: string; at: st
 interface Maintenance { available: boolean; leader_id?: string; error?: string; tasks: Record<string, Task> | null; events: FaultEvent[] }
 interface Props { nodes: NodeInfo[]; busy: boolean; disabled: boolean; connected: boolean; onPending: (value: boolean) => void; onRefresh: () => Promise<void> }
 const actions: Record<string, string> = { stop: '强制挂掉', start: '恢复', restart: '重启' };
-const taskStates: Record<string, string> = { pending: '等待复制', completed: '已完成', failed: '失败，可重试' };
+const taskStates: Record<string, string> = { pending: '等待执行', completed: '已完成', failed: '失败，可重试' };
 
 export default function FaultLab({ nodes, busy, disabled, connected, onPending, onRefresh }: Props) {
   const [data, setData] = useState<Maintenance>({ available: false, tasks: {}, events: [] });
@@ -94,10 +94,10 @@ export default function FaultLab({ nodes, busy, disabled, connected, onPending, 
       <li>使用 3 个 Controller 时挂掉 Leader，观察其他节点选主和元数据恢复；停止多数派时可验证元数据不可用。</li>
       <li>挂掉播放 API 可观察请求失败，再恢复并重新开始播放。恢复所有节点后，可导出本次测试记录。</li>
     </ol></details>
-    <div className="section-title"><h3>自动修复任务</h3><span className="muted small">每 2 秒读取 · {observedAt ? `更新于 ${observedAt}` : '等待读取'}</span></div>
-    {!data.available ? <p className="muted" role="status">{data.error || '暂无可读 Leader，任务状态暂不可用。'}管理操作仍可使用。</p> : !tasks.length ? <p className="muted">暂无修复任务。欠副本经过宽限期、且有健康来源和空闲目标后才会创建任务。</p> : <>
+    <div className="section-title"><h3>副本维护任务</h3><span className="muted small">每 2 秒读取 · {observedAt ? `更新于 ${observedAt}` : '等待读取'}</span></div>
+    {!data.available ? <p className="muted" role="status">{data.error || '暂无可读 Leader，任务状态暂不可用。'}管理操作仍可使用。</p> : !tasks.length ? <p className="muted">暂无维护任务。欠副本经过宽限期、且有健康来源和空闲目标后才会创建任务。</p> : <>
       <p className="muted small">等待 {tasks.filter(task => task.state === 'pending').length} · 完成 {tasks.filter(task => task.state === 'completed').length} · 失败 {tasks.filter(task => task.state === 'failed').length}；显示最多 12 项。</p>
-      <div className="table-scroll"><table><thead><tr><th>分片</th><th>复制路径</th><th>任务状态</th></tr></thead><tbody>{tasks.slice(-12).reverse().map(task => <tr key={task.task_id}><td className="segment-cell">{task.segment_id}</td><td>{task.source.peer_id} → {task.target.peer_id}</td><td><span className={`badge ${task.state === 'completed' ? 'good' : ''}`}>{taskStates[task.state] ?? task.state}</span></td></tr>)}</tbody></table></div>
+      <div className="table-scroll"><table><thead><tr><th>分片</th><th>操作</th><th>任务状态</th></tr></thead><tbody>{tasks.slice(-12).reverse().map(task => <tr key={task.task_id}><td className="segment-cell">{task.segment_id}</td><td>{task.task_id.startsWith('delete-') ? `删除视频副本 ${task.target.peer_id}` : task.task_id.startsWith('cleanup-') ? `清理 ${task.target.peer_id}` : `${task.source.peer_id} → ${task.target.peer_id}`}</td><td><span className={`badge ${task.state === 'completed' ? 'good' : ''}`}>{taskStates[task.state] ?? task.state}</span></td></tr>)}</tbody></table></div>
     </>}
     <details><summary>本次控制台的操作记录（最多 100 条）</summary>{data.events.length ? <ol className="fault-log">{data.events.slice().reverse().map(event => <li key={event.sequence}><time>{new Date(event.at).toLocaleTimeString()}</time> {event.node_id} · {actions[event.action] ?? event.action}</li>)}</ol> : <p className="muted small">尚无故障操作。记录在控制台重启后清空，重要测试请导出。</p>}</details>
   </section>;

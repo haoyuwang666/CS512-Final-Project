@@ -29,6 +29,7 @@ func NewServer(store *Store, peer string, bytesPerSecond float64) *Server {
 func (s *Server) Handler() http.Handler {
 	m := http.NewServeMux()
 	m.HandleFunc("GET /api/v1/health", protocol.Health)
+	m.HandleFunc("POST /api/v1/cleanup", s.cleanup)
 	m.HandleFunc("PUT /api/v1/segments/{id}", s.put)
 	m.HandleFunc("GET /api/v1/segments/{id}", s.get)
 	m.HandleFunc("GET /api/v1/segments/{id}/receipt", s.receipt)

@@ -87,8 +87,11 @@ func (m *Manager) Handler() http.Handler {
 	mux.HandleFunc("POST /api/local/stop", m.stop)
 	mux.HandleFunc("POST /api/local/upload", m.upload)
 	mux.HandleFunc("GET /api/local/videos", m.videos)
+	mux.HandleFunc("POST /api/local/videos/{id}/delete", m.deleteVideo)
 	mux.HandleFunc("POST /api/local/peers/{id}/{action}", m.peerFault)
 	mux.HandleFunc("POST /api/local/nodes/{id}/{action}", m.nodeFault)
+	mux.HandleFunc("GET /api/local/videos/{id}/cleanup", m.cleanup)
+	mux.HandleFunc("POST /api/local/videos/{id}/cleanup", m.cleanup)
 	mux.HandleFunc("GET /api/local/maintenance", m.maintenance)
 	target, _ := url.Parse("http://127.0.0.1:18080")
 	proxy := httputil.NewSingleHostReverseProxy(target)
@@ -456,7 +459,9 @@ func (m *Manager) videos(w http.ResponseWriter, r *http.Request) {
 			b, e := os.ReadFile(p)
 			var j Job
 			if e == nil && json.Unmarshal(b, &j) == nil {
-				out = append(out, j)
+				if !m.reconcileVideoDeletion(dir, &j) {
+					out = append(out, j)
+				}
 			}
 		}
 	}

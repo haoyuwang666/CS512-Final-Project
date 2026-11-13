@@ -13,6 +13,7 @@ import (
 )
 
 type Command struct {
+	Tasks           []domain.Task   `json:"tasks,omitempty"`
 	Kind            string          `json:"kind"`
 	OperationID     string          `json:"operation_id"`
 	Manifest        domain.Manifest `json:"manifest,omitempty"`
@@ -70,6 +71,95 @@ func (f *FSM) applyCommand(c Command) Result {
 		f.state.Tasks = map[string]domain.Task{}
 	}
 	switch c.Kind {
+	case "video-delete":
+		v, ok := f.state.Videos[c.VideoID]
+		if !ok {
+			return Result{"NOT_FOUND", "video not found"}
+		}
+		if v.Status == "DELETING" || v.Status == "DELETED" {
+			return Result{}
+		}
+		segments := map[string]bool{}
+		count := 0
+		for _, seg := range v.Manifest.Segments {
+			segments[seg.ID] = true
+			count += len(f.state.Replicas[seg.ID])
+		}
+		for _, t := range f.state.Tasks {
+			if segments[t.SegmentID] && t.State == "pending" {
+				return Result{"VERSION_CONFLICT", "wait for pending replica tasks before deleting"}
+			}
+		}
+		if len(c.Tasks) != count {
+			return Result{"VERSION_CONFLICT", "replica set changed"}
+		}
+		seen := map[string]bool{}
+		for _, t := range c.Tasks {
+			key := t.SegmentID + "/" + t.Target.ID
+			if !domain.ValidID(t.ID) || seen[key] || !segments[t.SegmentID] || t.VideoID != c.VideoID || t.Reason != "video-delete" || t.State != "pending" || t.Removed == nil || f.state.Replicas[t.SegmentID][t.Target.ID] != *t.Removed {
+				return Result{"VERSION_CONFLICT", "invalid deletion plan"}
+			}
+			seen[key] = true
+		}
+		for _, t := range c.Tasks {
+			f.state.Tasks[t.ID] = t
+			delete(f.state.Replicas[t.SegmentID], t.Target.ID)
+		}
+		v.Status = "DELETING"
+		if count == 0 {
+			v.Status = "DELETED"
+		}
+		v.Version++
+		f.state.Videos[c.VideoID] = v
+
+	case "cleanup-create":
+		if c.Task == nil || c.Task.Removed == nil || len(c.Task.Keep) != 2 {
+			return Result{"INVALID_ARGUMENT", "invalid cleanup task"}
+		}
+		t := *c.Task
+		if !domain.ValidID(t.ID) || t.State != "pending" || t.Reason != "cleanup" || t.Removed.PeerID != t.Target.ID || t.Removed.SegmentID != t.SegmentID {
+			return Result{"INVALID_ARGUMENT", "invalid cleanup identity"}
+		}
+		if _, exists := f.state.Tasks[t.ID]; exists {
+			return Result{"VERSION_CONFLICT", "task exists"}
+		}
+		for _, old := range f.state.Tasks {
+			if old.State == "pending" && old.SegmentID == t.SegmentID {
+				return Result{"VERSION_CONFLICT", "segment has pending work"}
+			}
+		}
+		replicas := f.state.Replicas[t.SegmentID]
+		if replicas[t.Target.ID] != *t.Removed || len(replicas) <= 2 || t.Keep[0].PeerID == t.Keep[1].PeerID {
+			return Result{"VERSION_CONFLICT", "replicas changed"}
+		}
+		for _, keep := range t.Keep {
+			if keep.PeerID == t.Target.ID || replicas[keep.PeerID] != keep {
+				return Result{"VERSION_CONFLICT", "keepers changed"}
+			}
+		}
+		f.state.Tasks[t.ID] = t
+		delete(replicas, t.Target.ID)
+	case "cleanup-complete":
+		t, ok := f.state.Tasks[c.TaskID]
+		if !ok || (t.Reason != "cleanup" && t.Reason != "video-delete") || t.State != "pending" {
+			return Result{"VERSION_CONFLICT", "cleanup not pending"}
+		}
+		t.State = "completed"
+		f.state.Tasks[t.ID] = t
+		if t.Reason == "video-delete" {
+			done := true
+			for _, other := range f.state.Tasks {
+				if other.VideoID == t.VideoID && other.State == "pending" {
+					done = false
+				}
+			}
+			if done {
+				v := f.state.Videos[t.VideoID]
+				v.Status = "DELETED"
+				f.state.Videos[t.VideoID] = v
+			}
+		}
+
 	case "task-create":
 		if c.Task == nil {
 			return Result{"INVALID_ARGUMENT", "missing task"}
@@ -107,7 +197,7 @@ func (f *FSM) applyCommand(c Command) Result {
 			return Result{"NOT_FOUND", "task not found"}
 		}
 		a := c.Receipt
-		if t.State != "pending" || a.PeerID != t.Target.ID || a.SegmentID != t.SegmentID || a.Size != t.Size || a.SHA256 != t.SHA256 || a.Version != t.Version || a.OperationID != t.ID {
+		if (t.Reason == "cleanup" || t.Reason == "video-delete") || t.State != "pending" || a.PeerID != t.Target.ID || a.SegmentID != t.SegmentID || a.Size != t.Size || a.SHA256 != t.SHA256 || a.Version != t.Version || a.OperationID != t.ID {
 			return Result{"VERSION_CONFLICT", "receipt does not match pending task"}
 		}
 		if f.state.Replicas[t.SegmentID] == nil {
@@ -118,7 +208,7 @@ func (f *FSM) applyCommand(c Command) Result {
 		f.state.Tasks[t.ID] = t
 	case "task-fail":
 		t, ok := f.state.Tasks[c.TaskID]
-		if !ok || t.State != "pending" {
+		if !ok || t.State != "pending" || t.Reason == "cleanup" || t.Reason == "video-delete" {
 			return Result{"VERSION_CONFLICT", "task is not pending"}
 		}
 		t.State = "failed"
@@ -142,12 +232,20 @@ func (f *FSM) applyCommand(c Command) Result {
 		f.state.Videos[c.Manifest.VideoID] = domain.Video{Manifest: c.Manifest, Status: "DRAFT", Version: 1}
 	case "confirm":
 		a := c.Receipt
+		for _, t := range f.state.Tasks {
+			if t.Reason == "cleanup" && t.Removed != nil && t.SegmentID == a.SegmentID && t.Target.ID == a.PeerID && (t.State == "pending" || a.OperationID == t.Removed.OperationID) {
+				return Result{"VERSION_CONFLICT", "retired receipt"}
+			}
+		}
 		if a.Version != 1 || !domain.ValidID(a.PeerID) || !domain.ValidID(a.OperationID) {
 			return Result{"INVALID_ARGUMENT", "invalid receipt"}
 		}
 		found := false
 		for _, v := range f.state.Videos {
 			for _, s := range v.Manifest.Segments {
+				if s.ID == a.SegmentID && (v.Status == "DELETING" || v.Status == "DELETED") {
+					return Result{"VERSION_CONFLICT", "video deleted"}
+				}
 				if s.ID == a.SegmentID && s.Size == a.Size && s.SHA256 == a.SHA256 {
 					found = true
 				}
@@ -164,6 +262,9 @@ func (f *FSM) applyCommand(c Command) Result {
 		v, ok := f.state.Videos[c.VideoID]
 		if !ok {
 			return Result{"NOT_FOUND", "video not found"}
+		}
+		if v.Status == "DELETING" || v.Status == "DELETED" {
+			return Result{"VERSION_CONFLICT", "video deleted"}
 		}
 		if v.Version != c.ExpectedVersion {
 			return Result{"VERSION_CONFLICT", "video version mismatch"}

@@ -30,6 +30,12 @@ export default function LocalConsole({ onSelect, onReset }: { onSelect: (id: str
     try { await api(action, action === 'start' ? { peers, controllers } : {}); onReset(); setNotice(action === 'start' ? '已提交启动请求，等待节点健康检查与选主。' : '集群已停止，视频数据已保留。'); await refresh(); }
     catch (err) { setError(String(err)); } finally { setPending(false); }
   }
+  async function deleteVideo(video: Job) {
+    if (!window.confirm(`删除“${video.name}”？将删除所有已登记分片副本、本地源文件及视频库记录，无法撤销。`)) return;
+    setPending(true); setError('');
+    try { const result = await api<{message:string}>(`videos/${encodeURIComponent(video.id)}/delete`, {}); onReset(); setNotice(result.message); await refresh(); }
+    catch(err) { setError(String(err)); } finally { setPending(false); }
+  }
   function upload() {
     if (!file) return;
     setPending(true); setError(''); setNotice(''); setProgress(0);
@@ -66,8 +72,21 @@ export default function LocalConsole({ onSelect, onReset }: { onSelect: (id: str
     </div>
     {!connected && <p className="notice">本地管理服务尚未连接。请在项目根目录运行 <code>make console</code>，并打开 http://127.0.0.1:8090。</p>}
     {notice && <p className="notice" role="status">{notice}</p>}{error && <p className="notice failed" role="alert">{error}</p>}
-    {active && <details className="node-details"><summary>查看节点状态、端口与传输量</summary><section><div className="section-title"><h2>节点与传输</h2><span className="muted small">每 1.5 秒查询实际状态 · Peer 发送量包含本次进程全部请求</span></div><div className="table-scroll"><table><thead><tr><th>节点</th><th>状态</th><th>本机端口</th><th>分片对象</th><th>已存储</th><th>累计发送</th></tr></thead><tbody>{status.nodes.map(n => <tr key={n.id}><td>{n.id}</td><td><span className={`badge ${n.status === 'running' ? 'good' : ''}`}>{n.status === 'running' ? n.details?.state ?? '运行中' : n.status === 'exited' ? '已退出' : '未就绪'}</span></td><td><code>{n.port}</code></td><td>{n.details?.objects ?? '—'}</td><td>{n.kind === 'peer' ? size(n.details?.stored_bytes) : '—'}</td><td>{n.kind === 'peer' ? size(n.details?.uploaded_bytes) : '—'}</td></tr>)}</tbody></table></div></section></details>}
-    <section><div className="section-title"><div><span className="step">03 / LIBRARY</span><h2>③ 选择视频播放</h2></div><span className="badge">{videos.length} 个已导入</span></div>{videos.length ? <div className="library">{videos.map(v => <div className="video-item" key={v.id}><div><strong>{v.name}</strong><p className="muted small">{v.segments} 个分片 · 双副本已确认</p><details><summary>查看视频 ID</summary><code>{v.id}</code></details></div><button className="secondary" disabled={!active || !connected} onClick={() => onSelect(v.id, v.name)}>播放</button></div>)}</div> : <p className="muted">完成前两步后，视频会显示在这里。点击“播放”即可，不需要填写参数或视频 ID。</p>}</section>
+    {active && <section aria-labelledby="peer-segments-title">
+      <div className="section-title"><h2 id="peer-segments-title">Peer 分片数量</h2><span className="muted small">每 1.5 秒更新</span></div>
+      <p className="muted small">统计每个 Peer 已登记的 segment，包含所有视频；同一分片在不同 Peer 上的副本分别计数。节点离线或无法读取时显示“—”。</p>
+      <div className="peer-segment-grid">{status.nodes.filter(n => n.kind === 'peer').map(n => {
+        // An unavailable sample is unknown, not an empty Peer. Keep real zeroes visible.
+        const available = connected && n.status === 'running' && n.details?.objects !== undefined;
+        return <article className="peer-segment-card" key={n.id} aria-label={`${n.id} 分片统计`}>
+          <div className="section-title"><strong>{n.id}</strong><span className={`badge ${available ? 'good' : ''}`}>{available ? '在线' : n.status === 'exited' ? '已退出' : '暂不可用'}</span></div>
+          <p className="peer-segment-count">{available ? n.details!.objects!.toLocaleString() : '—'} <span>segments</span></p>
+          <p className="muted small">已存储 {available && n.details?.stored_bytes !== undefined ? size(n.details.stored_bytes) : '—'}</p>
+        </article>;
+      })}</div>
+    </section>}
+    {active && <details className="node-details"><summary>查看节点状态、端口与传输量</summary><section><div className="section-title"><h2>节点与传输</h2><span className="muted small">每 1.5 秒查询实际状态 · Peer 发送量包含本次进程全部请求</span></div><div className="table-scroll"><table><thead><tr><th>节点</th><th>状态</th><th>本机端口</th><th>Segment 数量</th><th>已存储</th><th>累计发送</th></tr></thead><tbody>{status.nodes.map(n => <tr key={n.id}><td>{n.id}</td><td><span className={`badge ${n.status === 'running' ? 'good' : ''}`}>{n.status === 'running' ? n.details?.state ?? '运行中' : n.status === 'exited' ? '已退出' : '未就绪'}</span></td><td><code>{n.port}</code></td><td>{n.details?.objects ?? '—'}</td><td>{n.kind === 'peer' ? size(n.details?.stored_bytes) : '—'}</td><td>{n.kind === 'peer' ? size(n.details?.uploaded_bytes) : '—'}</td></tr>)}</tbody></table></div></section></details>}
+    <section><div className="section-title"><div><span className="step">03 / LIBRARY</span><h2>③ 选择视频播放</h2></div><span className="badge">{videos.length} 个已导入</span></div>{videos.length ? <div className="library">{videos.map(v => <div className="video-item" key={v.id}><div><strong>{v.name}</strong><p className="muted small">{v.stage === 'deleting' ? `删除中：${v.error || '等待节点确认'}` : `${v.segments} 个分片 · 双副本已确认`}</p><details><summary>查看视频 ID</summary><code>{v.id}</code></details></div><button className="secondary" disabled={!active || !connected || v.stage==='deleting'} onClick={() => onSelect(v.id, v.name)}>播放</button><button className="danger" disabled={!active || !connected || pending || status.busy || v.stage==='deleting'} onClick={()=>void deleteVideo(v)}>删除视频</button></div>)}</div> : <p className="muted">完成前两步后，视频会显示在这里。点击“播放”即可，不需要填写参数或视频 ID。</p>}</section>
     <FaultLab nodes={status.nodes} busy={status.busy} disabled={pending} connected={connected} onPending={setPending} onRefresh={refresh}/>
   </>;
 }

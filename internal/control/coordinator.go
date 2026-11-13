@@ -84,7 +84,7 @@ func (c *Coordinator) reconcile(ctx context.Context, missing map[string]time.Tim
 	sort.Strings(ids)
 	for _, id := range ids {
 		t := state.Tasks[id]
-		if t.State == "pending" {
+		if t.State == "pending" && t.Reason != "cleanup" && t.Reason != "video-delete" {
 			if c.Leader() != nil {
 				return
 			}
@@ -118,6 +118,15 @@ func (c *Coordinator) reconcile(ctx context.Context, missing map[string]time.Tim
 			continue
 		}
 		for _, seg := range v.Manifest.Segments {
+			blocked := false
+			for _, task := range state.Tasks {
+				if task.SegmentID == seg.ID && task.State == "pending" {
+					blocked = true
+				}
+			}
+			if blocked {
+				continue
+			}
 			sources := []domain.Peer{}
 			candidates := []domain.PeerObservation{}
 			for _, p := range c.Peers {

@@ -65,3 +65,11 @@ test-repair: backend
 plot:
 	$(PYTHON) experiments/aggregate.py results/baseline/sessions.jsonl
 	$(PYTHON) experiments/plot.py results/baseline/sessions.jsonl
+
+.PHONY: test-cleanup
+test-cleanup: backend
+	$(PYTHON) tests/system/cleanup.py
+
+.PHONY: test-delete-video
+test-delete-video: backend
+	$(PYTHON) tests/system/delete_video.py
