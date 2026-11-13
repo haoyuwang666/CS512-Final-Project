@@ -34,8 +34,8 @@ export class MSEPlayer {
   constructor(video: HTMLVideoElement, buffer: SegmentBuffer, session: MediaSession,
     changed: (index: number, state: string) => void, failed: (error: unknown) => void) {
     const media = session.manifest.media;
-    if (!media || !session.manifest.representation.startsWith('continuous-fmp4-')) throw new Error('请从原视频重新生成连续 fMP4 分片并以新 ID 导入。');
-    if (typeof MediaSource === 'undefined' || !MediaSource.isTypeSupported(media.mime_type)) throw new Error('当前浏览器不支持此视频的 MSE/H.264/AAC 格式，请使用支持该格式的浏览器。');
+    if (!media || !session.manifest.representation.startsWith('continuous-fmp4-')) throw new Error('Regenerate continuous fMP4 segments from the source video and import them with a new ID.');
+    if (typeof MediaSource === 'undefined' || !MediaSource.isTypeSupported(media.mime_type)) throw new Error('This browser does not support the video’s MSE/H.264/AAC format. Try a compatible browser such as Edge.');
     this.video = video; this.buffer = buffer; this.session = session; this.changed = changed; this.failed = failed;
     let time = 0;
     this.offsets = session.manifest.segments.map(segment => { const at = time; time += segment.duration_ms / 1000; return at; });
@@ -158,7 +158,7 @@ export class MSEPlayer {
     const sourceBuffer = this.sourceBuffer!;
     return new Promise((resolve, reject) => {
       const done = () => { cleanup(); resolve(); };
-      const fail = () => { cleanup(); reject(new Error('浏览器媒体缓冲更新失败，请检查分片格式与时间戳。')); };
+      const fail = () => { cleanup(); reject(new Error('Media buffer update failed. Check segment format and timestamps.')); };
       const cancel = () => { cleanup(); reject(new DOMException('Player closed', 'AbortError')); };
       const cleanup = () => {
         sourceBuffer.removeEventListener('updateend', done); sourceBuffer.removeEventListener('error', fail);

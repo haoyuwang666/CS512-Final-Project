@@ -46,12 +46,15 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [frontend/pnpm-workspace.yaml](frontend/pnpm-workspace.yaml) | # TODO(Tian): Review explicitly permitted dependency build scripts when updating the lockfile. |
 | [frontend/src/App.tsx](frontend/src/App.tsx) | // TODO(Tian): Keep app composition here; scheduling and metric calculations stay in Go. |
 | [frontend/src/api/client.ts](frontend/src/api/client.ts) | // TODO(Tian): Add versioned API capabilities; display server errors without generating local experimental metrics. |
+| [frontend/src/api/messages.ts](frontend/src/api/messages.ts) | // TODO(Yuquan): Prefer stable server error codes when all management routes expose them. |
+| [frontend/src/components/EventLog.tsx](frontend/src/components/EventLog.tsx) | // TODO(Yuquan): Add server-side pagination if event retention grows beyond bounded snapshots. |
 | [frontend/src/components/FaultLab.tsx](frontend/src/components/FaultLab.tsx) | // TODO(Yuquan): Add replayable network-fault traces after process-fault workflows are validated. |
 | [frontend/src/components/LocalConsole.tsx](frontend/src/components/LocalConsole.tsx) | // TODO(Haoyu): Keep local lifecycle and upload feedback tied to actual server responses. |
 | [frontend/src/components/MetricsPanel.tsx](frontend/src/components/MetricsPanel.tsx) | // TODO(Tian): Validate dashboard terminology alongside future metric schema changes. |
 | [frontend/src/components/ReplicaCleanup.tsx](frontend/src/components/ReplicaCleanup.tsx) | // TODO(Yuquan): Add keeper preferences when placement policies expose stable rankings. |
 | [frontend/src/components/VideoPlayer.tsx](frontend/src/components/VideoPlayer.tsx) | // TODO(Tian): Keep real decoder metrics separate from headless experiment summaries. |
 | [frontend/src/hooks/useSession.ts](frontend/src/hooks/useSession.ts) | // TODO(Tian): Keep snapshot recovery compatible with future event schema versions. |
+| [frontend/src/logging/events.ts](frontend/src/logging/events.ts) | // TODO(Yuquan): Extend event labels alongside backend schema additions. |
 | [frontend/src/main.tsx](frontend/src/main.tsx) | // TODO(Tian): Add top-level error boundaries as dashboard routes grow. |
 | [frontend/src/pages/Dashboard.tsx](frontend/src/pages/Dashboard.tsx) | // TODO(Tian): Keep playback controls aligned with reproducible CLI configurations. |
 | [frontend/src/playback/msePlayer.ts](frontend/src/playback/msePlayer.ts) | // TODO(Tian): Extend codec negotiation and eviction policy with real-browser regressions. |
@@ -59,6 +62,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [frontend/src/styles.css](frontend/src/styles.css) | /* TODO(Tian): Extend responsive dashboard styling without blocking core system work. */ |
 | [frontend/src/types/api.ts](frontend/src/types/api.ts) | // TODO(Tian): Keep additive playback fields aligned with the Go API contract. |
 | [frontend/tests/browser.mjs](frontend/tests/browser.mjs) | // TODO(Tian): Expand browser coverage to additional MSE implementations and codecs. |
+| [frontend/tests/events.test.mjs](frontend/tests/events.test.mjs) | // TODO(Yuquan): Extend event normalization tests as backend event types evolve. |
 | [frontend/tests/msePlayer.test.mjs](frontend/tests/msePlayer.test.mjs) | // TODO(Tian): Keep single-source, seek and bounded-buffer invariants covered for MSE changes. |
 | [frontend/tests/run.mjs](frontend/tests/run.mjs) | // TODO(Tian): Register new browser-independent client regressions here. |
 | [frontend/tests/segmentBuffer.test.mjs](frontend/tests/segmentBuffer.test.mjs) | // TODO(Tian): Extend client buffer regression tests alongside seek and transport changes. |

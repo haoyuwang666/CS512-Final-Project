@@ -57,7 +57,7 @@ test('corrupt bytes never reach the media append pipeline', async () => {
   const notices = []; const buffer = new SegmentBuffer('media-test', manifest, 1, 1, notice => notices.push(notice));
   try {
     buffer.setWindow(0);
-    await assert.rejects(buffer.get(0), /校验失败/);
+    await assert.rejects(buffer.get(0), /verification failed/);
     assert.equal(notices.at(-1).state, 'failed');
     assert.ok(!notices.some(notice => notice.state === 'ready'));
   } finally { buffer.close(); globalThis.fetch = previous; }

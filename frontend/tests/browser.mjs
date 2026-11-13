@@ -31,11 +31,11 @@ try {
       await route.continue();
     });
   }
-  await page.getByText('高级设置 · 下载与缓冲（可保持默认）', { exact: true }).click();
-  await page.getByText('实验模式与手动视频 ID', { exact: true }).click();
-  await page.getByLabel('已导入的视频 ID').fill(process.env.MEDIA_VIDEO_ID || 'media-test');
-  await page.getByLabel('提前准备多少片').fill('2');
-  await page.getByRole('button', { name: '应用设置并重新播放' }).click();
+  await page.getByText('Advanced settings · Download and buffer', { exact: true }).click();
+  await page.getByText('Experiment mode and manual video ID', { exact: true }).click();
+  await page.getByLabel('Imported video ID').fill(process.env.MEDIA_VIDEO_ID || 'media-test');
+  await page.getByLabel('Prefetch window (segments)').fill('2');
+  await page.getByRole('button', { name: 'Apply and restart' }).click();
   await page.waitForFunction(() => document.querySelector('video')?.ended, null, { timeout: 60000 });
   const normal = await page.evaluate(() => ({ events: window.mediaEvents, error: document.querySelector('[role="alert"]')?.textContent,
     quality: { totalVideoFrames: document.querySelector('video').getVideoPlaybackQuality().totalVideoFrames }, source: document.querySelector('video').currentSrc }));
@@ -61,7 +61,7 @@ try {
   assert.equal(final.events.filter(event => event.kind === 'loadstart').length, 1);
   assert.equal(final.error, undefined);
   assert.deepEqual(errors, []);
-  await page.getByRole('button', { name: '停止播放', exact: true }).click();
+  await page.getByRole('button', { name: 'Stop playback', exact: true }).click();
   assert.equal(await page.locator('video').count(), 0);
   console.log(JSON.stringify({ status: 'PASS', browser: browser.version(), checks: ['one media source for all segments',
     process.env.FAILOVER_LEADER_PID ? 'automatic recovery after leader failure during playback' : 'no waiting at segment boundaries',

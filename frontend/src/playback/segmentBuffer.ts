@@ -1,5 +1,6 @@
 // TODO(Tian): Preserve verified, bounded prefetch as new transports are introduced.
 import type { MediaManifest } from '../types/api.ts';
+import { responseError } from '../api/messages.ts';
 
 export interface SegmentNotice {
   index: number; state: string; peer?: string; bytes?: number; attempts?: number; failures?: number;
@@ -101,16 +102,16 @@ export class SegmentBuffer {
         // Only explicit temporary metadata failures qualify; corrupt bytes and
         // expired sessions must not be retried or silently accepted.
         if (response.status !== 503 || body?.error?.retryable !== true || attempt >= 2) {
-          throw new Error(body?.error?.message ?? `Media HTTP ${response.status}`);
+          throw responseError(body?.error?.message ?? `Media HTTP ${response.status}`, response.status);
         }
         await retryDelay(signal, 500 * (attempt + 1));
       }
       const data = await response.arrayBuffer();
-      if (data.byteLength !== segment.size_bytes) throw new Error(`分片 ${index} 大小校验失败`);
-      if (!globalThis.crypto?.subtle) throw new Error('视频校验需要 localhost 或 HTTPS 安全连接');
+      if (data.byteLength !== segment.size_bytes) throw new Error(`Segment ${index} size verification failed`);
+      if (!globalThis.crypto?.subtle) throw new Error('Verification requires localhost or a secure HTTPS connection');
       const digest = await crypto.subtle.digest('SHA-256', data);
       const hash = Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
-      if (hash !== segment.sha256) throw new Error(`分片 ${index} SHA-256 校验失败`);
+      if (hash !== segment.sha256) throw new Error(`Segment ${index} SHA-256 verification failed`);
       if (signal.aborted || this.closed) throw new DOMException('Obsolete segment', 'AbortError');
       this.notify({ index, state: 'ready', peer: response.headers.get('X-Peer-ID') ?? undefined,
         bytes: data.byteLength, attempts: Number(response.headers.get('X-Download-Attempts') ?? 1),
