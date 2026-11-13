@@ -6,6 +6,7 @@ import (
 	"cooperative.video/internal/domain"
 	"cooperative.video/internal/protocol"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -19,15 +20,16 @@ type cacheEntry[T any] struct {
 	fetched time.Time
 }
 type MetadataClient struct {
-	URLs      []string
-	HTTP      *http.Client
-	mu        sync.Mutex
-	manifests map[string]cacheEntry[domain.Manifest]
-	locations map[string]cacheEntry[[]domain.Location]
+	URLs         []string
+	HTTP         *http.Client
+	mu           sync.Mutex
+	manifests    map[string]cacheEntry[domain.Manifest]
+	locations    map[string]cacheEntry[[]domain.Location]
+	retryTimeout time.Duration
 }
 
 func NewMetadataClient(urls []string) *MetadataClient {
-	return &MetadataClient{URLs: urls, HTTP: &http.Client{Timeout: 4 * time.Second}, manifests: make(map[string]cacheEntry[domain.Manifest]), locations: make(map[string]cacheEntry[[]domain.Location])}
+	return &MetadataClient{URLs: urls, HTTP: &http.Client{Timeout: 4 * time.Second}, manifests: make(map[string]cacheEntry[domain.Manifest]), locations: make(map[string]cacheEntry[[]domain.Location]), retryTimeout: 8 * time.Second}
 }
 
 type metadataError struct {
@@ -39,15 +41,58 @@ func (e *metadataError) Error() string {
 	return fmt.Sprintf("metadata HTTP %d for %s: %s", e.status, e.path, e.detail)
 }
 func (c *MetadataClient) get(ctx context.Context, path string, out any) (transient bool, err error) {
+	if len(c.URLs) == 0 {
+		return false, fmt.Errorf("no controller URLs configured")
+	}
+	// An election can outlast several fast connection refusals. Bound the entire
+	// recovery window, including HTTP calls and backoff, rather than each sweep.
+	recovery, cancel := context.WithTimeout(ctx, c.retryTimeout)
+	defer cancel()
+	delay := 100 * time.Millisecond
+	for {
+		transient, err = c.getOnce(recovery, path, out)
+		if !transient || err == nil {
+			return transient, err
+		}
+		timer := time.NewTimer(delay)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return true, ctx.Err()
+		case <-recovery.Done():
+			timer.Stop()
+			if ctx.Err() != nil {
+				return true, ctx.Err()
+			}
+			return true, &metadataUnavailable{err}
+		case <-timer.C:
+		}
+		delay = min(delay*2, 500*time.Millisecond)
+	}
+}
+
+// Distinguish exhausted election recovery from authoritative metadata errors.
+type metadataUnavailable struct{ cause error }
+
+func (e *metadataUnavailable) Error() string {
+	return "controllers temporarily unavailable: " + e.cause.Error()
+}
+func (e *metadataUnavailable) Unwrap() error { return e.cause }
+
+func (c *MetadataClient) getOnce(ctx context.Context, path string, out any) (transient bool, err error) {
 	transient = true
+	var failures []error
 	for _, base := range c.URLs {
+		if ctx.Err() != nil {
+			break
+		}
 		req, e := http.NewRequestWithContext(ctx, "GET", strings.TrimRight(strings.TrimSpace(base), "/")+"/api/v1"+path, nil)
 		if e != nil {
 			return false, e
 		}
 		res, e := c.HTTP.Do(req)
 		if e != nil {
-			err = e
+			failures = append(failures, e)
 			continue
 		}
 		if res.StatusCode != 200 {
@@ -57,16 +102,18 @@ func (c *MetadataClient) get(ctx context.Context, path string, out any) (transie
 			if res.StatusCode < 500 && res.StatusCode != 429 {
 				return false, err
 			}
+			failures = append(failures, fmt.Errorf("%s: %w", base, err))
 			continue
 		}
 		e = json.NewDecoder(io.LimitReader(res.Body, 4<<20)).Decode(out)
 		res.Body.Close()
 		return false, e
 	}
-	if err == nil {
-		err = fmt.Errorf("no controller URLs configured")
+	if len(failures) == 0 {
+		return true, ctx.Err()
 	}
-	return transient, err
+	// Preserve every controller failure; the last dead node is not the whole story.
+	return transient, errors.Join(failures...)
 }
 func cloneManifest(m domain.Manifest) domain.Manifest {
 	m.Segments = append([]domain.Segment(nil), m.Segments...)

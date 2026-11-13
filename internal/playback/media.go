@@ -183,6 +183,7 @@ func (s *MediaSessions) segment(w http.ResponseWriter, r *http.Request) {
 	var last error
 	var attempts, failures int
 	var received int64
+	metadataFailed := false
 	for refresh := 0; refresh < 2; refresh++ {
 		var locations []domain.Location
 		if refresh == 0 {
@@ -191,7 +192,10 @@ func (s *MediaSessions) segment(w http.ResponseWriter, r *http.Request) {
 			locations, last = s.engine.Metadata.RefreshLocations(ctx, seg.ID)
 		}
 		if last != nil {
-			continue
+			// MetadataClient already waited for election recovery. Do not start
+			// another full recovery window inside the replica-refresh loop.
+			metadataFailed = true
+			break
 		}
 		for _, p := range item.scheduler.Candidates(seg, locations) {
 			if ctx.Err() != nil {
@@ -237,6 +241,12 @@ func (s *MediaSessions) segment(w http.ResponseWriter, r *http.Request) {
 	}
 	if last == nil {
 		last = fmt.Errorf("no reachable replica for %s", seg.ID)
+	}
+	var unavailable *metadataUnavailable
+	if metadataFailed && errors.As(last, &unavailable) {
+		w.Header().Set("Retry-After", "1")
+		protocol.Fail(w, 503, "METADATA_UNAVAILABLE", last.Error())
+		return
 	}
 	protocol.Fail(w, 502, "MEDIA_UNAVAILABLE", last.Error())
 }

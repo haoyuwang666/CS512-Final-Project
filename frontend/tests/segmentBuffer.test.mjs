@@ -62,3 +62,45 @@ test('corrupt bytes never reach the media append pipeline', async () => {
     assert.ok(!notices.some(notice => notice.state === 'ready'));
   } finally { buffer.close(); globalThis.fetch = previous; }
 });
+
+test('temporary metadata errors retain the segment promise until recovery', async () => {
+  const previous = globalThis.fetch;
+  let calls = 0; const notices = [];
+  globalThis.fetch = async () => ++calls === 1
+    ? Response.json({ error: { message: 'election', retryable: true } }, { status: 503 })
+    : new Response(data);
+  const buffer = new SegmentBuffer('media-test', manifest, 1, 1, notice => notices.push(notice));
+  try {
+    buffer.setWindow(0);
+    assert.deepEqual(new Uint8Array(await buffer.get(0)), data);
+    assert.equal(calls, 2);
+    assert.ok(!notices.some(n => n.state === 'failed'));
+  } finally { buffer.close(); globalThis.fetch = previous; }
+});
+
+test('stopping during election backoff cancels retries', async () => {
+  const previous = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return Response.json({ error: { retryable: true } }, { status: 503 }); };
+  const buffer = new SegmentBuffer('media-test', manifest, 1, 1, () => {});
+  try {
+    buffer.setWindow(0);
+    const pending = buffer.get(0);
+    await turn(); buffer.close();
+    await assert.rejects(pending, { name: 'AbortError' });
+    await new Promise(resolve => setTimeout(resolve, 550));
+    assert.equal(calls, 1);
+  } finally { buffer.close(); globalThis.fetch = previous; }
+});
+
+test('persistent metadata outage exhausts a bounded retry budget', async () => {
+  const previous = globalThis.fetch;
+  let calls = 0;
+  globalThis.fetch = async () => { calls++; return Response.json({ error: { message: 'election', retryable: true } }, { status: 503 }); };
+  const buffer = new SegmentBuffer('media-test', manifest, 1, 1, () => {});
+  try {
+    buffer.setWindow(0);
+    await assert.rejects(buffer.get(0), /election/);
+    assert.equal(calls, 3);
+  } finally { buffer.close(); globalThis.fetch = previous; }
+});

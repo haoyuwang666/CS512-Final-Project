@@ -91,6 +91,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/playback/media.go](internal/playback/media.go) | // TODO(Tian): Keep verified media delivery independent of browser buffering policy. |
 | [internal/playback/media_test.go](internal/playback/media_test.go) | // TODO(Tian): Extend media gateway tests when new representations are introduced. |
 | [internal/playback/metadata_client.go](internal/playback/metadata_client.go) | // TODO(Tian): Revisit cache lifetime when mutable representations or deletion are introduced. |
+| [internal/playback/metadata_client_test.go](internal/playback/metadata_client_test.go) | // TODO(Tian): Extend election recovery tests alongside controller discovery changes. |
 | [internal/playback/metrics.go](internal/playback/metrics.go) | // TODO(Tian): Keep session metric definitions stable across experiment versions. |
 | [internal/playback/playback_test.go](internal/playback/playback_test.go) | // TODO(Tian): Extend deterministic scenarios when media or scheduling contracts change. |
 | [internal/playback/round_robin.go](internal/playback/round_robin.go) | // TODO(Tian): Measure the deterministic baseline before modifying source selection. |

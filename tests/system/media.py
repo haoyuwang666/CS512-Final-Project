@@ -37,7 +37,8 @@ def main():
             manifest = json.loads((segments / "manifest.json").read_text())
             assert manifest["representation"] == "continuous-fmp4-h264-aac-v1"
             peer_ports = smoke.ports(3)
-            controller_port, raft_port, api_port = smoke.ports(3)
+            http_ports, raft_ports = smoke.ports(3), smoke.ports(3)
+            api_port = smoke.ports(1)[0]
             peers = [{"peer_id": f"peer-{i+1}", "url": f"http://127.0.0.1:{port}"} for i, port in enumerate(peer_ports)]
 
             def start(binary, name, extra):
@@ -53,13 +54,30 @@ def main():
                               for i, peer in enumerate(peers)]
             for peer in peers:
                 smoke.eventually(lambda p=peer: smoke.ing.request(p["url"] + "/api/v1/health"))
-            controller = f"http://127.0.0.1:{controller_port}"
-            start("controller", "controller", {"HTTP_ADDR": f"127.0.0.1:{controller_port}", "RAFT_BIND": f"127.0.0.1:{raft_port}",
-                                                  "DATA_DIR": str(temp / "controller"), "PEERS": json.dumps(peers)})
-            smoke.eventually(lambda: smoke.ing.request(controller + "/api/v1/health"))
-            smoke.ing.ingest(segments / "manifest.json", [controller])
+            members = [{"id": f"controller-{i+1}", "raft_address": f"127.0.0.1:{raft_ports[i]}",
+                        "http_url": f"http://127.0.0.1:{port}"} for i, port in enumerate(http_ports)]
+            controllers = [member["http_url"] for member in members]
+            def start_controller(i):
+                return start("controller", members[i]["id"], {
+                    "NODE_ID": members[i]["id"], "HTTP_ADDR": f"127.0.0.1:{http_ports[i]}",
+                    "RAFT_BIND": members[i]["raft_address"], "RAFT_MEMBERS": json.dumps(members),
+                    "BOOTSTRAP": "true" if i == 0 else "false",
+                    "DATA_DIR": str(temp / members[i]["id"]), "PEERS": json.dumps(peers)})
+            controller_processes = [start_controller(i) for i in range(3)]
+            for controller in controllers:
+                smoke.eventually(lambda c=controller: smoke.ing.request(c + "/api/v1/health"))
+            smoke.ing.ingest(segments / "manifest.json", controllers)
+            def leader_index():
+                for controller in controllers:
+                    try:
+                        leader = smoke.ing.request(controller + "/api/v1/cluster")["leader_url"]
+                        if leader in controllers:
+                            return controllers.index(leader)
+                    except (OSError, ValueError):
+                        pass
+                raise RuntimeError("no leader")
             api = f"http://127.0.0.1:{api_port}"
-            start("demo-api", "demo-api", {"HTTP_ADDR": f"127.0.0.1:{api_port}", "CONTROLLERS": controller, "SESSION_DIR": str(temp / "sessions")})
+            demo_process = start("demo-api", "demo-api", {"HTTP_ADDR": f"127.0.0.1:{api_port}", "CONTROLLERS": ",".join(controllers), "SESSION_DIR": str(temp / "sessions")})
             smoke.eventually(lambda: smoke.ing.request(api + "/api/v1/health"))
             session = smoke.ing.request(api + "/api/v1/media/sessions", "POST", {"video_id": manifest["video_id"], "strategy": "round_robin"})
             session_id = session["session_id"]
@@ -69,7 +87,14 @@ def main():
             fragmenter = smoke.load("fragmenter", "scripts/media/fragment_mp4.py")
             combined = bytearray()
             initialization = None
+            failed_leader = None
             for i, segment in enumerate(manifest["segments"]):
+                if i == 1:
+                    # Demand an uncached segment immediately, without waiting for
+                    # a new leader: the same media session must survive election.
+                    failed_leader = leader_index()
+                    controller_processes[failed_leader].kill()
+                    controller_processes[failed_leader].wait(timeout=5)
                 with urllib.request.urlopen(api + f"/api/v1/media/sessions/{session_id}/segments/{i}", timeout=20) as response:
                     payload = response.read()
                     assert response.headers["Content-Type"] == "video/mp4"
@@ -101,11 +126,24 @@ def main():
                 ends[track] = dts + int(packet["duration"])
             assert len(ends) == 2
             subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(joined), "-f", "null", "-"], check=True)
-            if os.environ.get("BROWSER_TEST") == "1":
-                subprocess.run(["node", str(ROOT / "frontend/tests/browser.mjs"), api], env={**os.environ, "MEDIA_VIDEO_ID": manifest["video_id"]}, check=True, timeout=120)
+            if failed_leader is not None:
+                controller_processes[failed_leader] = start_controller(failed_leader)
+                smoke.eventually(lambda: smoke.ing.request(controllers[failed_leader] + "/api/v1/health"))
             smoke.ing.request(api + f"/api/v1/media/sessions/{session_id}/stop", "POST", {})
+            if os.environ.get("BROWSER_TEST") == "1":
+                for inject_failure in (False, True):
+                    # Clear caches between baseline and failover runs so the
+                    # browser must resolve uncached locations during election.
+                    demo_process.terminate()
+                    demo_process.wait(timeout=5)
+                    demo_process = start("demo-api", f"demo-api-browser-{inject_failure}", {"HTTP_ADDR": f"127.0.0.1:{api_port}", "CONTROLLERS": ",".join(controllers), "SESSION_DIR": str(temp / "sessions")})
+                    smoke.eventually(lambda: smoke.ing.request(api + "/api/v1/health"))
+                    browser_env = {**os.environ, "MEDIA_VIDEO_ID": manifest["video_id"], "FAILOVER_LEADER_PID": ""}
+                    if inject_failure:
+                        browser_env["FAILOVER_LEADER_PID"] = str(controller_processes[leader_index()].pid)
+                    subprocess.run(["node", str(ROOT / "frontend/tests/browser.mjs"), api], env=browser_env, check=True, timeout=120)
             print(json.dumps({"status": "PASS", "checks": ["H.264/AAC packaging", "real dual-replica ingestion", "peer failure fallback",
-                                                              "verified browser media delivery", "all delivered segments decode video and audio", "identical codec initialization", "gap-free audio/video packet timestamps", "continuous stream decode", "media stop"],
+                                                              "active media session survives leader failure with uncached locations", "verified browser media delivery", "all delivered segments decode video and audio", "identical codec initialization", "gap-free audio/video packet timestamps", "continuous stream decode", "media stop"],
                               "segments": len(manifest["segments"])}, indent=2))
         finally:
             for process in reversed(processes):

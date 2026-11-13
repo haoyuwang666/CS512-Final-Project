@@ -13,6 +13,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func mediaFixture(t *testing.T, representation string, valid bool) (*MediaSessions, []byte) {
@@ -153,5 +154,34 @@ func TestStoppingMediaSessionCancelsPeerDownload(t *testing.T) {
 	response.Body.Close()
 	if status := <-finished; status != 410 {
 		t.Fatalf("stopped request status %d", status)
+	}
+}
+
+func TestMediaGatewayMarksExhaustedElectionRecoveryRetryable(t *testing.T) {
+	sessions, _ := mediaFixture(t, "continuous-fmp4-h264-v1", true)
+	id, status := createMedia(t, sessions.Handler(), `{"video_id":"v"}`)
+	if status != 201 {
+		t.Fatal(status)
+	}
+	unavailable := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		protocol.Fail(w, 503, "NOT_LEADER", "election in progress")
+	}))
+	defer unavailable.Close()
+	sessions.engine.Metadata.URLs = []string{unavailable.URL}
+	sessions.engine.Metadata.retryTimeout = 30 * time.Millisecond
+	response := httptest.NewRecorder()
+	sessions.Handler().ServeHTTP(response, httptest.NewRequest("GET", "/api/v1/media/sessions/"+id+"/segments/0", nil))
+	var body struct {
+		Error protocol.APIError `json:"error"`
+	}
+	if err := json.Unmarshal(response.Body.Bytes(), &body); err != nil {
+		t.Fatal(err)
+	}
+	if response.Code != 503 || body.Error.Code != "METADATA_UNAVAILABLE" || !body.Error.Retryable {
+		t.Fatalf("not retryable: %d %s", response.Code, response.Body.String())
+	}
+	// A failed request must not destroy the media session.
+	if _, ok := sessions.get(id); !ok {
+		t.Fatal("media session lost during election")
 	}
 }

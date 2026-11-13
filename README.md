@@ -258,7 +258,7 @@ python3 scripts/check_scaffold.py
 
 `make smoke` 自行启动临时的 3 Controller + 3 Peer，生成短时长字节素材、导入、模拟播放、停止一个 Peer、停止 Leader、重启 Controller、验证无多数派写入失败；最终关闭其进程。临时目录自动清理，不依赖已有集群，也不会留下长期运行的前后端。`make test-raft` 和 `make test-e2e` 目前复用这项检查，尚不是完整分区测试套件。
 
-`make test-player` 检查客户端有界预取、跳转取消、SourceBuffer 串行更新和媒体源复用。`make test-media` 需要 FFmpeg/FFprobe，启动独立临时集群，验证带声音视频的导入、故障切源、哈希、音视频时间戳连续性和解码；不修改已有集群。
+`make test-player` 检查客户端有界预取、跳转取消、SourceBuffer 串行更新和媒体源复用。`make test-media` 需要 FFmpeg/FFprobe，启动独立临时集群，验证带声音视频的导入、故障切源、播放会话中 Leader 下线后的分片获取、哈希、音视频时间戳连续性和解码；不修改已有集群。
 
 ### 可选：真实浏览器验收
 
@@ -272,7 +272,9 @@ export PLAYWRIGHT_BROWSERS_PATH="$PWD/.data/browser-tools/browsers"
 make test-media-browser
 ```
 
-若 Playwright 提示缺少系统依赖，按其提示安装后重试。工具仅用于测试，不是应用运行时依赖。验收会启动临时集群，在 Chromium 中验证完整播放只有一次媒体源加载、跨分片无新增等待，以及暂停、结束后回跳、前跳和停止。
+若 Playwright 提示缺少系统依赖，按其提示安装后重试。工具仅用于测试，不是应用运行时依赖。验收会启动临时集群，在 Chromium 中验证完整播放只有一次媒体源加载、跨分片无新增等待，以及暂停、结束后回跳、前跳和停止；随后清空网关缓存，单独验证正在播放时杀掉 Leader 后，无需重新加载即可恢复并播放完毕。
+
+播放链路会对 Controller 连接失败、5xx 和 429 进行退避重试，每次元数据查询最多等待 8 秒。耗尽后返回可重试的 503，前端保留当前 MediaSource 和缓冲，最多再请求两次；停止或跳转会取消相关等待。404、409、无效响应和分片校验失败不会按选主故障重试。若选举耗时超过已缓冲时长，可能短暂卡顿；多数派长期不可用时仍会在重试耗尽后报错。
 
 如需检查本文已生成的带音轨短视频 `my-video`，沿用上述环境变量后执行：
 

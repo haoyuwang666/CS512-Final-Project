@@ -11,6 +11,16 @@ interface Entry {
   reject: (error: unknown) => void;
 }
 
+// Seeking or stopping must also cancel time spent waiting for a new leader.
+function retryDelay(signal: AbortSignal, milliseconds: number): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const abort = () => { clearTimeout(timer); reject(new DOMException('Obsolete segment', 'AbortError')); };
+    const timer = setTimeout(() => { signal.removeEventListener('abort', abort); resolve(); }, milliseconds);
+    if (signal.aborted) abort();
+    else signal.addEventListener('abort', abort, { once: true });
+  });
+}
+
 // The browser holds at most `window` verified fMP4 buffers. Seeking discards
 // obsolete work; even cancelled requests occupy a worker until fetch settles.
 export class SegmentBuffer {
@@ -82,10 +92,18 @@ export class SegmentBuffer {
     const signal = entry.controller.signal;
     try {
       this.notify({ index, state: 'downloading' });
-      const response = await fetch(`/api/v1/media/sessions/${this.sessionID}/segments/${index}`, { signal });
-      if (!response.ok) {
-        const body = await response.json();
-        throw new Error(body.error?.message ?? `Media HTTP ${response.status}`);
+      let response: Response;
+      for (let attempt = 0; ; attempt++) {
+        response = await fetch(`/api/v1/media/sessions/${this.sessionID}/segments/${index}`, { signal });
+        if (response.ok) break;
+        const body = await response.json().catch(() => null);
+        // Keep the promise pending so MSE retains its source and buffered frames.
+        // Only explicit temporary metadata failures qualify; corrupt bytes and
+        // expired sessions must not be retried or silently accepted.
+        if (response.status !== 503 || body?.error?.retryable !== true || attempt >= 2) {
+          throw new Error(body?.error?.message ?? `Media HTTP ${response.status}`);
+        }
+        await retryDelay(signal, 500 * (attempt + 1));
       }
       const data = await response.arrayBuffer();
       if (data.byteLength !== segment.size_bytes) throw new Error(`分片 ${index} 大小校验失败`);

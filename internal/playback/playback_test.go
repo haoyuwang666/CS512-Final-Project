@@ -152,6 +152,7 @@ func TestDeadlineLearnsSourcesAndAccountsForQueues(t *testing.T) {
 func TestMetadataCacheOutageAndAuthoritativeErrors(t *testing.T) {
 	e, _ := fixtureEngine(t, []int64{1}, nil)
 	c := e.Metadata
+	c.retryTimeout = 30 * time.Millisecond
 	m, err := c.Manifest(context.Background(), "v")
 	if err != nil {
 		t.Fatal(err)
