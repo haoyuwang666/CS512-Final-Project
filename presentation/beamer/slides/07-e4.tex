@@ -1,0 +1,25 @@
+% TODO(team): Keep targeted availability separate from buffered playback and permanent loss.
+\section{E4: second-holder failure}
+\begin{frame}{Can the replacement serve after both holders stop?}
+\begin{enumerate}
+\item Stop the first original holder.
+\item Wait a fixed \textbf{4 / 14 / 30 seconds}, independent of repair success.
+\item Stop the second original holder.
+\item Probe a preselected late-queue segment from its replacement.
+\end{enumerate}
+\small S / F50 / L; two paired contexts per delay. Success requires correct hash \emph{and} committed registration.
+\takeaway{A buffered viewer may finish even when fresh delivery is unavailable.}
+\note{The probe checks one sentinel, not the whole video. Its late queue position makes repair timing important.}
+\end{frame}
+\begin{frame}{The selected replacement was not ready in time}
+\begin{tabularx}{\textwidth}{lYYY}
+\toprule Policy & Second fault +4 s & +14 s & +30 s \\\midrule
+S & 0/2 & 0/2 & 0/2\\
+F50 & 0/2 & 0/2 & 0/2\\
+L & 0/2 & 0/2 & 0/2\\\bottomrule
+\end{tabularx}
+\vspace{4mm}
+All 18 probes were unavailable under the specified success condition.
+\takeaway{A boundary was observed; no policy advantage or permanent data loss was established.}
+\note{Stopped processes retained their disks. Later delays were not tested. A future completed-repair control should verify replacement availability after every required segment is repaired. Source: compact-study-results.md, E4.}
+\end{frame}

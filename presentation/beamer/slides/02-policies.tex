@@ -1,0 +1,37 @@
+% TODO(team): Keep policy descriptions aligned with the frozen study configuration.
+\section{Questions and policies}
+\begin{frame}{Three questions organize the study}
+\begin{block}{RQ-A: interference and timing --- E1 / E2}
+When does repair interfere with delivery? What does waiting change?
+\end{block}
+\begin{block}{RQ-B: playback / recovery compromise --- E3 / E4}
+Does load-aware repair improve outcomes over fixed controls?
+\end{block}
+\begin{block}{RQ-C: correctness and recovery --- E4 / E5}
+Which application properties survive Peer and Controller failures?
+\end{block}
+\note{Our contribution is a working application and scoped evidence, not the invention of replication, consensus or throttling.}
+\end{frame}
+\begin{frame}{Every policy obeys the same total source cap}
+\begin{tabularx}{\textwidth}{lY}
+\toprule Policy & Treatment \\\midrule
+N & No failure: normal-service reference\\
+OFF & Failure without repair\\
+S & Repair shares the common upload service\\
+F25 / F50 & Additional repair caps at 25\% / 50\% of source rate\\
+L & Load-aware additional repair allowance\\\bottomrule
+\end{tabularx}
+\takeaway{An additional cap limits repair; it does not reserve bandwidth or raise capacity.}
+\note{Keep the total source limiter fixed in every comparison. This avoids giving the proposed policy additional network resources.}
+\end{frame}
+\begin{frame}{L reacts to source-local foreground activity}
+\begin{columns}[T,onlytextwidth]
+\column{.31\textwidth}\begin{block}{Foreground busy}Repair allowance:\\ \textbf{25\%} of source cap.\end{block}
+\column{.31\textwidth}\begin{block}{Idle for 2 seconds}Relax allowance to\\ \textbf{100\%}.\end{block}
+\column{.31\textwidth}\begin{block}{Task age $>60$ s}Repair allowance floor:\\ at least \textbf{50\%}.\end{block}
+\end{columns}
+\vspace{5mm}
+Updates every 250 ms. Task age is persisted with the committed task.
+\takeaway{The 60-second branch was regression-tested, but did not activate in these runs.}
+\note{Age is not time since the first fault. The compact performance horizon cannot evaluate the long-age branch empirically.}
+\end{frame}

@@ -1,0 +1,26 @@
+% TODO(team): Show completion beside stall comparisons.
+\section{E1: repair interference}
+\begin{frame}{Separate Peer loss from repair interference}
+\begin{columns}[T,onlytextwidth]
+\column{.3\textwidth}\begin{block}{N}No failure.\\Normal-service reference.\end{block}
+\column{.3\textwidth}\begin{block}{OFF}Peer fails.\\Repair disabled.\end{block}
+\column{.3\textwidth}\begin{block}{S}Same Peer failure.\\Shared repair.\end{block}
+\end{columns}
+\vspace{5mm}
+Compare low and high demand across three paired source-failure contexts.
+\takeaway{OFF minus N exposes the fault; S minus OFF isolates the repair treatment.}
+\note{The failed holder rotates across all three source capacities. Capacity loss and the client timeout budget can cause failures independently of repair.}
+\end{frame}
+\begin{frame}{Repair can add stalls under contention}
+\begin{tabularx}{\textwidth}{lllY}
+\toprule Demand & Policy & Completed & Mean observed stall/viewer \\\midrule
+Low & N / OFF / S & 6/6 each & 0.00 s each\\
+High & N & 18/18 & 3.20 s\\
+High & OFF & 7/18 & 3.24 s\\
+High & S & 7/18 & 4.46 s\\\bottomrule
+\end{tabularx}
+\vspace{3mm}
+Slowest-Peer failure: all six viewers finished; repair added \textbf{3.46 s/viewer}.
+\takeaway{No added stalls at low demand; context-dependent interference at high demand.}
+\note{All-viewer mean paired S minus OFF is +1.22 seconds; individual values are -0.13, +0.33 and +3.46. Early failure can lower observed stalls, so completion must stay visible. Source: compact-study-results.md, E1.}
+\end{frame}

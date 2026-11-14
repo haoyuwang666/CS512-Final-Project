@@ -1,0 +1,20 @@
+% TODO(team): Keep conclusions conditional on the archived study scope.
+\section{Conclusions}
+\begin{frame}{Three findings, with explicit boundaries}
+\begin{block}{RQ-A}Repair can compete with playback. Grace avoids some brief-outage work but extends reduced-redundancy exposure.\end{block}
+\begin{block}{RQ-B}L showed a local compromise, not a consistent advantage over F50.\end{block}
+\begin{block}{RQ-C}Application recovery and task continuity held in the tested Controller failures. E4 exposed unfinished-repair availability limits.\end{block}
+\note{An answered research question need not yield a supported superiority hypothesis. The contribution is the system and the controlled conditional and negative findings.}
+\end{frame}
+\begin{frame}{Limits and the next experiments}
+\small
+\begin{tabularx}{\textwidth}{YY}
+\toprule Current boundary & Next experiment \\\midrule
+One host; shared hardware and network stack & Separate hosts; controlled delay/loss\\
+Three contexts; two per E4 cell & More repetitions and capacity strata\\
+Headless consumption; short horizon & Browser measurements; long-lived task aging\\
+E4 target never ready at tested delays & Later probes; verified-completion control\\\bottomrule
+\end{tabularx}
+\takeaway{We characterize a tradeoff; we do not claim universal adaptive-policy superiority.}
+\note{No precise p99, population confidence bounds, browser continuity or hard availability guarantees are established. Questions are welcome.}
+\end{frame}

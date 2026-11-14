@@ -1,0 +1,91 @@
+% TODO(team): Rehearse the architecture explanation and optional real-media demo.
+\section{System}
+\begin{frame}{One upload budget serves two demands}
+\centering
+% Use explicit edge anchors and two-line labels in the gaps between boxes.
+\begin{tikzpicture}
+\node[box,text width=26mm] (p) at (0,0) {Surviving Peer\\Shared upload cap};
+\node[box,text width=27mm] (v) at (6,1.25) {Playback client};
+\node[box,text width=27mm] (c) at (6,-1.25) {Controller\\Copy and verify};
+\node[box,text width=25mm] (t) at (10,-1.25) {Replacement Peer};
+\draw[flow] (p.east)--node[midway,above=2mm,align=center,font=\scriptsize]{foreground\\reads}(v.west);
+\draw[flow,draw=Orange] (p.east)--node[midway,below=2mm,align=center,font=\scriptsize]{repair\\reads}(c.west);
+\draw[flow,draw=Orange] (c.east)--(t.west);
+\end{tikzpicture}
+\takeaway{Repair restores a second source, but consumes bandwidth needed by viewers.}
+\note{Conceptual data paths, not a measured traffic trace. The surviving source uploads repair bytes to the Controller, which forwards them to a replacement Peer.}
+\end{frame}
+
+\begin{frame}{Control plane and data plane}
+\centering
+\begin{tikzpicture}
+\node[box,text width=30mm] (c1) at (0,0) {Controller 1\\Leader};
+\node[box,text width=30mm] (c2) at (4.5,0) {Controller 2};
+\node[box,text width=30mm] (c3) at (9,0) {Controller 3};
+\draw[flow,<->] (c1)--node[midway,above=2mm,font=\scriptsize]{Raft}(c2);
+\draw[flow,<->] (c2)--(c3);
+\node[box,text width=28mm] (p1) at (0,-2) {Peer 1\\Index + blobs};
+\node[box,text width=28mm] (p2) at (4.5,-2) {Peer 2\\Index + blobs};
+\node[box,text width=28mm] (p3) at (9,-2) {Peer 3\\Index + blobs};
+\draw[meta] (c1)--node[midway,right=2mm,font=\scriptsize]{metadata}(p1);
+\draw[meta] (c2)--(p2);\draw[meta] (c3)--(p3);
+\end{tikzpicture}
+\small
+\begin{itemize}
+\item Raft: manifests, committed receipts, publication state, persistent tasks.
+\item Browser: Peer $\rightarrow$ Gateway $\rightarrow$ Browser.
+\item Experiment: Peer $\rightarrow$ headless client; Gateway is outside Raft.
+\end{itemize}
+\note{Dashed links indicate control information, not video replication through Raft. Any current leader coordinates maintenance; the vertical links do not assign a Peer to a particular Controller. Peers use independent stores and upload limiters.}
+\end{frame}
+
+\begin{frame}{Publish only after two durable copies}
+\begin{enumerate}
+\item Create a \textbf{DRAFT} manifest.
+\item Upload segments; Peers validate size and SHA-256 and persist bytes.
+\item Confirm receipts from \textbf{two distinct holders per segment}.
+\item Commit \textbf{READY}; expose the video for playback.
+\end{enumerate}
+\takeaway{Raft commits metadata. Peers store the video bytes outside the Raft log.}
+\note{The application checks Peer receipts before publication. Browser playback uses continuous fMP4. Experimental payloads are deterministic bytes with simulated media durations.}
+\end{frame}
+
+\begin{frame}{Playback recovery $\neq$ redundancy recovery}
+\begin{block}{Foreground recovery}
+Peer fails $\rightarrow$ try another holder $\rightarrow$ verify bytes $\rightarrow$ continue delivery.
+\end{block}
+\begin{block}{Background repair}
+Detect shortage $\rightarrow$ grace interval $\rightarrow$ commit task\\
+$\rightarrow$ copy and verify $\rightarrow$ commit replacement registration.
+\end{block}
+\takeaway{Continuing playback does not prove that redundancy has been restored.}
+\note{A repaired segment is available from the replacement only after successful installation and registration. If both original holders stop before repair reaches a needed segment, that segment remains unavailable.}
+\end{frame}
+
+\begin{frame}{Application implementation and validation}
+\small
+\begin{tabularx}{\textwidth}{YY}
+\toprule Application work & Foundation / tool \\\midrule
+Publication and persistent task lifecycle & HashiCorp Raft, BoltDB, snapshots\\
+Durable indexes and immutable objects & Go HTTP / filesystem, SHA-256\\
+Playback, budgets and experiment harness & FFmpeg / FFprobe for media gates\\
+Console: faults, cleanup and video deletion & React and TypeScript\\\bottomrule
+\end{tabularx}
+\vspace{3mm}
+Archived gates: build, static/race, smoke, repair, cleanup, deletion, exact fragment timing and media decoding.
+\evidence{Evidence: results/compact-study/validation/gates.json.}
+\note{The archived media gates do not establish browser performance in the headless study. Attribute the consensus implementation to HashiCorp rather than presenting it as our own Raft implementation.}
+\end{frame}
+
+\ifshowdemo
+\begin{frame}{Optional demonstration: from upload to playback}
+\begin{enumerate}
+\item Start three Controllers and three Peers.
+\item Upload a rehearsed short clip; observe packaging and publication.
+\item Play the video; inspect per-Peer segment counts.
+\item Return to the controlled experimental results.
+\end{enumerate}
+\takeaway{A functional demonstration and comparative performance evidence are different.}
+\note{Prepare an already imported clip and a recording as fallbacks. Avoid an unplanned live failure. No screenshot or recording is fabricated or embedded in this deck.}
+\end{frame}
+\fi

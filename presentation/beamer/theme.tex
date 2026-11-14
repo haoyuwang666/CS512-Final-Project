@@ -1,0 +1,37 @@
+% TODO(team): Adjust shared colors, typography and layout here, not per slide.
+\usepackage[T1]{fontenc}
+% Heros provides a clean sans-serif family and remains compatible with pdfLaTeX.
+\usepackage{tgheros}
+\renewcommand{\familydefault}{\sfdefault}
+\usefonttheme{professionalfonts}
+\usepackage{booktabs,tabularx,array}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+\graphicspath{{dist/figures/}{../../results/compact-study/figures/}}
+\definecolor{Navy}{HTML}{16324F}
+\definecolor{Teal}{HTML}{167D8D}
+\definecolor{Orange}{HTML}{D57929}
+\definecolor{Pale}{HTML}{EDF3F7}
+\setbeamercolor{structure}{fg=Teal}
+\setbeamercolor{frametitle}{fg=Navy}
+\setbeamercolor{title}{fg=Navy}
+\setbeamercolor{block title}{bg=Pale,fg=Teal}
+\setbeamercolor{block body}{bg=Pale,fg=Navy}
+\setbeamerfont{block title}{series=\bfseries,size=\normalsize}
+\setbeamerfont{title}{series=\bfseries,size=\LARGE}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamercolor{normal text}{fg=Navy,bg=white}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamersize{text margin left=8mm,text margin right=8mm}
+\setbeamertemplate{frametitle}{\vspace{3mm}\insertframetitle\par\nointerlineskip\vskip1.2mm\hbox{\textcolor{Teal}{\rule{12mm}{1.4pt}}}\vspace{1mm}}
+\setbeamertemplate{footline}{\hspace{8mm}\scriptsize CS512\enspace|\enspace\insertsectionhead\hfill\insertframenumber\hspace{8mm}\vspace{3mm}}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.3}
+% Give lists breathing room without introducing per-slide positioning.
+\addtobeamertemplate{itemize/enumerate body begin}{\setlength{\itemsep}{3pt}}{}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\takeaway}[1]{\par\vspace{3mm}\vfill\begin{beamercolorbox}[sep=2mm,wd=\textwidth]{block body}\small\textbf{#1}\end{beamercolorbox}}
+\newcommand{\evidence}[1]{\par\vspace{2mm}{\scriptsize\color{gray}#1\par}}
+\tikzset{box/.style={draw=Teal,fill=Pale,rounded corners=2pt,align=center,minimum height=9mm,font=\small},flow/.style={-{Stealth},thick,draw=Teal},meta/.style={flow,dashed}}

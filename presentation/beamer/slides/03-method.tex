@@ -1,0 +1,36 @@
+% TODO(team): Keep setup and metric boundaries explicit during presentation.
+\section{Method}
+\begin{frame}{Independent processes on one shared host}
+\small
+\begin{tabularx}{\textwidth}{lY}
+\toprule Controlled setting & Executed values \\\midrule
+Topology & 3 Controllers + 3 Peers; real HTTP/TCP\\
+Fixture & 9 distinct 128 KiB segments; 2 logical seconds each\\
+Source limits & 96 / 144 / 192 KiB/s\\
+Demand & Low: 2 viewers; high: 6; burst arrivals at 0 / 4 / 12 s\\
+Client & Window 3; concurrency 2; startup buffer 4 s\\
+Timeouts & 8 s per download attempt; 42 s per session\\\bottomrule
+\end{tabularx}
+\takeaway{Real byte transfer with simulated media consumption, not browser measurement.}
+\note{Processes share CPU, RAM, disks and the host network stack. Fresh stores do not flush the OS page cache. Placement is fixed; source selection is round-robin.}
+\end{frame}
+\begin{frame}{Measure delivery and redundancy together}
+\begin{columns}[T,onlytextwidth]
+\column{.47\textwidth}
+\begin{block}{Executed study}
+81 unique runs in 67.9 minutes\\
+72 E1--E4 runs + 9 E5 runs\\
+396 scheduled viewer outcomes\\
+Pilots excluded from estimates
+\end{block}
+\column{.49\textwidth}
+\begin{block}{Outcomes}
+Completion and observed stalls\\
+Verified two-copy restoration\\
+Repair payload\\
+One-copy exposure (MiB$\cdot$s)
+\end{block}
+\end{columns}
+\small First fault: 5 s. Observation horizon: 50 s. Recovery target: 40 s after fault. Three paired contexts; two per E4 cell.
+\note{Treatment order is randomized and traces are paired. Failed viewers stay in the denominator. Inventory verification is sampled approximately every two seconds, so restoration is bracketed rather than exact.}
+\end{frame}

@@ -22,3 +22,30 @@ results/*/
 .local-reference/
 
 .pnpm-store/
+
+# LaTeX intermediate files (including Beamer and latexmk).
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+*.dvi
+*.loa
+*.lof
+*.lot
+
+# Presentation build outputs; keep the final PDF and required figures.
+presentation/beamer/dist/*
+!presentation/beamer/dist/figures/
+!presentation/beamer/dist/*.pdf
+presentation/beamer/*.log
+presentation/beamer/slides/*.log

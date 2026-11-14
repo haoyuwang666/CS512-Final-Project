@@ -1,0 +1,32 @@
+% TODO(team): Edit section inputs and presentation metadata here.
+\documentclass[aspectratio=169,12pt]{beamer}
+\input{theme}
+% Keep translated Beamer labels readable in PDF bookmarks.
+\pdfstringdefDisableCommands{\def\translate#1{#1}}
+\title[Playback and Replica Recovery]{Balancing Playback Continuity\\and Replica Recovery}
+\subtitle{Cooperative Video Storage: System and Experimental Findings}
+\author{Haoyu \and Yuquan \and Tian}
+\institute{COMPSCI 512}
+\date{November 14, 2026}
+% Change to \showdemofalse to omit the optional demonstration page.
+\newif\ifshowdemo
+\showdemotrue
+% Uncomment for a presenter copy with notes on separate pages:
+% \setbeameroption{show notes}
+\begin{document}
+\begin{frame}[plain]
+  \titlepage
+  \note{Introduce the team. The contribution is a working application and controlled evidence about repair, not a new consensus algorithm.}
+\end{frame}
+\input{slides/01-system}
+\input{slides/02-policies}
+\input{slides/03-method}
+\input{slides/04-e1}
+\input{slides/05-e2}
+\input{slides/06-e3}
+\input{slides/07-e4}
+\input{slides/08-e5}
+\input{slides/09-conclusion}
+\appendix
+\input{slides/10-appendix}
+\end{document}
