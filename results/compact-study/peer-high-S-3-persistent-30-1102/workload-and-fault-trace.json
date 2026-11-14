@@ -1,0 +1,40 @@
+{
+  "viewers": [
+    {
+      "viewer": 0,
+      "arrival_s": 0.36523469301735284
+    },
+    {
+      "viewer": 1,
+      "arrival_s": 0.0659435453085403
+    },
+    {
+      "viewer": 2,
+      "arrival_s": 0.344713872679034
+    },
+    {
+      "viewer": 3,
+      "arrival_s": 0.444591309829676
+    },
+    {
+      "viewer": 4,
+      "arrival_s": 0.3863757272007078
+    },
+    {
+      "viewer": 5,
+      "arrival_s": 0.20715806417608662
+    }
+  ],
+  "failed_peer": "peer-2",
+  "first_fault_s": 5,
+  "restore_s": null,
+  "second_peer": "peer-3",
+  "second_delay_s": 30,
+  "sentinel": {
+    "segment_id": "seed-1102--000007",
+    "index": 7,
+    "duration_ms": 2000,
+    "size_bytes": 131072,
+    "sha256": "c10adc94534f6141f2e60de1ec709be901520f21c477878bbda13add84019695"
+  }
+}

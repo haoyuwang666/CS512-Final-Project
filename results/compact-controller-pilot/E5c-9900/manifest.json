@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "video_id": "control-9900",
+  "representation": "synthetic-bytes-v1",
+  "segments": [
+    {
+      "segment_id": "control-9900--000000",
+      "index": 0,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "e4c3cc482db6294b4929f22b87b3cdbd3772402d0d79c1abb8fc8e4ceff0c570"
+    }
+  ]
+}

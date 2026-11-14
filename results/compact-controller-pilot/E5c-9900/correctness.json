@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "no_success_ack_during_isolation": true,
+    "baseline_state_retained": true,
+    "fresh_application_recovered": true,
+    "original_operation_reconciled": true,
+    "reconciled_object_present": true,
+    "quorum_restored": true
+  },
+  "status": "passed"
+}

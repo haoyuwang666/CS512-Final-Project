@@ -1,0 +1,4 @@
+case,seed,run_id,status,application_recovery_s,formal_experiment,checks
+E5a,9900,E5a-9900,passed,2.4707873340230435,False,"{""fresh_application_recovered"": true, ""replacement_leader"": true, ""warm_completed"": true, ""cold_uncached_completed"": true}"
+E5b,9900,E5b-9900,passed,1.7564806250156835,False,"{""pending_precondition"": true, ""fresh_application_recovered"": true, ""replacement_leader"": true, ""same_task_completed"": true, ""committed_age_preserved"": true, ""verified_target_bytes"": true, ""target_registration"": true, ""task_persists_after_restart"": true, ""L_policy_and_counter_instance_restart"": true}"
+E5c,9900,E5c-9900,passed,3.6356388749554753,False,"{""no_success_ack_during_isolation"": true, ""baseline_state_retained"": true, ""fresh_application_recovered"": true, ""original_operation_reconciled"": true, ""reconciled_object_present"": true, ""quorum_restored"": true}"

@@ -2,9 +2,45 @@
 package metadata
 
 import (
+	"context"
 	"cooperative.video/internal/domain"
+	"encoding/json"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
+
+func TestKeeperVerificationAcceptsEquivalentPutAndRejectsChangedObject(t *testing.T) {
+	a := domain.Receipt{PeerID: "p", OperationID: "confirmed-alias", SegmentID: "seg", Version: 1, Size: 3, SHA256: "hash"}
+	stored := a
+	stored.OperationID = "canonical-put"
+	peer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		json.NewEncoder(w).Encode(stored)
+	}))
+	defer peer.Close()
+	s := HTTPServer{Client: http.DefaultClient, Peers: []domain.Peer{{ID: "p", URL: peer.URL}}}
+	if !s.verifyKeep(context.Background(), []domain.Receipt{a}) {
+		t.Fatal("equivalent PUT receipt prevented cleanup")
+	}
+	for _, field := range []string{"peer", "segment", "version", "size", "hash"} {
+		bad := a
+		switch field {
+		case "peer":
+			bad.PeerID = "other"
+		case "segment":
+			bad.SegmentID = "other"
+		case "version":
+			bad.Version++
+		case "size":
+			bad.Size++
+		case "hash":
+			bad.SHA256 = "different"
+		}
+		if s.verifyKeep(context.Background(), []domain.Receipt{bad}) {
+			t.Fatal("accepted changed keeper", field)
+		}
+	}
+}
 
 func TestCleanupPinsKeepersAndRejectsStaleReceipts(t *testing.T) {
 	f := NewFSM()

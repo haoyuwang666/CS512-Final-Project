@@ -1,0 +1,2 @@
+{"run_id": "peer-high-S-1-brief-0-1102", "seed": 1102, "policy": "S", "experiments": ["E2"], "observer_s": 5.012731375056319, "kind": "first_failure", "node": "peer-2", "requested_s": 5.005135625018738, "precondition_satisfied": true, "effect_confirmed": true}
+{"run_id": "peer-high-S-1-brief-0-1102", "seed": 1102, "policy": "S", "experiments": ["E2"], "observer_s": 9.013019250007346, "kind": "restore", "node": "peer-2", "requested_s": 9.005066249985248, "precondition_satisfied": true, "effect_confirmed": true}

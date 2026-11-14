@@ -1,0 +1,15 @@
+?   	cooperative.video/cmd/client	[no test files]
+?   	cooperative.video/cmd/controller	[no test files]
+?   	cooperative.video/cmd/demo-api	[no test files]
+?   	cooperative.video/cmd/local-console	[no test files]
+?   	cooperative.video/cmd/peer	[no test files]
+ok  	cooperative.video/internal/control	(cached)
+ok  	cooperative.video/internal/domain	(cached)
+ok  	cooperative.video/internal/localconsole	(cached)
+ok  	cooperative.video/internal/metadata	3.469s
+ok  	cooperative.video/internal/placement	(cached)
+ok  	cooperative.video/internal/playback	2.623s
+?   	cooperative.video/internal/protocol	[no test files]
+ok  	cooperative.video/internal/repair	(cached)
+ok  	cooperative.video/internal/storage	(cached)
+ok  	cooperative.video/tests/integration	2.027s

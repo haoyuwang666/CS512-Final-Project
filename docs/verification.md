@@ -119,3 +119,25 @@ fixed-deadline seed 22 有一次片段 GET deadline 超时。此轮同时存在�
 边界：此次浏览器验收为 Chromium；尚未验证 Safari/Firefox、物理扬声器输出或高负载/低带宽网络。测试证明换段不重载、媒体时间线连续，不保证资源不足、跳到未缓冲位置或断网时零等待。
 
 团队示例命名现已统一为 my-video；上方素材名称按统一命名表述，历史测试日志可能保留当时的临时 ID。命名统一不修改已有集群的不可变视频记录。
+
+## Backend recovery and media validation fixes (2026-11-14)
+
+This follow-up supersedes the outstanding backend defect status in the initial review and research plans. It records code validation, not formal performance results.
+
+Implemented:
+
+- Pending repairs first verify whether the target already installed the same task's object. A valid installed target can complete without rereading an unavailable original source.
+- Verified inventory from configured Peers can register an installed but uncommitted replica through Raft. This recovers a copy after a lost PUT response even when both original holders are offline. Retirement and video-deletion checks still apply in the FSM.
+- Equivalent PUT operations retain a canonical installed receipt and separate operation records. Cleanup/deletion compares immutable object identity and durably retires recorded aliases, including across restart and older index layouts. An old completed deletion cannot remove a freshly repaired reference.
+- Repair ACKs validate task identity before using the stable completion key. A mismatching ACK cannot persist a rejection that prevents later correct completion. Matching task aliases can complete against an equivalent canonical Peer receipt.
+- Media preparation and acceptance validate exact `tfdt` decode starts and `trun`/`tfhd`/`trex` sample durations. FFprobe 7.1 reported a nominal 512-tick video packet duration for an initial stored 775-tick sample, causing the previous false continuity failure. Container intervals are continuous in the reproduced fixture; real gaps and overlaps remain rejected.
+
+Passed in the local macOS environment:
+
+- `go test -race ./...`, `go vet ./...`, and `make backend` after the final Go changes.
+- `make smoke test-repair test-cleanup test-delete-video test-media`, run sequentially in disposable clusters. Repair adds unregistered-target adoption with both originals stopped and subsequent Leader failure. Deletion adds repeated PUTs plus metadata confirmations with equivalent operation aliases.
+- Five `fragment_mp4_test.py` regressions covering initial timing alignment, real gaps/overlaps, default sample durations, zero/missing durations, and malformed sample tables. `make test-media` runs these before real-media checks.
+- Real media checks verified four audiovisual fragments, exact size/hash, Peer failure fallback, uncached metadata recovery after Leader failure, identical initialization, continuous stored decode timelines, monotonic demuxed DTS, segment/joined-stream decoding, and media stop.
+- Source-purpose/index audit and diff whitespace checks.
+
+These tests did not use the live console cluster or delete user videos. Actual browser playback automation was not rerun in this follow-up, so no new browser continuity/QoE claim follows. Fixed/load-aware repair budgets and the quantitative study scripts remain proposed work. Existing running services must restart on the rebuilt binaries to use these changes.

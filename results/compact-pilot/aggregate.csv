@@ -1,0 +1,7 @@
+experiment,load,policy,grace_s,outage,second_delay_s,runs,setup_failed,sessions_completed,sessions_scheduled,completion_rate,mean_post_fault_stall_s_all,recovery_observed,recovery_censored,recovery_target_met,median_recovery_s_observed_only,mean_repair_MiB,mean_one_copy_MiB_s,exposed_runs,overlap_runs,correct_committed_target
+pilot,high,F25,3,persistent,0,1,0,4,4,1.0,0.11248503124999942,1,0,1,31.835780749912374,0.75,17.292604385351297,1,1,0
+pilot,high,F50,3,persistent,0,1,0,4,4,1.0,0.39327192699999935,1,0,1,27.766197916003875,0.75,13.985973213144462,1,1,0
+pilot,high,L,3,persistent,0,1,0,4,4,1.0,0.1551883957500002,1,0,1,31.868356249993667,0.75,16.796684692584677,1,1,0
+pilot,high,N,3,persistent,0,1,0,4,4,1.0,0.7608156560000017,1,0,1,1.3545352090150118,0.0,0.0,1,0,0
+pilot,high,OFF,3,persistent,0,1,0,4,4,1.0,0.0,0,1,0,,0.0,33.74113853104063,1,0,0
+pilot,high,S,3,persistent,0,1,0,4,4,1.0,0.05410235425000076,1,0,1,31.928861957974732,0.75,16.62301579673658,1,1,0

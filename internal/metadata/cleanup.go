@@ -27,7 +27,7 @@ func (s *HTTPServer) verifyKeep(ctx context.Context, receipts []domain.Receipt) 
 				var got domain.Receipt
 				err = json.NewDecoder(res.Body).Decode(&got)
 				res.Body.Close()
-				if err != nil || res.StatusCode != 200 || got != a {
+				if err != nil || res.StatusCode != 200 || !got.SameObject(a) {
 					return false
 				}
 				found = true

@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "checks": [
+    "3-node Raft",
+    "durable dual-replica ingestion",
+    "idempotent retry",
+    "real HTTP playback",
+    "session REST/SSE",
+    "deadline playback with startup buffering",
+    "unknown strategy rejection",
+    "baseline runner and CSV/SVG pipeline",
+    "peer fallback",
+    "leader failover",
+    "controller restart",
+    "no-quorum write rejection"
+  ],
+  "baseline": {
+    "video_id": "fixture",
+    "status": "completed",
+    "startup_delay_ms": 58.009959,
+    "stall_time_ms": 0,
+    "media_playback_elapsed_ms": 600,
+    "rebuffering_ratio": 0,
+    "verified_bytes": 131072,
+    "downloaded_bytes": 131072,
+    "requests": 4,
+    "failed_requests": 0,
+    "deadline_misses": 0,
+    "segments_played": 4,
+    "simulated_playback": true
+  }
+}

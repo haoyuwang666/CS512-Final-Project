@@ -6,6 +6,7 @@ import (
 	"cooperative.video/internal/control"
 	"cooperative.video/internal/domain"
 	"cooperative.video/internal/protocol"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -48,6 +49,10 @@ func (s *HTTPServer) RunMaintenance(ctx context.Context, grace time.Duration) {
 		},
 		Fail: func(t domain.Task) error {
 			return commit(Command{Kind: "task-fail", OperationID: t.ID + "-fail", TaskID: t.ID})
+		},
+		Adopt: func(a domain.Receipt) error {
+			raw, _ := json.Marshal(a)
+			return commit(Command{Kind: "confirm", OperationID: fmt.Sprintf("adopt-%x", sha256.Sum256(raw)), Receipt: a})
 		},
 	}
 	c.Run(ctx)
@@ -112,6 +117,13 @@ func (s *HTTPServer) taskAck(w http.ResponseWriter, r *http.Request) {
 		protocol.Fail(w, 404, "NOT_FOUND", "task not found")
 		return
 	}
+	// Reject malformed ACKs before using the stable completion operation ID.
+	// Otherwise a rejected command could permanently poison that retry key.
+	want := domain.Receipt{OperationID: t.ID, PeerID: t.Target.ID, SegmentID: t.SegmentID, Version: t.Version, Size: t.Size, SHA256: t.SHA256}
+	if t.Reason == "cleanup" || t.Reason == "video-delete" || (t.State != "pending" && t.State != "completed") || body.Receipt != want {
+		protocol.Fail(w, 409, "VERSION_CONFLICT", "receipt does not match repair task")
+		return
+	}
 	req, _ := http.NewRequestWithContext(r.Context(), "GET", t.Target.URL+"/api/v1/segments/"+t.SegmentID+"/receipt", nil)
 	res, err := s.Client.Do(req)
 	if err != nil {
@@ -120,9 +132,9 @@ func (s *HTTPServer) taskAck(w http.ResponseWriter, r *http.Request) {
 	}
 	defer res.Body.Close()
 	var a domain.Receipt
-	if res.StatusCode != 200 || json.NewDecoder(io.LimitReader(res.Body, 1<<20)).Decode(&a) != nil || a != body.Receipt {
+	if res.StatusCode != 200 || json.NewDecoder(io.LimitReader(res.Body, 1<<20)).Decode(&a) != nil || !a.SameObject(body.Receipt) {
 		protocol.Fail(w, 409, "VERSION_CONFLICT", "target receipt mismatch")
 		return
 	}
-	s.apply(w, Command{Kind: "task-complete", OperationID: t.ID + "-complete", TaskID: t.ID, Receipt: a})
+	s.apply(w, Command{Kind: "task-complete", OperationID: t.ID + "-complete", TaskID: t.ID, Receipt: body.Receipt})
 }

@@ -1,5 +1,7 @@
 # TODO(Haoyu): Keep Python runtime requirements aligned with scripts and experiments.
 # Requires Python >= 3.10.
-# All current Python scripts use the standard library; no third-party packages are required.
+# Core scripts use the standard library. Compact-study figure exports require Matplotlib.
 # Go dependencies: go.mod / go.sum. Frontend dependencies: frontend/package.json / pnpm-lock.yaml.
 # FFmpeg / FFprobe are optional system tools for real-video generation, not pip packages.
+
+matplotlib>=3.6,<4

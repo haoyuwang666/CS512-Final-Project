@@ -1,0 +1,24 @@
+{
+  "viewers": [
+    {
+      "viewer": 0,
+      "arrival_s": 0.20063580445144835
+    },
+    {
+      "viewer": 1,
+      "arrival_s": 0.2372528600923398
+    }
+  ],
+  "failed_peer": "peer-3",
+  "first_fault_s": 5,
+  "restore_s": null,
+  "second_peer": null,
+  "second_delay_s": 0,
+  "sentinel": {
+    "segment_id": "seed-1103--000008",
+    "index": 8,
+    "duration_ms": 2000,
+    "size_bytes": 131072,
+    "sha256": "cc4645e1c2850a8ec1da4f281fe8668ea791f019e6edbf59d2b009921da88f16"
+  }
+}

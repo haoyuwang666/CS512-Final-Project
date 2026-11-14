@@ -1,0 +1,1 @@
+{"run_id": "peer-high-F25-3-persistent-0-9900", "seed": 9900, "policy": "F25", "experiments": ["pilot"], "observer_s": 5.011958500021137, "kind": "first_failure", "node": "peer-1", "requested_s": 5.0051429169252515, "precondition_satisfied": true}

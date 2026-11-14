@@ -1,0 +1,64 @@
+{
+  "name": "compact-repair-v1",
+  "study_kind": "exploratory small-sample real-process study",
+  "seeds": [
+    1101,
+    1102,
+    1103
+  ],
+  "e4_seeds": [
+    1101,
+    1102
+  ],
+  "e5_seeds": [
+    1101,
+    1102,
+    1103
+  ],
+  "segments": 9,
+  "duration_ms": 2000,
+  "segment_bytes": 131072,
+  "rates": [
+    98304,
+    147456,
+    196608
+  ],
+  "horizon_s": 50,
+  "session_timeout_s": 42,
+  "fault_s": 5,
+  "brief_s": 4,
+  "graces": [
+    1,
+    3,
+    8
+  ],
+  "main_grace": 3,
+  "second_delays": [
+    4,
+    14,
+    30
+  ],
+  "recovery_target_s": 40,
+  "completion_loss_margin": 0.05,
+  "meaningful_stall_s": 1,
+  "stats_interval_s": 1,
+  "verify_interval_s": 2,
+  "task_interval_s": 0.5,
+  "treatment_order_seed": 73191,
+  "fixed_e4_policy": "F50",
+  "fixed_e4_selection": "prespecified middle cap, not selected from final outcomes; pilot compares F25/F50",
+  "time_budget_s": 6600,
+  "browser_claims": false,
+  "low_viewers": 2,
+  "high_viewers": 6,
+  "case": "peer",
+  "seed": 1102,
+  "load": "high",
+  "policy": "S",
+  "grace": 3,
+  "outage": "persistent",
+  "delay": 14,
+  "experiments": [
+    "E4"
+  ]
+}

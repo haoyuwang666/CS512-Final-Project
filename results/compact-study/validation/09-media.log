@@ -1,0 +1,18 @@
+/var/folders/_6/q4sf1cpx5_xfrj8rxltt_l5h0000gn/T/cooperative-media-ktbfnpbi/segments/manifest.json
+{
+  "status": "PASS",
+  "checks": [
+    "H.264/AAC packaging",
+    "real dual-replica ingestion",
+    "peer failure fallback",
+    "active media session survives leader failure with uncached locations",
+    "verified media gateway delivery",
+    "all delivered segments decode video and audio",
+    "identical codec initialization",
+    "gap-free stored audio/video decode timelines",
+    "monotonic demuxed decode timestamps",
+    "continuous stream decode",
+    "media stop"
+  ],
+  "segments": 4
+}

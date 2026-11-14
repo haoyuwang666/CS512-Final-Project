@@ -28,6 +28,10 @@ func main() {
 	address := protocol.Environment("HTTP_ADDR", "127.0.0.1:9001")
 	log.Printf("peer %s listening on %s", id, address)
 	server := storage.NewServer(store, id, upload)
+	if err := server.ConfigureRepairPolicy(protocol.Environment("REPAIR_POLICY", "S")); err != nil {
+		log.Fatal(err)
+	}
+	go server.RunPolicy(ctx)
 	if raw := protocol.Environment("CONTROLLERS", ""); raw != "" {
 		go server.RunReports(ctx, strings.Split(raw, ","))
 	}

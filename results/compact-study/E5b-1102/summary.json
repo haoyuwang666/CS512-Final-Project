@@ -1,0 +1,20 @@
+{
+  "case": "E5b",
+  "seed": 1102,
+  "run_id": "E5b-1102",
+  "status": "passed",
+  "checks": {
+    "pending_precondition": true,
+    "fresh_application_recovered": true,
+    "replacement_leader": true,
+    "same_task_completed": true,
+    "committed_age_preserved": true,
+    "verified_target_bytes": true,
+    "target_registration": true,
+    "task_persists_after_restart": true,
+    "L_policy_and_counter_instance_restart": true
+  },
+  "application_recovery_s": 1.6003198340767995,
+  "sessions": [],
+  "formal_experiment": false
+}

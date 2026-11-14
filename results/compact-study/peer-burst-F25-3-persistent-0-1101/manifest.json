@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "video_id": "seed-1101",
+  "representation": "synthetic-bytes-v1",
+  "segments": [
+    {
+      "segment_id": "seed-1101--000000",
+      "index": 0,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "738d3ce14aca0564cd4c79a10ab5667431bc75d2ad38fbaeb9c13c57fe54ea7c"
+    },
+    {
+      "segment_id": "seed-1101--000001",
+      "index": 1,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "669b0398e5c9d229c81a63a85881deee736bc82efbaf331d8b8841b46d086f0c"
+    },
+    {
+      "segment_id": "seed-1101--000002",
+      "index": 2,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "99e642be77853cc6a1832fa63e0a1b07766fd8874aef7e7e79ddbd4d134f1811"
+    },
+    {
+      "segment_id": "seed-1101--000003",
+      "index": 3,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "ad86d4cefaf25ae4d430494970ca4fbc1233be465309cd79e907911256699609"
+    },
+    {
+      "segment_id": "seed-1101--000004",
+      "index": 4,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "8a9963aed88c02747c8fc3146a5cd695d5e0230890c92920fe133733195c3a2b"
+    },
+    {
+      "segment_id": "seed-1101--000005",
+      "index": 5,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "3ebec5f445d9ee075eca6cbfaeb565851240df44a7ba22b4eae38ebf802b7a36"
+    },
+    {
+      "segment_id": "seed-1101--000006",
+      "index": 6,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "2335187f12e4e2b2d62a62b9f3924aaf489b051cd1d4bec57b5e887e12b616ce"
+    },
+    {
+      "segment_id": "seed-1101--000007",
+      "index": 7,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "ed6b3550df63f4fdaddb420e149169b5fa6058ff2717a1f1e93f8782fa7dbb60"
+    },
+    {
+      "segment_id": "seed-1101--000008",
+      "index": 8,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "32bbfcdf1d8be450a6dc7653556b8919344a55cddf6bf4384589a5696681fa66"
+    }
+  ]
+}

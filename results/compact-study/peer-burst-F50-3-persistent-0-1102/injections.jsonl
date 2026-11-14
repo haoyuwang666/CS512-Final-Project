@@ -1,0 +1,1 @@
+{"run_id": "peer-burst-F50-3-persistent-0-1102", "seed": 1102, "policy": "F50", "experiments": ["E3"], "observer_s": 5.0181956249289215, "kind": "first_failure", "node": "peer-2", "requested_s": 5.010110666975379, "precondition_satisfied": true, "effect_confirmed": true}

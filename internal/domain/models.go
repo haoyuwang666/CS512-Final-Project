@@ -80,6 +80,13 @@ type Location struct {
 	Peer
 	Version int `json:"representation_version"`
 }
+
+// SameObject compares immutable replica identity, independently of PUT attempts.
+// Operation deduplication must still compare the complete receipt.
+func (a Receipt) SameObject(b Receipt) bool {
+	return a.PeerID == b.PeerID && a.SegmentID == b.SegmentID && a.Version == b.Version && a.Size == b.Size && a.SHA256 == b.SHA256
+}
+
 type Video struct {
 	Manifest Manifest `json:"manifest"`
 	Status   string   `json:"status"`
@@ -92,18 +99,19 @@ type PeerObservation struct {
 	OnlineFraction       float64 `json:"online_fraction"`
 }
 type Task struct {
-	VideoID   string    `json:"video_id,omitempty"`
-	Keep      []Receipt `json:"keep,omitempty"`
-	Removed   *Receipt  `json:"removed,omitempty"`
-	ID        string    `json:"task_id"`
-	SegmentID string    `json:"segment_id"`
-	Version   int       `json:"representation_version"`
-	Source    Peer      `json:"source"`
-	Target    Peer      `json:"target"`
-	State     string    `json:"state"`
-	Size      int64     `json:"size_bytes"`
-	SHA256    string    `json:"sha256"`
-	Reason    string    `json:"reason,omitempty"`
+	CreatedUnixMS int64     `json:"created_unix_ms,omitempty"`
+	VideoID       string    `json:"video_id,omitempty"`
+	Keep          []Receipt `json:"keep,omitempty"`
+	Removed       *Receipt  `json:"removed,omitempty"`
+	ID            string    `json:"task_id"`
+	SegmentID     string    `json:"segment_id"`
+	Version       int       `json:"representation_version"`
+	Source        Peer      `json:"source"`
+	Target        Peer      `json:"target"`
+	State         string    `json:"state"`
+	Size          int64     `json:"size_bytes"`
+	SHA256        string    `json:"sha256"`
+	Reason        string    `json:"reason,omitempty"`
 }
 
 // PeerReport is an observation, never proof of a committed replica.

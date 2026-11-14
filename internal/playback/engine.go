@@ -63,6 +63,7 @@ func (e *Engine) Run(parent context.Context, id string, cfg Config, emit func(Ev
 		sequence++
 		event.Sequence = sequence
 		event.Time = clock.Now().UTC()
+		event.SinceStartMS = float64(clock.Now().Sub(start)) / float64(time.Millisecond)
 		event.Snapshot = &Snapshot{Summary: summary, Buffer: buffer, Peers: tracker.snapshot()}
 		if emit != nil {
 			emit(event)

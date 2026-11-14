@@ -1,0 +1,17 @@
+{
+  "case": "E5c",
+  "seed": 1102,
+  "run_id": "E5c-1102",
+  "status": "passed",
+  "checks": {
+    "no_success_ack_during_isolation": true,
+    "baseline_state_retained": true,
+    "fresh_application_recovered": true,
+    "original_operation_reconciled": true,
+    "reconciled_object_present": true,
+    "quorum_restored": true
+  },
+  "application_recovery_s": 4.16945216699969,
+  "sessions": [],
+  "formal_experiment": false
+}

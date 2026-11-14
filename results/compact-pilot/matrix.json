@@ -1,0 +1,74 @@
+[
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 9900,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "pilot"
+    ]
+  }
+]

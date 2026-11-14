@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "fresh_application_recovered": true,
+    "replacement_leader": true,
+    "warm_completed": true,
+    "cold_uncached_completed": true
+  },
+  "status": "passed"
+}

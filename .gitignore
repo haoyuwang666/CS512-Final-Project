@@ -10,6 +10,12 @@ __pycache__/
 .env
 results/*/
 !results/README.md
+# Preserve the completed research evidence and linked presentation assets.
+# Other generated experiment directories remain ignored.
+!results/compact-study/
+!results/compact-pilot/
+!results/compact-controller-pilot/
+!results/compact-validation/
 .DS_Store
 
 # Local planning documents and reference material.

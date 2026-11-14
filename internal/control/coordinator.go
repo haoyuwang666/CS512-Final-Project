@@ -31,6 +31,7 @@ type Coordinator struct {
 	Create   func(domain.Task) error
 	Complete func(domain.Task, domain.Receipt) error
 	Fail     func(domain.Task) error
+	Adopt    func(domain.Receipt) error
 }
 
 func (c *Coordinator) Run(ctx context.Context) {
@@ -135,15 +136,26 @@ func (c *Coordinator) reconcile(ctx context.Context, missing map[string]time.Tim
 					continue
 				}
 				valid := false
+				var stored domain.Receipt
 				for _, a := range report.Receipts {
 					if a.PeerID == p.ID && a.SegmentID == seg.ID && a.Size == seg.Size && a.SHA256 == seg.SHA256 && a.Version == 1 {
 						valid = true
+						stored = a
 					}
 				}
 				_, known := state.Replicas[seg.ID][p.ID]
 				if valid {
 					if known {
 						sources = append(sources, p)
+					} else if c.Adopt != nil && domain.ValidID(stored.OperationID) {
+						// A previous PUT may have landed even though its ACK was lost.
+						// Inventory was fetched and hashed at the configured Peer, not
+						// taken from an advisory report. Raft still checks retirement
+						// and video deletion before making this replica visible.
+						if c.Leader() == nil {
+							_ = c.Adopt(stored)
+						}
+						return
 					}
 					continue
 				}
@@ -168,6 +180,7 @@ func (c *Coordinator) reconcile(ctx context.Context, missing map[string]time.Tim
 				continue
 			}
 			t.ID = fmt.Sprintf("repair-%x", sha256.Sum256([]byte(fmt.Sprintf("%s/%s/%d", seg.ID, t.Target.ID, len(state.Tasks)))))
+			t.CreatedUnixMS = time.Now().UnixMilli()
 			_ = c.Create(t)
 			return
 		}
@@ -177,7 +190,23 @@ func (c *Coordinator) copy(ctx context.Context, t domain.Task) (domain.Receipt, 
 	var receipt domain.Receipt
 	transfer, cancel := context.WithTimeout(ctx, 45*time.Second)
 	defer cancel()
+	// Resume a durably installed target even when the original source is down.
+	// The task ID proves this receipt belongs to this copy attempt.
+	probe, stopProbe := context.WithTimeout(transfer, 3*time.Second)
+	check, _ := http.NewRequestWithContext(probe, "GET", t.Target.URL+"/api/v1/segments/"+t.SegmentID+"/receipt", nil)
+	if res, err := c.Client.Do(check); err == nil {
+		err = json.NewDecoder(io.LimitReader(res.Body, 1<<20)).Decode(&receipt)
+		res.Body.Close()
+		if err == nil && res.StatusCode == 200 && receipt.OperationID == t.ID && receipt.SameObject(domain.Receipt{PeerID: t.Target.ID, SegmentID: t.SegmentID, Version: t.Version, Size: t.Size, SHA256: t.SHA256}) {
+			stopProbe()
+			return receipt, c.Leader()
+		}
+	}
+	stopProbe()
 	req, _ := http.NewRequestWithContext(transfer, "GET", t.Source.URL+"/api/v1/segments/"+t.SegmentID, nil)
+	req.Header.Set("X-Transfer-Class", "repair")
+	req.Header.Set("X-Repair-Task-ID", t.ID)
+	req.Header.Set("X-Repair-Created-Unix-MS", fmt.Sprint(t.CreatedUnixMS))
 	res, err := c.Client.Do(req)
 	if err != nil {
 		return receipt, err

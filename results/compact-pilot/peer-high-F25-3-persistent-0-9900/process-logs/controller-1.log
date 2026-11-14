@@ -1,0 +1,27 @@
+2026-11-14T02:51:19.010-0500 [INFO]  raft: initial configuration: index=0 servers=[]
+2026-11-14T02:51:19.010-0500 [INFO]  raft: entering follower state: follower="Node at 127.0.0.1:57014 [Follower]" leader-address= leader-id=
+2026/11/14 02:51:19 controller controller-1 listening on 127.0.0.1:57011
+2026-11-14T02:51:21.001-0500 [WARN]  raft: heartbeat timeout reached, starting election: last-leader-addr= last-leader-id=
+2026-11-14T02:51:21.002-0500 [INFO]  raft: entering candidate state: node="Node at 127.0.0.1:57014 [Candidate]" term=2
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: pre-voting for self: term=2 id=controller-1
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: asking for pre-vote: term=2 from=controller-2 address=127.0.0.1:57015
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: asking for pre-vote: term=2 from=controller-3 address=127.0.0.1:57016
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: calculated votes needed: needed=2 term=2
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: pre-vote received: from=controller-1 term=2 tally=0
+2026-11-14T02:51:21.002-0500 [DEBUG] raft: pre-vote granted: from=controller-1 term=2 tally=1
+2026-11-14T02:51:21.006-0500 [DEBUG] raft: pre-vote received: from=controller-2 term=2 tally=1
+2026-11-14T02:51:21.006-0500 [DEBUG] raft: pre-vote granted: from=controller-2 term=2 tally=2
+2026-11-14T02:51:21.006-0500 [INFO]  raft: pre-vote successful, starting election: term=2 tally=2 refused=0 votesNeeded=2
+2026-11-14T02:51:21.019-0500 [DEBUG] raft: voting for self: term=2 id=controller-1
+2026-11-14T02:51:21.047-0500 [DEBUG] raft: asking for vote: term=2 from=controller-2 address=127.0.0.1:57015
+2026-11-14T02:51:21.047-0500 [DEBUG] raft: asking for vote: term=2 from=controller-3 address=127.0.0.1:57016
+2026-11-14T02:51:21.047-0500 [DEBUG] raft: vote granted: from=controller-1 term=2 tally=1
+2026-11-14T02:51:21.075-0500 [DEBUG] raft: vote granted: from=controller-2 term=2 tally=2
+2026-11-14T02:51:21.075-0500 [INFO]  raft: election won: term=2 tally=2
+2026-11-14T02:51:21.075-0500 [INFO]  raft: entering leader state: leader="Node at 127.0.0.1:57014 [Leader]"
+2026-11-14T02:51:21.075-0500 [INFO]  raft: added peer, starting replication: peer=controller-2
+2026-11-14T02:51:21.075-0500 [INFO]  raft: added peer, starting replication: peer=controller-3
+2026-11-14T02:51:21.081-0500 [WARN]  raft: appendEntries rejected, sending older logs: peer="{Voter controller-3 127.0.0.1:57016}" next=1
+2026-11-14T02:51:21.081-0500 [WARN]  raft: appendEntries rejected, sending older logs: peer="{Voter controller-2 127.0.0.1:57015}" next=1
+2026-11-14T02:51:21.101-0500 [INFO]  raft: pipelining replication: peer="{Voter controller-3 127.0.0.1:57016}"
+2026-11-14T02:51:21.105-0500 [INFO]  raft: pipelining replication: peer="{Voter controller-2 127.0.0.1:57015}"

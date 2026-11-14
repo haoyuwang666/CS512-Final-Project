@@ -1,0 +1,872 @@
+[
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1",
+      "E2",
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1",
+      "E2",
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1",
+      "E2",
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "low",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "low",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "low",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "burst",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "burst",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "burst",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "burst",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "burst",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "low",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "low",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "low",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "burst",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "burst",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "low",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "low",
+    "policy": "OFF",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "S",
+    "grace": 1,
+    "outage": "brief",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "burst",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 30,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "burst",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "low",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "burst",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "burst",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "F50",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 4,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "F25",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 8,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E2"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "high",
+    "policy": "L",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1102,
+    "load": "burst",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E3"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1103,
+    "load": "high",
+    "policy": "N",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 0,
+    "experiments": [
+      "E1"
+    ]
+  },
+  {
+    "case": "peer",
+    "seed": 1101,
+    "load": "high",
+    "policy": "S",
+    "grace": 3,
+    "outage": "persistent",
+    "delay": 14,
+    "experiments": [
+      "E4"
+    ]
+  }
+]

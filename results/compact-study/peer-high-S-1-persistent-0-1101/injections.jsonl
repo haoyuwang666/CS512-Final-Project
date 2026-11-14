@@ -1,0 +1,1 @@
+{"run_id": "peer-high-S-1-persistent-0-1101", "seed": 1101, "policy": "S", "experiments": ["E2"], "observer_s": 5.021435209084302, "kind": "first_failure", "node": "peer-1", "requested_s": 5.005226667039096, "precondition_satisfied": true, "effect_confirmed": true}

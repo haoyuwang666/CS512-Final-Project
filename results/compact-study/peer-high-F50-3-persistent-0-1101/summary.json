@@ -1,0 +1,546 @@
+{
+  "case": "peer",
+  "seed": 1101,
+  "load": "high",
+  "policy": "F50",
+  "grace": 3,
+  "outage": "persistent",
+  "delay": 0,
+  "experiments": [
+    "E3"
+  ],
+  "run_id": "peer-high-F50-3-persistent-0-1101",
+  "status": "completed",
+  "scheduled": 6,
+  "completed": 6,
+  "completion_rate": 1.0,
+  "mean_startup_s_completed": 7.938083076333334,
+  "mean_post_fault_stall_s_all_sessions": 8.529487485999999,
+  "mean_rebuffering_ratio_completed": 0.3174708046531936,
+  "recovery_s": 33.99255829199683,
+  "recovery_interval_lower_s": 31.889990249997936,
+  "recovery_target_met": true,
+  "recovery_censored": false,
+  "censor_reason": null,
+  "one_copy_byte_seconds": 19739233.69255066,
+  "zero_copy_byte_seconds": 0,
+  "unknown_copy_byte_seconds": 0,
+  "traffic_bytes": {
+    "repair": 786432,
+    "foreground": 8224768,
+    "probe": 0
+  },
+  "repair_tasks": 6,
+  "failed_repair_tasks": 0,
+  "post_fault_exposure": true,
+  "repair_foreground_overlap": true,
+  "injection_preconditions_met": true,
+  "metadata_probe_attempts": 96,
+  "alternate_delivery_s": 2.4936270830060048,
+  "correctness": {
+    "initial_two_copies": true,
+    "initial": {
+      "seed-1101--000000": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000001": [
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000002": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000003": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000004": [
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000005": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000006": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000007": [
+        {
+          "peer_id": "peer-2",
+          "url": "http://127.0.0.1:53270",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ],
+      "seed-1101--000008": [
+        {
+          "peer_id": "peer-1",
+          "url": "http://127.0.0.1:53269",
+          "representation_version": 1
+        },
+        {
+          "peer_id": "peer-3",
+          "url": "http://127.0.0.1:53271",
+          "representation_version": 1
+        }
+      ]
+    },
+    "initial_stats": [
+      {
+        "active_foreground": 0,
+        "active_repair": 0,
+        "class_bytes": {},
+        "class_requests": {},
+        "instance_id": "1794646204133203000",
+        "objects": 6,
+        "peer_id": "peer-1",
+        "policy_history": [
+          {
+            "sequence": 1,
+            "unix_ms": 1794646204133,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 2,
+            "unix_ms": 1794646204383,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 3,
+            "unix_ms": 1794646204633,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 4,
+            "unix_ms": 1794646204883,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 5,
+            "unix_ms": 1794646205133,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 6,
+            "unix_ms": 1794646205383,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 7,
+            "unix_ms": 1794646205633,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 8,
+            "unix_ms": 1794646205883,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 9,
+            "unix_ms": 1794646206133,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 10,
+            "unix_ms": 1794646206383,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 11,
+            "unix_ms": 1794646206633,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 12,
+            "unix_ms": 1794646206883,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          },
+          {
+            "sequence": 13,
+            "unix_ms": 1794646207133,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 49152
+          }
+        ],
+        "quota_bytes": 33554432,
+        "repair_bytes_per_second": 49152,
+        "repair_policy": "F50",
+        "stored_bytes": 786432,
+        "upload_bytes_per_second": 98304,
+        "uploaded_bytes": 0
+      },
+      {
+        "active_foreground": 0,
+        "active_repair": 0,
+        "class_bytes": {},
+        "class_requests": {},
+        "instance_id": "1794646204134509000",
+        "objects": 6,
+        "peer_id": "peer-2",
+        "policy_history": [
+          {
+            "sequence": 1,
+            "unix_ms": 1794646204134,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 2,
+            "unix_ms": 1794646204384,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 3,
+            "unix_ms": 1794646204634,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 4,
+            "unix_ms": 1794646204884,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 5,
+            "unix_ms": 1794646205134,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 6,
+            "unix_ms": 1794646205384,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 7,
+            "unix_ms": 1794646205634,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 8,
+            "unix_ms": 1794646205884,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 9,
+            "unix_ms": 1794646206134,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 10,
+            "unix_ms": 1794646206384,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 11,
+            "unix_ms": 1794646206634,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 12,
+            "unix_ms": 1794646206884,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          },
+          {
+            "sequence": 13,
+            "unix_ms": 1794646207134,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 73728
+          }
+        ],
+        "quota_bytes": 33554432,
+        "repair_bytes_per_second": 73728,
+        "repair_policy": "F50",
+        "stored_bytes": 786432,
+        "upload_bytes_per_second": 147456,
+        "uploaded_bytes": 0
+      },
+      {
+        "active_foreground": 0,
+        "active_repair": 0,
+        "class_bytes": {},
+        "class_requests": {},
+        "instance_id": "1794646204136262000",
+        "objects": 6,
+        "peer_id": "peer-3",
+        "policy_history": [
+          {
+            "sequence": 1,
+            "unix_ms": 1794646204136,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 2,
+            "unix_ms": 1794646204386,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 3,
+            "unix_ms": 1794646204636,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 4,
+            "unix_ms": 1794646204886,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 5,
+            "unix_ms": 1794646205136,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 6,
+            "unix_ms": 1794646205386,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 7,
+            "unix_ms": 1794646205636,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 8,
+            "unix_ms": 1794646205886,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 9,
+            "unix_ms": 1794646206136,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 10,
+            "unix_ms": 1794646206386,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 11,
+            "unix_ms": 1794646206636,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 12,
+            "unix_ms": 1794646206886,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          },
+          {
+            "sequence": 13,
+            "unix_ms": 1794646207136,
+            "active_foreground": 0,
+            "active_repair": 0,
+            "oldest_repair_age_ms": 0,
+            "repair_bytes_per_second": 98304
+          }
+        ],
+        "quota_bytes": 33554432,
+        "repair_bytes_per_second": 98304,
+        "repair_policy": "F50",
+        "stored_bytes": 786432,
+        "upload_bytes_per_second": 196608,
+        "uploaded_bytes": 0
+      }
+    ],
+    "failed_peer": "peer-1",
+    "affected": [
+      "seed-1101--000000",
+      "seed-1101--000002",
+      "seed-1101--000003",
+      "seed-1101--000005",
+      "seed-1101--000006",
+      "seed-1101--000008"
+    ],
+    "sentinel": {
+      "segment_id": "seed-1101--000008",
+      "index": 8,
+      "duration_ms": 2000,
+      "size_bytes": 131072,
+      "sha256": "32bbfcdf1d8be450a6dc7653556b8919344a55cddf6bf4384589a5696681fa66"
+    },
+    "second_peer": "peer-3",
+    "target": {
+      "peer_id": "peer-2",
+      "url": "http://127.0.0.1:53270"
+    }
+  },
+  "simulated_consumption": true,
+  "formal_experiment": false,
+  "last_traffic_counter_observed_s": 50.00957879202906,
+  "policy_sample_rule_violations": 0,
+  "first_repair_payload_observed_after_fault_s": 7.5695226669777185,
+  "first_task_observed_after_fault_s": 4.129880417021923,
+  "recovery_mechanism": "replacement"
+}

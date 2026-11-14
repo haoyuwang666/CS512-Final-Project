@@ -1,0 +1,1 @@
+{"status": "PASS", "checks": ["equivalent PUT/confirmation aliases", "durable delete intent", "idempotent delete", "manifest hidden", "leader failover", "offline peer resumes", "all replicas and bytes deleted", "peer restart"]}

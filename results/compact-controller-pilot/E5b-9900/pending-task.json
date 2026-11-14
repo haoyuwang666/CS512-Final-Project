@@ -1,0 +1,18 @@
+{
+  "created_unix_ms": 1794642889753,
+  "task_id": "repair-4cda97551a04940a6dc7132bbdaedf7f70b41d8504110ba8a69afc568f269c9d",
+  "segment_id": "cold-9900--000000",
+  "representation_version": 1,
+  "source": {
+    "peer_id": "peer-2",
+    "url": "http://127.0.0.1:59482"
+  },
+  "target": {
+    "peer_id": "peer-3",
+    "url": "http://127.0.0.1:59483"
+  },
+  "state": "pending",
+  "size_bytes": 4096,
+  "sha256": "e15051e490fe268ff3e54107ef76402b44f18d13bd775ea5f9010416f8950173",
+  "reason": "under-replicated"
+}

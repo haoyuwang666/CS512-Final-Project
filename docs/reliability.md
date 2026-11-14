@@ -2,6 +2,14 @@
 
 TODO(Yuquan)：补充持续分区、逐持久化边界断电、热度策略和高负载测试。
 
+## Recovery reconciliation update (2026-11-14)
+
+Before recopying a pending repair, the coordinator checks the target's verified receipt. If it matches the same task, the task can complete even when the original source has since stopped. When a copy attempt failed after installation or its metadata acknowledgment was lost, verified inventory from configured Peers can recover the unregistered replica through a Raft confirmation. This path needs quorum but no new disk space or surviving original holder; it does not recreate missing bytes or collect unindexed orphan files. Failed task history remains failed even if the installed copy is later adopted.
+
+Equivalent PUT attempts retain one canonical installed receipt and separate operation records. Cleanup/deletion matches immutable object identity, retires all recorded operation aliases, and remains retryable across Peer restart. Keep-copy verification also accepts equivalent operation receipts while rejecting changed Peer, segment, version, size, or hash. Repair ACK validation rejects malformed task receipts before proposing the stable completion ID so a bad request cannot poison later valid retries.
+
+Regression coverage includes lost repair responses, pending-target recovery with a dead source, adoption after both original holders stop, equivalent PUTs before deletion, old persisted receipt/index layouts, and rejection of retired aliases. `make test-media` also checks stored BMFF decode timelines instead of assuming demuxed nominal packet durations describe the initial alignment sample.
+
 ## 当前实现
 
 Peer 的 `GET /api/v1/inventory` 扫描持久索引，重新计算对象大小和 SHA-256。

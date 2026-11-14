@@ -117,14 +117,19 @@ def main():
             joined = temp / "continuous.mp4"
             joined.write_bytes(combined)
             packets = json.loads(subprocess.check_output(["ffprobe", "-v", "error", "-show_packets", "-of", "json", str(joined)], text=True))["packets"]
-            ends = {}
+            # Check stored sample durations, including initial A/V alignment.
+            # ffprobe may infer nominal packet duration or omit AAC priming's
+            # duration, so it is not the authority for fragment continuity.
+            intervals = fragmenter.validate_decode_timeline(combined)
+            assert len(intervals) == 2
+            previous_dts = {}
             for packet in packets:
                 track = packet["stream_index"]
                 dts = int(packet["dts"])
-                if track in ends:
-                    assert dts == ends[track], f"track {track} has a timestamp gap/overlap: {dts} vs {ends[track]}"
-                ends[track] = dts + int(packet["duration"])
-            assert len(ends) == 2
+                if track in previous_dts:
+                    assert dts > previous_dts[track], f"track {track} has nonmonotonic decode timestamps"
+                previous_dts[track] = dts
+            assert len(previous_dts) == 2
             subprocess.run(["ffmpeg", "-v", "error", "-xerror", "-i", str(joined), "-f", "null", "-"], check=True)
             if failed_leader is not None:
                 controller_processes[failed_leader] = start_controller(failed_leader)
@@ -143,7 +148,7 @@ def main():
                         browser_env["FAILOVER_LEADER_PID"] = str(controller_processes[leader_index()].pid)
                     subprocess.run(["node", str(ROOT / "frontend/tests/browser.mjs"), api], env=browser_env, check=True, timeout=120)
             print(json.dumps({"status": "PASS", "checks": ["H.264/AAC packaging", "real dual-replica ingestion", "peer failure fallback",
-                                                              "active media session survives leader failure with uncached locations", "verified browser media delivery", "all delivered segments decode video and audio", "identical codec initialization", "gap-free audio/video packet timestamps", "continuous stream decode", "media stop"],
+                                                              "active media session survives leader failure with uncached locations", "verified media gateway delivery", "all delivered segments decode video and audio", "identical codec initialization", "gap-free stored audio/video decode timelines", "monotonic demuxed decode timestamps", "continuous stream decode", "media stop"],
                               "segments": len(manifest["segments"])}, indent=2))
         finally:
             for process in reversed(processes):

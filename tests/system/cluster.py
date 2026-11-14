@@ -34,7 +34,7 @@ def ports(n):
         for s in sockets:s.close()
 
 class Cluster:
-    def __init__(self,policy='fixed',controllers=3,repair=True,extra=0,rates=None):
+    def __init__(self,policy='fixed',controllers=3,repair=True,extra=0,rates=None,grace=1,repair_policy="S",quota=16777216):
         self.temp=tempfile.TemporaryDirectory(prefix='cs512-repair-'); self.path=Path(self.temp.name)
         # Reserve the entire topology together: independent batches can reuse
         # a just-released ephemeral port before any process has bound it.
@@ -45,9 +45,9 @@ class Cluster:
         self.controllers=[m['http_url'] for m in self.members]; self.processes={}; self.config={}; self.logs=[]
         rates=rates or [10000000]*3
         for i,p in enumerate(self.peers):
-            self.config[p['peer_id']]=('peer',{'PEER_ID':p['peer_id'],'HTTP_ADDR':f'127.0.0.1:{pp[i]}','DATA_DIR':str(self.path/p['peer_id']),'UPLOAD_BYTES_PER_SECOND':str(rates[i]),'QUOTA_BYTES':'16777216','CONTROLLERS':','.join(self.controllers)})
+            self.config[p['peer_id']]=('peer',{'PEER_ID':p['peer_id'],'HTTP_ADDR':f'127.0.0.1:{pp[i]}','DATA_DIR':str(self.path/p['peer_id']),'UPLOAD_BYTES_PER_SECOND':str(rates[i]),'QUOTA_BYTES':str(quota),'REPAIR_POLICY':repair_policy,'CONTROLLERS':','.join(self.controllers)})
         for i,m in enumerate(self.members):
-            self.config[m['id']]=('controller',{'NODE_ID':m['id'],'HTTP_ADDR':f'127.0.0.1:{hp[i]}','RAFT_BIND':m['raft_address'],'RAFT_MEMBERS':json.dumps(self.members),'PEERS':json.dumps(self.peers),'DATA_DIR':str(self.path/m['id']),'BOOTSTRAP':str(i==0).lower(),'PLACEMENT_POLICY':policy,'REPAIR_ENABLED':str(repair).lower(),'REPAIR_GRACE':'1s','EXTRA_REPLICA_BYTES':str(extra)})
+            self.config[m['id']]=('controller',{'NODE_ID':m['id'],'HTTP_ADDR':f'127.0.0.1:{hp[i]}','RAFT_BIND':m['raft_address'],'RAFT_MEMBERS':json.dumps(self.members),'PEERS':json.dumps(self.peers),'DATA_DIR':str(self.path/m['id']),'BOOTSTRAP':str(i==0).lower(),'PLACEMENT_POLICY':policy,'REPAIR_ENABLED':str(repair).lower(),'REPAIR_GRACE':f'{grace}s','EXTRA_REPLICA_BYTES':str(extra)})
     def start(self,key):
         if key in self.processes and self.processes[key].poll() is None: raise RuntimeError('process already running')
         binary,extra=self.config[key]; log=open(self.path/f'{key}.log','ab'); self.logs.append(log)

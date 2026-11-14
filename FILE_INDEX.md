@@ -121,9 +121,13 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/storage/store.go](internal/storage/store.go) | // TODO(Yuquan): Extend immutable object storage with inventory and authorized cleanup; never acknowledge before durable install. |
 | [internal/storage/store_test.go](internal/storage/store_test.go) | // TODO(Yuquan): Add crash-at-each-fsync and concurrent quota tests before implementing cleanup or migrations. |
 | [report/evaluation.md](report/evaluation.md) | TODO(Tian)：填写工作负载、配对对照、指标、不确定性及负结果；不将基础流水线数据当正式实验。 |
+| [report/experiment-plan.md](report/experiment-plan.md) | TODO(team): Retain the backend regression gates, implement the stated measurement/policy extensions, freeze pilot-calibrated settings, and archive the final runs. |
 | [report/final.md](report/final.md) | TODO(Haoyu)：课程格式确认后合并各负责人章节，列出实际贡献、已知限制与 AI 辅助使用；当前不是已完成报告。 |
 | [report/integration.md](report/integration.md) | TODO(Haoyu)：说明架构、构建环境、端到端验证、实现与计划的差异和实际贡献。 |
+| [report/literature-review-and-research-focus.md](report/literature-review-and-research-focus.md) | TODO(team): Run the contention pilot, choose the final policy scope, and collect evidence before treating the hypotheses below as findings. |
 | [report/metadata.md](report/metadata.md) | TODO(Haoyu)：说明实际 Raft 配置、FSM 命令、持久化和故障测试；仅填写有日志支持的结果。 |
+| [report/powerpoint-outline.md](report/powerpoint-outline.md) | TODO(team): Fill the result slides from archived experiment outputs, then rehearse the exact ten-minute schedule. |
+| [report/research-and-presentation-plan.md](report/research-and-presentation-plan.md) | TODO(team): Retain regression coverage for the repaired correctness issues, collect the defined experiments, and replace result templates with measured findings before making final claims. |
 | [report/storage.md](report/storage.md) | TODO(Yuquan)：按课程报告格式补实验图表、逐阶段断电测试及实测限制。 |
 | [requirements.txt](requirements.txt) | # TODO(Haoyu): Keep Python runtime requirements aligned with scripts and experiments. |
 | [results/README.md](results/README.md) | TODO(Tian)：保存配置、原始事件、session 汇总、run 汇总和正式配对分析。大数据另存时记录地址与校验值。 |
@@ -131,6 +135,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [scripts/ingest/ingest.py](scripts/ingest/ingest.py) | """TODO(Yuquan): Replace advisory placement with durable reservations; preserve operation IDs on all retries.""" |
 | [scripts/media/fixture.py](scripts/media/fixture.py) | """TODO(Yuquan): Maintain deterministic byte fixtures for protocol tests; these are NOT decodable video.""" |
 | [scripts/media/fragment_mp4.py](scripts/media/fragment_mp4.py) | """TODO(Yuquan): Extend the muxed fMP4 representation only with matching timeline tests.""" |
+| [scripts/media/fragment_mp4_test.py](scripts/media/fragment_mp4_test.py) | """TODO(Yuquan): Add timeline fixtures when supporting additional BMFF layouts.""" |
 | [scripts/media/generate_fixture.sh](scripts/media/generate_fixture.sh) | # TODO(Yuquan): Extend the licensed media fixture library; this generates a real 12-second test video locally. |
 | [scripts/media/generate_manifest.py](scripts/media/generate_manifest.py) | """TODO(Yuquan): Keep codec/track validation aligned with browser media support.""" |
 | [scripts/media/segment_video.sh](scripts/media/segment_video.sh) | # TODO(Yuquan): Preserve one encoder timeline when extending continuous fMP4 packaging. |
@@ -144,3 +149,16 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [tests/system/media.py](tests/system/media.py) | """TODO(Tian): Add browser decoding automation when a supported browser runner is available.""" |
 | [tests/system/repair.py](tests/system/repair.py) | """TODO(Yuquan): Extend repair acceptance with sustained network partitions and power-loss faults.""" |
 | [tests/system/smoke.py](tests/system/smoke.py) | """TODO(Haoyu): Extend this real-process Raft smoke test with partitions, disk-loss faults and task recovery.""" |
+
+## Compact research study
+
+- `experiments/scenarios/compact-repair.json`: frozen time-bounded study settings.
+- `experiments/repair_playback_study.py`: paired E1–E4 lifecycle and raw measurements.
+- `experiments/controller_recovery_study.py`: E5 direct-probe failover/task/quorum checks.
+- `experiments/study_common.py`, `experiments/study_test.py`: shared observations and measurement regressions.
+- `experiments/analyze_repair_playback.py`: CSV tables, paired effects and PNG/SVG slide figures.
+- `report/compact-experiment-design.md`: reduced scope, matrix and claim limits.
+
+- `experiments/validate_compact_study.py`, `experiments/run_compact_study.py`: archived gates and serial frozen execution.
+- `experiments/finalize_compact_study.py`: final audit, stratified tables, paired figures, and analysis provenance.
+- `report/compact-study-results.md`: executed findings and scientific claim boundaries.

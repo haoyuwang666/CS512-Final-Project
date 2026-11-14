@@ -1,0 +1,32 @@
+{
+  "viewers": [
+    {
+      "viewer": 0,
+      "arrival_s": 0.30936207301088353
+    },
+    {
+      "viewer": 1,
+      "arrival_s": 0.41600420685705763
+    },
+    {
+      "viewer": 2,
+      "arrival_s": 0.400740543944162
+    },
+    {
+      "viewer": 3,
+      "arrival_s": 0.2691257682219608
+    }
+  ],
+  "failed_peer": "peer-1",
+  "first_fault_s": 5,
+  "restore_s": null,
+  "second_peer": null,
+  "second_delay_s": 0,
+  "sentinel": {
+    "segment_id": "seed-9900--000008",
+    "index": 8,
+    "duration_ms": 2000,
+    "size_bytes": 131072,
+    "sha256": "fdf44aa08b548fc44e52ab0f0fa875c689c48ea53b276b99c6ea73446d9051b8"
+  }
+}

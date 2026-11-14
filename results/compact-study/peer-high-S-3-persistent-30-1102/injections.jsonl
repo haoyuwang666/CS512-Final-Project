@@ -1,0 +1,2 @@
+{"run_id": "peer-high-S-3-persistent-30-1102", "seed": 1102, "policy": "S", "experiments": ["E4"], "observer_s": 5.007570791058242, "kind": "first_failure", "node": "peer-2", "requested_s": 5.002434708061628, "precondition_satisfied": true, "effect_confirmed": true}
+{"run_id": "peer-high-S-3-persistent-30-1102", "seed": 1102, "policy": "S", "experiments": ["E4"], "observer_s": 35.0403762080241, "kind": "second_failure", "node": "peer-3", "requested_s": 35.00505825004075, "precondition_satisfied": true, "effect_confirmed": true}

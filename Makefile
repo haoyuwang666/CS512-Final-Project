@@ -35,8 +35,10 @@ test-integration:
 smoke: backend
 	$(PYTHON) tests/system/smoke.py
 test-media: backend
+	$(PYTHON) scripts/media/fragment_mp4_test.py
 	$(PYTHON) tests/system/media.py
 test-media-browser: backend frontend
+	$(PYTHON) scripts/media/fragment_mp4_test.py
 	BROWSER_TEST=1 $(PYTHON) tests/system/media.py
 test-player:
 	cd frontend && $(PNPM) test
@@ -73,3 +75,9 @@ test-cleanup: backend
 .PHONY: test-delete-video
 test-delete-video: backend
 	$(PYTHON) tests/system/delete_video.py
+
+.PHONY: experiment-compact
+experiment-compact: backend
+	$(PYTHON) experiments/repair_playback_study.py --output-dir results/compact-study
+	$(PYTHON) experiments/controller_recovery_study.py --output-dir results/compact-study
+	$(PYTHON) experiments/finalize_compact_study.py results/compact-study

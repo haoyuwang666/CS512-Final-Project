@@ -1,0 +1,104 @@
+2026-11-14T04:04:17.129-0500 [INFO]  raft: initial configuration: index=0 servers=[]
+2026/11/14 04:04:17 controller controller-2 listening on 127.0.0.1:64795
+2026-11-14T04:04:17.129-0500 [INFO]  raft: entering follower state: follower="Node at 127.0.0.1:64798 [Follower]" leader-address= leader-id=
+2026-11-14T04:04:18.759-0500 [DEBUG] raft: received a requestPreVote with a newer term, grant the pre-vote
+2026-11-14T04:04:18.786-0500 [DEBUG] raft: lost leadership because received a requestVote with a newer term
+2026-11-14T04:04:18.835-0500 [WARN]  raft: failed to get previous log: previous-index=1 last-index=0 error="log not found"
+2026-11-14T04:04:25.845-0500 [WARN]  raft: rejecting pre-vote request since we have a leader: from=127.0.0.1:64799 leader=127.0.0.1:64797 leader-id=controller-1
+2026-11-14T04:04:26.013-0500 [WARN]  raft: heartbeat timeout reached, starting election: last-leader-addr=127.0.0.1:64797 last-leader-id=controller-1
+2026-11-14T04:04:26.013-0500 [INFO]  raft: entering candidate state: node="Node at 127.0.0.1:64798 [Candidate]" term=3
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: asking for pre-vote: term=3 from=controller-1 address=127.0.0.1:64797
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: pre-voting for self: term=3 id=controller-2
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: asking for pre-vote: term=3 from=controller-3 address=127.0.0.1:64799
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: calculated votes needed: needed=2 term=3
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: pre-vote received: from=controller-2 term=3 tally=0
+2026-11-14T04:04:26.013-0500 [DEBUG] raft: pre-vote granted: from=controller-2 term=3 tally=1
+2026-11-14T04:04:26.014-0500 [ERROR] raft: failed to make requestVote RPC: target="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused" term=3
+2026-11-14T04:04:26.014-0500 [DEBUG] raft: pre-vote received: from=controller-1 term=3 tally=1
+2026-11-14T04:04:26.014-0500 [DEBUG] raft: pre-vote denied: from=controller-1 term=3 tally=1
+2026-11-14T04:04:26.014-0500 [DEBUG] raft: pre-vote received: from=controller-3 term=3 tally=1
+2026-11-14T04:04:26.014-0500 [DEBUG] raft: pre-vote granted: from=controller-3 term=3 tally=2
+2026-11-14T04:04:26.014-0500 [INFO]  raft: pre-vote successful, starting election: term=3 tally=2 refused=1 votesNeeded=2
+2026-11-14T04:04:26.022-0500 [DEBUG] raft: asking for vote: term=3 from=controller-1 address=127.0.0.1:64797
+2026-11-14T04:04:26.023-0500 [DEBUG] raft: voting for self: term=3 id=controller-2
+2026-11-14T04:04:26.023-0500 [ERROR] raft: failed to make requestVote RPC: target="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused" term=3
+2026-11-14T04:04:26.038-0500 [DEBUG] raft: asking for vote: term=3 from=controller-3 address=127.0.0.1:64799
+2026-11-14T04:04:26.039-0500 [DEBUG] raft: vote granted: from=controller-2 term=3 tally=1
+2026-11-14T04:04:26.066-0500 [DEBUG] raft: vote granted: from=controller-3 term=3 tally=2
+2026-11-14T04:04:26.066-0500 [INFO]  raft: election won: term=3 tally=2
+2026-11-14T04:04:26.066-0500 [INFO]  raft: entering leader state: leader="Node at 127.0.0.1:64798 [Leader]"
+2026-11-14T04:04:26.066-0500 [INFO]  raft: added peer, starting replication: peer=controller-1
+2026-11-14T04:04:26.066-0500 [INFO]  raft: added peer, starting replication: peer=controller-3
+2026-11-14T04:04:26.066-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.066-0500 [INFO]  raft: pipelining replication: peer="{Voter controller-3 127.0.0.1:64799}"
+2026-11-14T04:04:26.086-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.104-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=10ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.123-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.125-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=10ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.155-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.168-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=10ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.217-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.294-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=20ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.377-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.382-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=40ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.423-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=80ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.552-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.577-0500 [WARN]  raft: failed to contact: server-id=controller-1 time=510.771708ms
+2026-11-14T04:04:26.684-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=160ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:26.874-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:27.005-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=320ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:27.052-0500 [WARN]  raft: failed to contact: server-id=controller-1 time=986.485708ms
+2026-11-14T04:04:27.327-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:27.537-0500 [WARN]  raft: failed to contact: server-id=controller-1 time=1.471020333s
+2026-11-14T04:04:27.608-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:27.986-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:27.999-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=1.933335041s
+2026-11-14T04:04:28.488-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=2.421712s
+2026-11-14T04:04:28.488-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:28.889-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:28.974-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=2.907863583s
+2026-11-14T04:04:29.066-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:29.440-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=3.373772s
+2026-11-14T04:04:29.569-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:29.934-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=3.86765025s
+2026-11-14T04:04:30.077-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:30.431-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=4.365271958s
+2026-11-14T04:04:30.682-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:30.879-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=4.813368041s
+2026-11-14T04:04:31.184-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:31.344-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=5.278037291s
+2026-11-14T04:04:31.451-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:31.688-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:31.814-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=5.748222958s
+2026-11-14T04:04:32.191-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:32.287-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=6.221362666s
+2026-11-14T04:04:32.765-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=6.699236875s
+2026-11-14T04:04:32.794-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:33.250-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=7.184286333s
+2026-11-14T04:04:33.295-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:33.713-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=7.6475675s
+2026-11-14T04:04:33.971-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:34.134-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=8.068357625s
+2026-11-14T04:04:34.473-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:34.614-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=8.548487166s
+2026-11-14T04:04:35.070-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:35.114-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=9.048468916s
+2026-11-14T04:04:35.570-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:35.611-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=9.545288708s
+2026-11-14T04:04:36.071-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=10.004849166s
+2026-11-14T04:04:36.214-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:36.542-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=10.476276208s
+2026-11-14T04:04:36.574-0500 [ERROR] raft: failed to appendEntries to: peer="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:36.911-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:37.027-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=10.961221791s
+2026-11-14T04:04:37.413-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:37.493-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=11.427217166s
+2026-11-14T04:04:37.974-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=11.908274625s
+2026-11-14T04:04:38.023-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:38.444-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=12.377940583s
+2026-11-14T04:04:38.653-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:38.918-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=12.85250625s
+2026-11-14T04:04:39.154-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:39.369-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=13.303538916s
+2026-11-14T04:04:39.656-0500 [ERROR] raft: failed to heartbeat to: peer=127.0.0.1:64797 backoff time=500ms error="dial tcp 127.0.0.1:64797: connect: connection refused"
+2026-11-14T04:04:39.799-0500 [DEBUG] raft: failed to contact: server-id=controller-1 time=13.733157833s

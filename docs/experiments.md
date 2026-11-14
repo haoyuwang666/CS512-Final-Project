@@ -1,3 +1,9 @@
+# Compact E1–E5 study
+
+Executed: 81 frozen runs in 67.9 minutes, with nine controller cases passing. See [results and conclusions](../report/compact-study-results.md) and the [slide exhibit guide](../results/compact-study/SLIDE-EXHIBITS.md). Raw runs remain under `results/compact-study/`.
+
+The implemented, headless study is described in [compact-experiment-design.md](../report/compact-experiment-design.md). Run `make experiment-compact` for the serial E1–E5 matrix and tables/PNG/SVG figures. Defaults are 72 unique performance runs and 9 controller runs, designed for an approximately 80–95 minute execution including separate pilot/gates. See the frozen JSON scenario in `experiments/scenarios/compact-repair.json`. Earlier baseline limitations below refer to the older runners.
+
 # 实验接口与状态
 
 当前新增 `experiments/paired.py` / `compare.py` 和可执行的 main scenario：独立集群重置、同 seed trace、四策略组、相同副本预算与 Peer 上限、完整失败会话和 run 层配对差值。参见 reliability.md。下面关于 baseline runner 的限制保留；新入口是冷启动 headless 对照，仍明确标记 formal_experiment=false，不代表包含 warm-up、故障矩阵与热度学习的最终研究。

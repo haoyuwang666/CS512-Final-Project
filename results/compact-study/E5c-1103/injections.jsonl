@@ -1,0 +1,2 @@
+{"run_id": "E5c-1103", "case": "E5c", "seed": 1103, "policy": "S", "observer_s": 2.2457262920215726, "kind": "majority_loss", "nodes": ["controller-2", "controller-3"], "precondition_satisfied": true}
+{"run_id": "E5c-1103", "case": "E5c", "seed": 1103, "policy": "S", "observer_s": 5.374933624989353, "kind": "restore_quorum", "requested_s": 5.3749285420635715}

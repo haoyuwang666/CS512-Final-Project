@@ -1,0 +1,1 @@
+{"run_id": "E5a-1103", "case": "E5a", "seed": 1103, "policy": "S", "observer_s": 4.0324884169967845, "kind": "leader_failure", "node": "controller-1", "precondition_satisfied": true}

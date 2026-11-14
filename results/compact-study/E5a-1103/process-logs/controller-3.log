@@ -1,0 +1,24 @@
+2026-11-14T04:04:17.135-0500 [INFO]  raft: initial configuration: index=0 servers=[]
+2026-11-14T04:04:17.135-0500 [INFO]  raft: entering follower state: follower="Node at 127.0.0.1:64799 [Follower]" leader-address= leader-id=
+2026/11/14 04:04:17 controller controller-3 listening on 127.0.0.1:64796
+2026-11-14T04:04:18.609-0500 [WARN]  raft: no known peers, aborting election
+2026-11-14T04:04:18.759-0500 [DEBUG] raft: received a requestPreVote with a newer term, grant the pre-vote
+2026-11-14T04:04:18.786-0500 [DEBUG] raft: lost leadership because received a requestVote with a newer term
+2026-11-14T04:04:18.838-0500 [WARN]  raft: failed to get previous log: previous-index=1 last-index=0 error="log not found"
+2026-11-14T04:04:25.844-0500 [WARN]  raft: heartbeat timeout reached, starting election: last-leader-addr=127.0.0.1:64797 last-leader-id=controller-1
+2026-11-14T04:04:25.844-0500 [INFO]  raft: entering candidate state: node="Node at 127.0.0.1:64799 [Candidate]" term=3
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: asking for pre-vote: term=3 from=controller-1 address=127.0.0.1:64797
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: asking for pre-vote: term=3 from=controller-2 address=127.0.0.1:64798
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: pre-voting for self: term=3 id=controller-3
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: calculated votes needed: needed=2 term=3
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: pre-vote received: from=controller-3 term=3 tally=0
+2026-11-14T04:04:25.844-0500 [DEBUG] raft: pre-vote granted: from=controller-3 term=3 tally=1
+2026-11-14T04:04:25.845-0500 [ERROR] raft: failed to make requestVote RPC: target="{Voter controller-1 127.0.0.1:64797}" error="dial tcp 127.0.0.1:64797: connect: connection refused" term=3
+2026-11-14T04:04:25.845-0500 [DEBUG] raft: pre-vote received: from=controller-1 term=3 tally=1
+2026-11-14T04:04:25.845-0500 [DEBUG] raft: pre-vote denied: from=controller-1 term=3 tally=1
+2026-11-14T04:04:25.845-0500 [DEBUG] raft: pre-vote received: from=controller-2 term=2 tally=1
+2026-11-14T04:04:25.846-0500 [DEBUG] raft: pre-vote denied: from=controller-2 term=2 tally=1
+2026-11-14T04:04:25.846-0500 [INFO]  raft: pre-vote campaign failed, waiting for election timeout: term=2 tally=1 refused=2 votesNeeded=2
+2026-11-14T04:04:26.014-0500 [DEBUG] raft: received a requestPreVote with a newer term, grant the pre-vote
+2026-11-14T04:04:26.039-0500 [DEBUG] raft: lost leadership because received a requestVote with a newer term
+2026-11-14T04:04:26.065-0500 [INFO]  raft: entering follower state: follower="Node at 127.0.0.1:64799 [Follower]" leader-address= leader-id=

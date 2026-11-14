@@ -1,0 +1,1 @@
+{"run_id": "E5b-9900", "case": "E5b", "seed": 9900, "policy": "L", "observer_s": 6.274790833005682, "url": "http://127.0.0.1:59483/api/v1/segments/cold-9900--000000", "method": "GET", "started": 798446.403877791, "status": 200, "ok": true, "ended": 798446.405463833}

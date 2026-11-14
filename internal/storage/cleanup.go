@@ -65,7 +65,7 @@ func (s *Store) DeleteReplica(task string, a domain.Receipt) error {
 			return ErrConflict
 		}
 	} else {
-		if current, ok := s.index.Objects[a.SegmentID]; !ok || current != a {
+		if current, ok := s.index.Objects[a.SegmentID]; !ok || !current.SameObject(a) {
 			return ErrConflict
 		}
 		raw, _ := json.Marshal(s.index)
@@ -77,6 +77,15 @@ func (s *Store) DeleteReplica(task string, a domain.Receipt) error {
 			next.Deleted = map[string]domain.Receipt{}
 		}
 		next.Deleted[task] = a
+		if next.Retired == nil {
+			next.Retired = map[string]bool{}
+		}
+		next.Retired[a.OperationID] = true
+		for op, receipt := range next.Operations {
+			if receipt.SameObject(a) {
+				next.Retired[op] = true
+			}
+		}
 		delete(next.Objects, a.SegmentID)
 		raw, _ = json.Marshal(next)
 		// Persist the tombstone first. A crash can leak space, never revive a replica.

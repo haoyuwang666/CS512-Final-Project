@@ -1,2 +1,7 @@
 # TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts.
 *.sh text eol=lf
+# Preserve archived experiment bytes and SHA256SUMS across operating systems.
+results/compact-study/** -text
+results/compact-pilot/** -text
+results/compact-controller-pilot/** -text
+results/compact-validation/** -text

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "checks": [
+    "heartbeat/inventory",
+    "automatic repair after grace",
+    "download after both original replicas stop",
+    "durable task across leader failover/restart",
+    "no-quorum ack rejection"
+  ],
+  "task": {
+    "created_unix_ms": 1794642951376,
+    "task_id": "repair-929c13a3c2a78f26047318f3fa4f6c810e60d903cb7abc6141158f0259259592",
+    "segment_id": "fixture--000000",
+    "representation_version": 1,
+    "source": {
+      "peer_id": "peer-2",
+      "url": "http://127.0.0.1:60067"
+    },
+    "target": {
+      "peer_id": "peer-3",
+      "url": "http://127.0.0.1:60068"
+    },
+    "state": "completed",
+    "size_bytes": 32768,
+    "sha256": "c2be1af4aad2e42c19b5e3d86214b9ccd4e51fada2bf3905c5eb5a6994cfb51e",
+    "reason": "under-replicated"
+  }
+}
+{"status": "PASS", "checks": ["adopt verified unregistered replica with both original holders offline", "original durable receipt retained", "adoption persists across leader failure"]}

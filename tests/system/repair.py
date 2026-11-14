@@ -41,4 +41,26 @@ def main():
         except __import__('urllib.error',fromlist=['HTTPError']).HTTPError as error:assert error.code==503
         print(json.dumps({'status':'PASS','checks':['heartbeat/inventory','automatic repair after grace','download after both original replicas stop','durable task across leader failover/restart','no-quorum ack rejection'],'task':task},indent=2))
 
-if __name__=='__main__':main()
+def recover_installed_unregistered_replica():
+    with Cluster() as c:
+        manifest=c.fixture(count=1);seg=manifest['segments'][0];sid=seg['segment_id']
+        holders=c.call(f'/segments/{sid}/locations')['locations']
+        target=next(p for p in c.peers if p['peer_id'] not in {h['peer_id'] for h in holders})
+        data=(c.path/'fixture'/f'{sid}.bin').read_bytes()
+        # Model a durable repair PUT whose response/metadata confirmation was lost.
+        receipt=ing.request(target['url']+f'/api/v1/segments/{sid}','PUT',data,
+            {'X-Operation-ID':'repair-lost-response','X-Size-Bytes':str(len(data)),
+             'X-SHA256':seg['sha256'],'X-Representation-Version':'1'})
+        for holder in holders:c.stop(holder['peer_id'])
+        wait(lambda:any(p['peer_id']==target['peer_id'] for p in c.call(f'/segments/{sid}/locations')['locations']))
+        assert ing.request(target['url']+f'/api/v1/segments/{sid}/receipt')==receipt
+        with urllib.request.urlopen(target['url']+f'/api/v1/segments/{sid}',timeout=5) as response:
+            assert hashlib.sha256(response.read()).hexdigest()==seg['sha256']
+        leader=c.call('/cluster')['leader_url']
+        c.stop(next(m['id'] for m in c.members if m['http_url']==leader))
+        wait(lambda:any(p['peer_id']==target['peer_id'] for p in c.call(f'/segments/{sid}/locations')['locations']))
+        print(json.dumps({'status':'PASS','checks':['adopt verified unregistered replica with both original holders offline','original durable receipt retained','adoption persists across leader failure']}))
+
+if __name__=='__main__':
+    main()
+    recover_installed_unregistered_replica()

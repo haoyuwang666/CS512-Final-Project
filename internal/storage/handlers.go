@@ -21,10 +21,11 @@ type Server struct {
 	Limiter    *rate.Limiter
 	Uploaded   atomic.Int64
 	InstanceID string
+	Traffic    trafficState
 }
 
 func NewServer(store *Store, peer string, bytesPerSecond float64) *Server {
-	return &Server{Store: store, PeerID: peer, Limiter: rate.NewLimiter(rate.Limit(bytesPerSecond), 32<<10), InstanceID: strconv.FormatInt(time.Now().UnixNano(), 10)}
+	return &Server{Store: store, PeerID: peer, Limiter: rate.NewLimiter(rate.Limit(bytesPerSecond), 32<<10), InstanceID: strconv.FormatInt(time.Now().UnixNano(), 10), Traffic: newTraffic(bytesPerSecond)}
 }
 func (s *Server) Handler() http.Handler {
 	m := http.NewServeMux()
@@ -86,6 +87,8 @@ func (s *Server) receipt(w http.ResponseWriter, r *http.Request) {
 	protocol.JSON(w, 200, a)
 }
 func (s *Server) get(w http.ResponseWriter, r *http.Request) {
+	class, done := s.beginTransfer(r)
+	defer done()
 	a, path, ok := s.Store.Lookup(r.PathValue("id"))
 	if !ok {
 		protocol.Fail(w, 404, "NOT_FOUND", "object not found")
@@ -104,11 +107,17 @@ func (s *Server) get(w http.ResponseWriter, r *http.Request) {
 	for {
 		n, err := f.Read(buf)
 		if n > 0 {
+			if class == "repair" {
+				if e := s.Traffic.repairLimiter.WaitN(r.Context(), n); e != nil {
+					return
+				}
+			}
 			if e := s.Limiter.WaitN(r.Context(), n); e != nil {
 				return
 			}
 			sent, e := w.Write(buf[:n])
 			s.Uploaded.Add(int64(sent))
+			s.countBytes(class, int64(sent))
 			if e != nil {
 				return
 			}
@@ -123,5 +132,13 @@ func (s *Server) get(w http.ResponseWriter, r *http.Request) {
 }
 func (s *Server) stats(w http.ResponseWriter, r *http.Request) {
 	used, quota, count := s.Store.Stats()
-	protocol.JSON(w, 200, map[string]any{"peer_id": s.PeerID, "instance_id": s.InstanceID, "stored_bytes": used, "quota_bytes": quota, "objects": count, "uploaded_bytes": s.Uploaded.Load(), "upload_bytes_per_second": float64(s.Limiter.Limit())})
+	out := s.trafficSnapshot()
+	out["peer_id"] = s.PeerID
+	out["instance_id"] = s.InstanceID
+	out["stored_bytes"] = used
+	out["quota_bytes"] = quota
+	out["objects"] = count
+	out["uploaded_bytes"] = s.Uploaded.Load()
+	out["upload_bytes_per_second"] = float64(s.Limiter.Limit())
+	protocol.JSON(w, 200, out)
 }

@@ -27,6 +27,12 @@ TODO(Haoyu)：维护唯一公共契约；引入预留、Heartbeat 和任务前�
 
 PUT header：`X-Operation-ID`、`X-Size-Bytes`、`X-SHA256`、`X-Representation-Version: 1`。Receipt 字段：`operation_id, peer_id, segment_id, representation_version, size_bytes, sha256`。
 
+### Equivalent upload operations and replica identity
+
+Equivalent PUTs with different operation IDs return their own operation receipts, but retain the installed object's canonical receipt in `/receipt` and inventory. Replica identity is `(peer_id, segment_id, representation_version, size_bytes, sha256)`; maintenance verifies these fields rather than requiring equal upload operation IDs. Operation deduplication still compares the full request/receipt and rejects conflicting reuse.
+
+Deleting a replica durably retires every recorded PUT alias for that object. Replaying any retired alias returns 409, including after restart. A fresh repair operation may install a new copy, and replaying an already-completed delete does not remove that new reference. Existing indexes and outstanding deletion tasks remain readable; legacy tombstones conservatively retire recorded matching aliases on load.
+
 Manifest：`schema_version:1, video_id, representation, segments`。每段：`segment_id, index, duration_ms, size_bytes, sha256`。index 连续从 0 开始，SHA-256 为 64 位小写 hex。视频 ID 不可覆盖，片段 ID 在全部视频中唯一。
 
 操作 ID 同内容重试返回原结果，同 ID 不同内容冲突。FSM 拒绝结果也被记住；修复条件后必须使用新操作 ID，不能拿原来的失败操作假装是新命令。导入脚本按 Manifest 内容生成稳定 ID。
@@ -52,3 +58,7 @@ SSE 使用 Last-Event-ID 精确续传；无效或超前序号返回 400，无磁
 媒体 lease 空闲 30 分钟失效；不持久化，也不包含模拟 Session 的 Summary/SSE。真实播放状态由浏览器媒体事件测量。
 
 连续媒体的 Manifest 新增可选字段 `media:{mime_type,duration_ms}`。continuous-fmp4-h264-v1 / continuous-fmp4-h264-aac-v1 必须提供此字段，codec MIME 必须为 AVC（可加 AAC LC），总时长须等于分片时长之和。对象自身含相同初始化信息及原始连续时间戳；Range 仍先验证完整对象。旧 Manifest 的 JSON 结构、headless 导入与 Raft 快照保持兼容，但已有运行进程需要重启以接受新字段。
+
+## Repair study traffic accounting
+
+Peers accept `REPAIR_POLICY=S|F25|F50|L` (default S). `/api/v1/stats` adds `class_bytes`, `class_requests`, active foreground/repair counts, effective repair rate, and recent 250 ms policy samples. `instance_id` distinguishes resets across Peer restart. Repair coordinator GETs carry `X-Transfer-Class: repair`, stable task ID and persisted creation time; measurement-only segment probes use class `probe`. Unclassified GETs are foreground. This is a trusted laboratory protocol, not an authentication mechanism. All segment GET classes still consume the unchanged shared upload limiter. Repair caps are additional rate limits with the original 32 KiB burst; they are not reserved bandwidth or hard completion deadlines.

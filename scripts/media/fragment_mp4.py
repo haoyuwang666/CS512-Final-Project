@@ -31,6 +31,83 @@ def boxes(data):
         offset += size
 
 
+def _payloads(data, kinds=None):
+    for start, end, kind in boxes(data):
+        if kinds is not None and kind not in kinds:
+            continue
+        header = 16 if struct.unpack_from(">I", data, start)[0] == 1 else 8
+        yield kind, data[start + header:end]
+
+
+def validate_decode_timeline(data):
+    """Validate exact fragment decode intervals from tfdt and trun/tfhd/trex.
+
+    Demuxed packet durations can be inferred from codec frame rate, especially
+    for the first video sample/AAC priming, rather than the stored sample timing.
+    Return per-track fragment intervals in their native timescale ticks.
+    """
+    defaults, intervals = {}, {}
+    try:
+        for kind, movie in _payloads(data, (b"moov",)):
+            for child, mvex in _payloads(movie):
+                if child == b"mvex":
+                    for entry, trex in _payloads(mvex):
+                        if entry == b"trex":
+                            defaults[struct.unpack_from(">I", trex, 4)[0]] = struct.unpack_from(">I", trex, 12)[0]
+        for kind, moof in _payloads(data, (b"moof",)):
+            seen = set()
+            for child, traf in _payloads(moof):
+                if child != b"traf":
+                    continue
+                fields = list(_payloads(traf))
+                headers = [p for k, p in fields if k == b"tfhd"]
+                times = [p for k, p in fields if k == b"tfdt"]
+                if len(headers) != 1 or len(times) != 1:
+                    raise ValueError("track fragment needs one tfhd and tfdt")
+                tfhd, tfdt = headers[0], times[0]
+                flags, track = struct.unpack_from(">II", tfhd)
+                if not track or track in seen:
+                    raise ValueError("duplicate or invalid fragment track")
+                seen.add(track)
+                cursor = 8 + (8 if flags & 1 else 0) + (4 if flags & 2 else 0)
+                duration = defaults.get(track, 0)
+                if flags & 8:
+                    duration = struct.unpack_from(">I", tfhd, cursor)[0]
+                if tfdt[0] not in (0, 1):
+                    raise ValueError("unsupported tfdt version")
+                start = struct.unpack_from(">Q" if tfdt[0] else ">I", tfdt, 4)[0]
+                end = start
+                for entry, trun in fields:
+                    if entry != b"trun":
+                        continue
+                    options, count = struct.unpack_from(">II", trun)
+                    cursor = 8 + (4 if options & 1 else 0) + (4 if options & 4 else 0)
+                    stride = 4 * sum(bool(options & bit) for bit in (0x100, 0x200, 0x400, 0x800))
+                    if len(trun) != cursor + count * stride:
+                        raise ValueError("invalid trun sample table")
+                    if options & 0x100:
+                        for i in range(count):
+                            sample = struct.unpack_from(">I", trun, cursor + i * stride)[0]
+                            if not sample:
+                                raise ValueError("zero sample duration")
+                            end += sample
+                    else:
+                        if count and not duration:
+                            raise ValueError("missing default sample duration")
+                        end += count * duration
+                if end <= start:
+                    raise ValueError("empty track fragment")
+                previous = intervals.setdefault(track, [])
+                if previous and start != previous[-1][1]:
+                    raise ValueError(f"track {track} has a timestamp gap/overlap: {start} vs {previous[-1][1]}")
+                previous.append((start, end))
+        if not intervals:
+            raise ValueError("no track fragments")
+    except (struct.error, IndexError) as error:
+        raise ValueError("truncated fragment timing metadata") from error
+    return intervals
+
+
 def fragment(source, directory):
     directory = Path(directory)
     directory.mkdir(parents=True, exist_ok=True)
@@ -47,6 +124,7 @@ def fragment(source, directory):
         raise ValueError("expected AAC audio")
     with open(source, "rb") as file, mmap.mmap(file.fileno(), 0, access=mmap.ACCESS_READ) as data:
         structure = list(boxes(data))
+        validate_decode_timeline(data)
         initialization = b"".join(data[start:end] for start, end, kind in structure if kind in (b"ftyp", b"moov"))
         if b"mvex" not in initialization:
             raise ValueError("input is not fragmented MP4")

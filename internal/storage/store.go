@@ -22,6 +22,7 @@ var ErrConflict = errors.New("immutable object or operation conflict")
 var ErrInvalid = errors.New("invalid receipt fields")
 
 type diskIndex struct {
+	Retired    map[string]bool           `json:"retired_operations,omitempty"`
 	Deleted    map[string]domain.Receipt `json:"deleted,omitempty"`
 	Objects    map[string]domain.Receipt `json:"objects"`
 	Operations map[string]domain.Receipt `json:"operations"`
@@ -52,6 +53,19 @@ func Open(dir, peer string, quota int64) (*Store, error) {
 	if s.index.Objects == nil || s.index.Operations == nil {
 		return nil, fmt.Errorf("invalid disk index")
 	}
+	if s.index.Retired == nil {
+		s.index.Retired = map[string]bool{}
+		// Older indexes did not distinguish retired PUT aliases. Conservatively
+		// retire their recorded operations, while preserving live object references.
+		for _, removed := range s.index.Deleted {
+			s.index.Retired[removed.OperationID] = true
+			for op, a := range s.index.Operations {
+				if a.SameObject(removed) {
+					s.index.Retired[op] = true
+				}
+			}
+		}
+	}
 	files, err := filepath.Glob(filepath.Join(dir, "*.blob"))
 	if err != nil {
 		return nil, err
@@ -79,10 +93,8 @@ func (s *Store) Put(a domain.Receipt, reader io.Reader) (domain.Receipt, error) 
 	if old, ok := s.index.Objects[a.SegmentID]; ok && (old.SHA256 != a.SHA256 || old.Size != a.Size || old.Version != a.Version) {
 		return a, ErrConflict
 	}
-	for _, removed := range s.index.Deleted {
-		if removed.OperationID == a.OperationID {
-			return a, ErrConflict
-		}
+	if s.index.Retired[a.OperationID] {
+		return a, ErrConflict
 	}
 	path := filepath.Join(s.dir, a.SHA256+".blob")
 	_, err := os.Stat(path)
@@ -139,7 +151,11 @@ func (s *Store) Put(a domain.Receipt, reader io.Reader) (domain.Receipt, error) 
 	b, _ := json.Marshal(s.index)
 	var next diskIndex
 	_ = json.Unmarshal(b, &next)
-	next.Objects[a.SegmentID] = a
+	// Equivalent PUTs have independent deduplication records, but must not
+	// change the installed object's identity underneath pending maintenance.
+	if _, installed := next.Objects[a.SegmentID]; !installed {
+		next.Objects[a.SegmentID] = a
+	}
 	next.Operations[a.OperationID] = a
 	b, err = json.Marshal(next)
 	if err != nil {

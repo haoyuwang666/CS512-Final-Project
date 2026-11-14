@@ -1,0 +1,83 @@
+1/72 peer-high-S-3-brief-0-1102: completed, completion=1.0, recovery=5.530777125037275
+2/72 peer-high-L-3-persistent-0-1103: completed, completion=0.0, recovery=34.12928870902397
+3/72 peer-high-F50-3-persistent-30-1101: completed, completion=1.0, recovery=None
+4/72 peer-high-F50-3-persistent-30-1102: completed, completion=0.16666666666666666, recovery=None
+5/72 peer-high-S-3-persistent-0-1103: completed, completion=0.0, recovery=31.792707000044174
+6/72 peer-high-S-3-persistent-0-1101: completed, completion=1.0, recovery=35.98738016700372
+7/72 peer-high-L-3-persistent-0-1101: completed, completion=1.0, recovery=36.061401332961395
+8/72 peer-high-S-3-persistent-0-1102: completed, completion=0.16666666666666666, recovery=34.030972499982454
+9/72 peer-low-S-3-persistent-0-1103: completed, completion=1.0, recovery=30.002524042036384
+10/72 peer-low-OFF-3-persistent-0-1103: completed, completion=1.0, recovery=None
+11/72 peer-high-OFF-3-persistent-0-1103: completed, completion=0.0, recovery=None
+12/72 peer-high-F25-3-persistent-0-1103: completed, completion=0.0, recovery=39.99449041695334
+13/72 peer-high-F50-3-persistent-4-1101: completed, completion=0.0, recovery=None
+14/72 peer-high-S-8-brief-0-1103: completed, completion=1.0, recovery=5.504028957919218
+15/72 peer-high-S-1-persistent-0-1102: completed, completion=0.16666666666666666, recovery=33.79278408305254
+16/72 peer-low-OFF-3-persistent-0-1102: completed, completion=1.0, recovery=None
+17/72 peer-burst-L-3-persistent-0-1102: completed, completion=0.3333333333333333, recovery=40.0500509160338
+18/72 peer-high-S-3-persistent-14-1102: completed, completion=0.0, recovery=None
+19/72 peer-high-L-3-persistent-14-1101: completed, completion=0.0, recovery=None
+20/72 peer-high-S-3-persistent-30-1102: completed, completion=0.16666666666666666, recovery=None
+21/72 peer-high-L-3-persistent-0-1102: completed, completion=0.16666666666666666, recovery=33.790299665997736
+22/72 peer-burst-F50-3-persistent-0-1101: completed, completion=1.0, recovery=31.754790624952875
+23/72 peer-burst-F25-3-persistent-0-1102: completed, completion=0.3333333333333333, recovery=42.201820124988444
+24/72 peer-high-S-3-persistent-4-1102: completed, completion=0.0, recovery=None
+25/72 peer-burst-F50-3-persistent-0-1103: completed, completion=0.16666666666666666, recovery=42.24187520798296
+26/72 peer-burst-S-3-persistent-0-1101: completed, completion=1.0, recovery=31.929790709051304
+27/72 peer-high-S-1-persistent-0-1101: completed, completion=1.0, recovery=33.97580883302726
+28/72 peer-high-OFF-3-persistent-0-1101: completed, completion=1.0, recovery=None
+29/72 peer-high-N-3-persistent-0-1101: completed, completion=1.0, recovery=None
+30/72 peer-high-S-8-persistent-0-1102: completed, completion=0.16666666666666666, recovery=33.72717283293605
+31/72 peer-high-S-1-brief-0-1101: completed, completion=1.0, recovery=5.355889416998252
+32/72 peer-high-S-3-persistent-4-1101: completed, completion=0.0, recovery=None
+33/72 peer-low-S-3-persistent-0-1102: completed, completion=1.0, recovery=29.8524321669247
+34/72 peer-high-S-1-brief-0-1103: completed, completion=1.0, recovery=5.42453904193826
+35/72 peer-high-F50-3-persistent-14-1102: completed, completion=0.0, recovery=None
+36/72 peer-low-S-3-persistent-0-1101: completed, completion=1.0, recovery=29.82509449997451
+37/72 peer-high-F50-3-persistent-0-1102: completed, completion=0.16666666666666666, recovery=33.772484333021566
+38/72 peer-low-N-3-persistent-0-1103: completed, completion=1.0, recovery=None
+39/72 peer-burst-F25-3-persistent-0-1101: completed, completion=1.0, recovery=31.965458334074356
+40/72 peer-high-S-8-brief-0-1101: completed, completion=1.0, recovery=5.489098499994725
+41/72 peer-high-L-3-persistent-4-1102: completed, completion=0.0, recovery=None
+42/72 peer-high-S-3-brief-0-1103: completed, completion=1.0, recovery=5.46277816593647
+43/72 peer-high-L-3-persistent-30-1101: completed, completion=1.0, recovery=None
+44/72 peer-burst-F50-3-persistent-0-1102: completed, completion=0.3333333333333333, recovery=37.82861845905427
+45/72 peer-high-F50-3-persistent-0-1103: completed, completion=0.0, recovery=33.9335022920277
+46/72 peer-low-N-3-persistent-0-1101: completed, completion=1.0, recovery=None
+47/72 peer-high-S-1-persistent-0-1103: completed, completion=0.0, recovery=31.74446229194291
+48/72 peer-high-F25-3-persistent-0-1102: completed, completion=0.16666666666666666, recovery=39.90699749998748
+49/72 peer-high-S-8-brief-0-1102: completed, completion=1.0, recovery=5.507969290949404
+50/72 peer-high-OFF-3-persistent-0-1102: completed, completion=0.16666666666666666, recovery=None
+51/72 peer-high-F50-3-persistent-14-1101: completed, completion=0.0, recovery=None
+52/72 peer-high-L-3-persistent-4-1101: completed, completion=0.0, recovery=None
+53/72 peer-low-OFF-3-persistent-0-1101: completed, completion=1.0, recovery=None
+54/72 peer-high-S-3-brief-0-1101: completed, completion=1.0, recovery=5.3083572500618175
+55/72 peer-high-S-1-brief-0-1102: completed, completion=1.0, recovery=5.521061209030449
+56/72 peer-high-L-3-persistent-30-1102: completed, completion=0.16666666666666666, recovery=None
+57/72 peer-burst-L-3-persistent-0-1103: completed, completion=0.16666666666666666, recovery=42.164198916987516
+58/72 peer-high-N-3-persistent-0-1102: completed, completion=1.0, recovery=None
+59/72 peer-high-F50-3-persistent-0-1101: completed, completion=1.0, recovery=33.99255829199683
+60/72 peer-high-S-3-persistent-30-1101: completed, completion=1.0, recovery=None
+61/72 peer-burst-L-3-persistent-0-1101: completed, completion=1.0, recovery=31.855596040957607
+62/72 peer-low-N-3-persistent-0-1102: completed, completion=1.0, recovery=None
+63/72 peer-burst-F25-3-persistent-0-1103: completed, completion=0.16666666666666666, recovery=None
+64/72 peer-burst-S-3-persistent-0-1103: completed, completion=0.16666666666666666, recovery=41.977946958038956
+65/72 peer-high-F50-3-persistent-4-1102: completed, completion=0.0, recovery=None
+66/72 peer-high-F25-3-persistent-0-1101: completed, completion=1.0, recovery=37.77224700001534
+67/72 peer-high-S-8-persistent-0-1103: completed, completion=0.0, recovery=35.962867000023834
+68/72 peer-high-S-8-persistent-0-1101: completed, completion=1.0, recovery=40.097659875056706
+69/72 peer-high-L-3-persistent-14-1102: completed, completion=0.0, recovery=None
+70/72 peer-burst-S-3-persistent-0-1102: completed, completion=0.3333333333333333, recovery=37.977588917012326
+71/72 peer-high-N-3-persistent-0-1103: completed, completion=1.0, recovery=None
+72/72 peer-high-S-3-persistent-14-1101: completed, completion=0.0, recovery=None
+/Users/wanghaoyu/Desktop/cs512Project/results/compact-study
+E5a 1101 passed {'fresh_application_recovered': True, 'replacement_leader': True, 'warm_completed': True, 'cold_uncached_completed': True}
+E5b 1101 passed {'pending_precondition': True, 'fresh_application_recovered': True, 'replacement_leader': True, 'same_task_completed': True, 'committed_age_preserved': True, 'verified_target_bytes': True, 'target_registration': True, 'task_persists_after_restart': True, 'L_policy_and_counter_instance_restart': True}
+E5c 1101 passed {'no_success_ack_during_isolation': True, 'baseline_state_retained': True, 'fresh_application_recovered': True, 'original_operation_reconciled': True, 'reconciled_object_present': True, 'quorum_restored': True}
+E5a 1102 passed {'fresh_application_recovered': True, 'replacement_leader': True, 'warm_completed': True, 'cold_uncached_completed': True}
+E5b 1102 passed {'pending_precondition': True, 'fresh_application_recovered': True, 'replacement_leader': True, 'same_task_completed': True, 'committed_age_preserved': True, 'verified_target_bytes': True, 'target_registration': True, 'task_persists_after_restart': True, 'L_policy_and_counter_instance_restart': True}
+E5c 1102 passed {'no_success_ack_during_isolation': True, 'baseline_state_retained': True, 'fresh_application_recovered': True, 'original_operation_reconciled': True, 'reconciled_object_present': True, 'quorum_restored': True}
+E5a 1103 passed {'fresh_application_recovered': True, 'replacement_leader': True, 'warm_completed': True, 'cold_uncached_completed': True}
+E5b 1103 passed {'pending_precondition': True, 'fresh_application_recovered': True, 'replacement_leader': True, 'same_task_completed': True, 'committed_age_preserved': True, 'verified_target_bytes': True, 'target_registration': True, 'task_persists_after_restart': True, 'L_policy_and_counter_instance_restart': True}
+E5c 1103 passed {'no_success_ack_during_isolation': True, 'baseline_state_retained': True, 'fresh_application_recovered': True, 'original_operation_reconciled': True, 'reconciled_object_present': True, 'quorum_restored': True}
+ALL STUDY RUNS FINISHED {"runs.jsonl": 72, "controller-runs.jsonl": 9} elapsed=67.9 min

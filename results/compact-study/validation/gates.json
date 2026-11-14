@@ -1,0 +1,86 @@
+[
+  {
+    "command": [
+      "go",
+      "vet",
+      "./..."
+    ],
+    "exit_code": 0,
+    "elapsed_s": 0.39600441697984934,
+    "log": "01-go-vet.log"
+  },
+  {
+    "command": [
+      "go",
+      "test",
+      "-race",
+      "./..."
+    ],
+    "exit_code": 0,
+    "elapsed_s": 6.984765791916288,
+    "log": "02-go-test.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "experiments/study_test.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 0.7175006670877337,
+    "log": "03-study_test.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "tests/system/smoke.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 15.23643470800016,
+    "log": "04-smoke.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "tests/system/repair.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 21.14887237502262,
+    "log": "05-repair.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "tests/system/cleanup.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 11.578818042064086,
+    "log": "06-cleanup.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "tests/system/delete_video.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 6.936231542029418,
+    "log": "07-delete_video.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "scripts/media/fragment_mp4_test.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 0.1318698750110343,
+    "log": "08-fragment_mp4_test.log"
+  },
+  {
+    "command": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "tests/system/media.py"
+    ],
+    "exit_code": 0,
+    "elapsed_s": 7.038573041092604,
+    "log": "09-media.log"
+  }
+]

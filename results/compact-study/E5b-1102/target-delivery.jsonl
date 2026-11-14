@@ -1,0 +1,1 @@
+{"run_id": "E5b-1102", "case": "E5b", "seed": 1102, "policy": "L", "observer_s": 8.337168333004229, "url": "http://127.0.0.1:64395/api/v1/segments/cold-1102--000000", "method": "GET", "started": 802601.2143405, "status": 200, "ok": true, "ended": 802601.216389}

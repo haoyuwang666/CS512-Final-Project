@@ -1,0 +1,2 @@
+{"run_id": "E5b-9900", "case": "E5b", "seed": 9900, "policy": "L", "observer_s": 1.9140439169714227, "kind": "first_peer_failure", "node": "peer-1"}
+{"run_id": "E5b-9900", "case": "E5b", "seed": 9900, "policy": "L", "observer_s": 4.466568166972138, "kind": "leader_failure", "node": "controller-1", "precondition_satisfied": true}
