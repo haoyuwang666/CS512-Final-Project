@@ -1,5 +1,7 @@
 # Presentation layout by section
 
+TODO(team): Maintain the presentation structure and references to verified experiment exhibits.
+
 This is a production plan for the presentation, organized by subject rather than a fixed page limit. Start with approximately **25 main slides across nine sections**. Add a demo and appendix when useful. These counts are recommendations: split a slide if its figure or explanation needs more room. There is no ten-slide or ten-minute constraint in this layout.
 
 The argument is: explain the system and its resource conflict; define the research questions and policies; explain how the study was controlled; present each experiment; then state the measured answers and limits.

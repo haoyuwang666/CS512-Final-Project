@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""E5: direct timed application probes, committed task continuity, quorum refusal."""
+"""TODO(team): Maintain this experiment tool. E5: direct timed application probes, committed task continuity, quorum refusal."""
 import argparse
 import hashlib
 import json

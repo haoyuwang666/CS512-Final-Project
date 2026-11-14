@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Final audit and slide-focused exhibits. Raw event journals are never changed."""
+"""TODO(team): Maintain this experiment tool. Final audit and slide-focused exhibits. Raw event journals are never changed."""
 import csv
 import hashlib
 import json

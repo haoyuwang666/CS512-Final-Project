@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rebuild slide exhibits from archived runs; failed/censored outcomes remain visible."""
+"""TODO(team): Maintain this experiment tool. Rebuild slide exhibits from archived runs; failed/censored outcomes remain visible."""
 import argparse
 import csv
 import json

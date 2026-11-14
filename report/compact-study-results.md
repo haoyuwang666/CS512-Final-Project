@@ -1,5 +1,7 @@
 # Compact E1–E5 results
 
+TODO(team): Keep reported findings and limitations traceable to the archived compact study.
+
 Executed November 14, 2026. **All 81 frozen study runs completed in 67.9 minutes:** 72 unique E1–E4 runs and nine E5 runs. Six policy pilots and three controller pilots are archived separately and excluded from these estimates. The revised one-to-two-hour execution budget was met.
 
 The implemented treatments are N (no failure), OFF (failure without repair), S (shared upload service), F25, F50, and L (load-aware repair). All retain the same total source upload limiter. Backend build/static/race, measurement, smoke, repair, cleanup, deletion, exact fragment-timing, and real-media decoding gates passed. No frontend changes were needed.

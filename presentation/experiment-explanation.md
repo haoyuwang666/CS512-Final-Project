@@ -1,5 +1,7 @@
 # Experiment explanation: E0–E5
 
+TODO(team): Keep experiment procedures, measurements and limitations aligned with archived evidence.
+
 This document explains **what each experiment asks, how the implemented harness performs it, what is measured, and what the results permit us to conclude**. It describes the executed compact study, not the earlier larger proposal.
 
 Companion: [section-based presentation layout](presentation-layout.md). Full results: [compact-study-results.md](../report/compact-study-results.md).

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""E1-E4 compact, paired, real-transfer experiments; shared cells execute once."""
+"""TODO(team): Maintain this experiment tool. E1-E4 compact, paired, real-transfer experiments; shared cells execute once."""
 import argparse
 import concurrent.futures
 import json

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regression checks for honest timing, failed probes and censored results."""
+"""TODO(team): Maintain this experiment tool. Regression checks for honest timing, failed probes and censored results."""
 import http.server
 import json
 from pathlib import Path

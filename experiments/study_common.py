@@ -1,4 +1,4 @@
-"""Real-process study support. No synthetic results; all clocks are observer monotonic."""
+"""TODO(team): Maintain this experiment tool. Real-process study support. No synthetic results; all clocks are observer monotonic."""
 import concurrent.futures
 import hashlib
 import json

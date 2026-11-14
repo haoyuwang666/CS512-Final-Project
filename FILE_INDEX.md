@@ -32,14 +32,23 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [docs/storage.md](docs/storage.md) | TODO(Yuquan)：补逐 fsync 掉电测试、库存分页与观测热度策略；已实现的上报/修复流程见 reliability.md。 |
 | [docs/verification.md](docs/verification.md) | TODO(Haoyu)：后续每次修改按风险更新验证证据；Docker、分区和新研究策略需分别验收。 |
 | [experiments/aggregate.py](experiments/aggregate.py) | """TODO(Tian): Add paired run-level differences and uncertainty; keep failed/stopped sessions in completion denominators.""" |
+| [experiments/analyze_repair_playback.py](experiments/analyze_repair_playback.py) | """TODO(team): Maintain this experiment tool. Rebuild slide exhibits from archived runs; failed/censored outcomes remain visible.""" |
 | [experiments/compare.py](experiments/compare.py) | """TODO(Yuquan): Validate sensitivity to workload design before interpreting diagnostic confidence intervals.""" |
 | [experiments/compare_test.py](experiments/compare_test.py) | """TODO(Yuquan): Extend metric validation when paired reports gain new statistics.""" |
+| [experiments/controller_recovery_study.py](experiments/controller_recovery_study.py) | """TODO(team): Maintain this experiment tool. E5: direct timed application probes, committed task continuity, quorum refusal.""" |
 | [experiments/fault_injection.py](experiments/fault_injection.py) | """TODO(Yuquan): Add timed trace-driven faults; explicit Docker/Console actions never remove stored data.""" |
+| [experiments/finalize_compact_study.py](experiments/finalize_compact_study.py) | """TODO(team): Maintain this experiment tool. Final audit and slide-focused exhibits. Raw event journals are never changed.""" |
 | [experiments/paired.py](experiments/paired.py) | """TODO(Yuquan): Extend controlled cold-start comparisons with warm-up and timed fault traces.""" |
 | [experiments/plot.py](experiments/plot.py) | """TODO(Tian): Replace this diagnostic SVG with run-level comparison plots and uncertainty for formal experiments.""" |
+| [experiments/repair_playback_study.py](experiments/repair_playback_study.py) | """TODO(team): Maintain this experiment tool. E1-E4 compact, paired, real-transfer experiments; shared cells execute once.""" |
 | [experiments/run.py](experiments/run.py) | """TODO(Tian): Add seeded request/failure traces, fresh-state resets and warm-up; current runner is a baseline plumbing check, not a controlled study.""" |
+| [experiments/run_compact_study.py](experiments/run_compact_study.py) | """TODO(team): Maintain this experiment tool. Run the frozen serial E1-E5 study; incremental artifacts survive interruption.""" |
 | [experiments/scenarios/baseline.json](experiments/scenarios/baseline.json) | "_todo": "TODO(Tian): Set media bitrate, fresh cluster state, failure trace and matching resource budgets before formal experiments.", |
+| [experiments/scenarios/compact-repair.json](experiments/scenarios/compact-repair.json) | "_todo": "TODO(team): Maintain the frozen compact study workload, failure schedules and resource budgets.", |
 | [experiments/scenarios/main.json](experiments/scenarios/main.json) | "_todo": "TODO(Yuquan): Extend this controlled cold-start scenario with warm-up, fault traces and a broader load matrix before calling it the final study.", |
+| [experiments/study_common.py](experiments/study_common.py) | """TODO(team): Maintain this experiment tool. Real-process study support. No synthetic results; all clocks are observer monotonic.""" |
+| [experiments/study_test.py](experiments/study_test.py) | """TODO(team): Maintain this experiment tool. Regression checks for honest timing, failed probes and censored results.""" |
+| [experiments/validate_compact_study.py](experiments/validate_compact_study.py) | """TODO(team): Maintain this experiment tool. Archive serial correctness gates before measured clusters start.""" |
 | [frontend/index.html](frontend/index.html) | <!-- TODO(Tian): Maintain the React entry HTML; real decoding is outside this starter. --> |
 | [frontend/package.json](frontend/package.json) | "_todo": "TODO(Tian): Maintain the dashboard package; generated lockfile purpose is documented in FILE_INDEX.md.", |
 | [frontend/pnpm-lock.yaml](frontend/pnpm-lock.yaml) | # TODO(Tian): Generated dependency lock; update using pnpm install and review resolved package changes. |
@@ -120,8 +129,14 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [internal/storage/reporting.go](internal/storage/reporting.go) | // TODO(Yuquan): Bound/paginate reports for inventories larger than the lab JSON limit. |
 | [internal/storage/store.go](internal/storage/store.go) | // TODO(Yuquan): Extend immutable object storage with inventory and authorized cleanup; never acknowledge before durable install. |
 | [internal/storage/store_test.go](internal/storage/store_test.go) | // TODO(Yuquan): Add crash-at-each-fsync and concurrent quota tests before implementing cleanup or migrations. |
+| [internal/storage/traffic.go](internal/storage/traffic.go) | // TODO(Yuquan): Maintain classified traffic accounting and repair policies under the shared upload limit. |
+| [internal/storage/traffic_test.go](internal/storage/traffic_test.go) | // TODO(Yuquan): Maintain regression coverage for repair policy rules, traffic counters and upload limiting. |
+| [presentation/experiment-explanation.md](presentation/experiment-explanation.md) | TODO(team): Keep experiment procedures, measurements and limitations aligned with archived evidence. |
+| [presentation/presentation-layout.md](presentation/presentation-layout.md) | TODO(team): Maintain the presentation structure and references to verified experiment exhibits. |
+| [report/compact-experiment-design.md](report/compact-experiment-design.md) | TODO(team): Preserve the executed compact study design and document its exploratory limits. |
+| [report/compact-study-results.md](report/compact-study-results.md) | TODO(team): Keep reported findings and limitations traceable to the archived compact study. |
 | [report/evaluation.md](report/evaluation.md) | TODO(Tian)：填写工作负载、配对对照、指标、不确定性及负结果；不将基础流水线数据当正式实验。 |
-| [report/experiment-plan.md](report/experiment-plan.md) | TODO(team): Retain the backend regression gates, implement the stated measurement/policy extensions, freeze pilot-calibrated settings, and archive the final runs. |
+| [report/experiment-plan.md](report/experiment-plan.md) | TODO(team): Maintain the original experiment specification and its link to the superseding compact design. |
 | [report/final.md](report/final.md) | TODO(Haoyu)：课程格式确认后合并各负责人章节，列出实际贡献、已知限制与 AI 辅助使用；当前不是已完成报告。 |
 | [report/integration.md](report/integration.md) | TODO(Haoyu)：说明架构、构建环境、端到端验证、实现与计划的差异和实际贡献。 |
 | [report/literature-review-and-research-focus.md](report/literature-review-and-research-focus.md) | TODO(team): Run the contention pilot, choose the final policy scope, and collect evidence before treating the hypotheses below as findings. |
@@ -149,16 +164,3 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [tests/system/media.py](tests/system/media.py) | """TODO(Tian): Add browser decoding automation when a supported browser runner is available.""" |
 | [tests/system/repair.py](tests/system/repair.py) | """TODO(Yuquan): Extend repair acceptance with sustained network partitions and power-loss faults.""" |
 | [tests/system/smoke.py](tests/system/smoke.py) | """TODO(Haoyu): Extend this real-process Raft smoke test with partitions, disk-loss faults and task recovery.""" |
-
-## Compact research study
-
-- `experiments/scenarios/compact-repair.json`: frozen time-bounded study settings.
-- `experiments/repair_playback_study.py`: paired E1–E4 lifecycle and raw measurements.
-- `experiments/controller_recovery_study.py`: E5 direct-probe failover/task/quorum checks.
-- `experiments/study_common.py`, `experiments/study_test.py`: shared observations and measurement regressions.
-- `experiments/analyze_repair_playback.py`: CSV tables, paired effects and PNG/SVG slide figures.
-- `report/compact-experiment-design.md`: reduced scope, matrix and claim limits.
-
-- `experiments/validate_compact_study.py`, `experiments/run_compact_study.py`: archived gates and serial frozen execution.
-- `experiments/finalize_compact_study.py`: final audit, stratified tables, paired figures, and analysis provenance.
-- `report/compact-study-results.md`: executed findings and scientific claim boundaries.

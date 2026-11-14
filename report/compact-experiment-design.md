@@ -1,5 +1,7 @@
 # Compact E1–E5 study (frozen after separate pilot)
 
+TODO(team): Preserve the executed compact study design and document its exploratory limits.
+
 The user revised the time constraint on November 14, 2026: all experiments must finish within one or two hours. This design supersedes the run counts and fixture/horizon settings of `experiment-plan.md`, while retaining its questions and policy definitions. It is an **exploratory characterization**, not a powered confirmatory study.
 
 **Executed:** All 81 frozen runs completed in 67.9 minutes. See [the results](compact-study-results.md).

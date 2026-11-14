@@ -1,5 +1,7 @@
 # Experiment Plan: Playback and Replica Recovery
 
+TODO(team): Maintain the original experiment specification and its link to the superseding compact design.
+
 Prepared: November 14, 2026  
 Scope: experiments needed to support the research questions and result pages in [the PowerPoint outline](powerpoint-outline.md).
 

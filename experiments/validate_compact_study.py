@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive serial correctness gates before measured clusters start."""
+"""TODO(team): Maintain this experiment tool. Archive serial correctness gates before measured clusters start."""
 import json
 from pathlib import Path
 import subprocess

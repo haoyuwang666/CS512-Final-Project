@@ -1,4 +1,5 @@
 {
+  "_todo": "TODO(team): Maintain the frozen compact study workload, failure schedules and resource budgets.",
   "name": "compact-repair-v1",
   "study_kind": "exploratory small-sample real-process study",
   "seeds": [

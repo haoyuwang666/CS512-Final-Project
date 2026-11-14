@@ -1,3 +1,4 @@
+// TODO(Yuquan): Maintain classified traffic accounting and repair policies under the shared upload limit.
 package storage
 
 import (

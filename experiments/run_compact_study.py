@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the frozen serial E1-E5 study; incremental artifacts survive interruption."""
+"""TODO(team): Maintain this experiment tool. Run the frozen serial E1-E5 study; incremental artifacts survive interruption."""
 import json
 from pathlib import Path
 import shutil

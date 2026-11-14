@@ -1,3 +1,4 @@
+// TODO(Yuquan): Maintain regression coverage for repair policy rules, traffic counters and upload limiting.
 package storage
 
 import (
