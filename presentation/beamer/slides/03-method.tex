@@ -7,30 +7,45 @@
 Topology & 3 Controllers + 3 Peers; real HTTP/TCP\\
 Fixture & 9 distinct 128 KiB segments; 2 logical seconds each\\
 Source limits & 96 / 144 / 192 KiB/s\\
-Demand & Low: 2 viewers; high: 6; burst arrivals at 0 / 4 / 12 s\\
-Client & Window 3; concurrency 2; startup buffer 4 s\\
+Demand & Low: 2 viewers; high: 6 viewers\\
+Client & Prefetch window: 3 segments; concurrent downloads: 2; startup buffer: 4 s of content\\
 Timeouts & 8 s per download attempt; 42 s per session\\\bottomrule
 \end{tabularx}
-\takeaway{Real byte transfer with simulated media consumption, not browser measurement.}
+% \takeaway{Real byte transfer with simulated media consumption, not browser measurement.}
 \note{Processes share CPU, RAM, disks and the host network stack. Fresh stores do not flush the OS page cache. Placement is fixed; source selection is round-robin.}
 \end{frame}
-\begin{frame}{Measure delivery and redundancy together}
-\begin{columns}[T,onlytextwidth]
-\column{.47\textwidth}
-\begin{block}{Executed study}
-81 unique runs in 67.9 minutes\\
-72 E1--E4 runs + 9 E5 runs\\
-396 scheduled viewer outcomes\\
-Pilots excluded from estimates
-\end{block}
-\column{.49\textwidth}
-\begin{block}{Outcomes}
-Completion and observed stalls\\
-Verified two-copy restoration\\
-Repair payload\\
-One-copy exposure (MiB$\cdot$s)
-\end{block}
-\end{columns}
-\small First fault: 5 s. Observation horizon: 50 s. Recovery target: 40 s after fault. Three paired contexts; two per E4 cell.
-\note{Treatment order is randomized and traces are paired. Failed viewers stay in the denominator. Inventory verification is sampled approximately every two seconds, so restoration is bracketed rather than exact.}
+
+\begin{frame}{Evaluation Metrics and Failure Timeline}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{lY}
+\toprule
+Metric & What it measures \\
+\midrule
+Playback completion & Completed sessions / all scheduled sessions \\
+Playback stalls & Mean cumulative post-fault stall time per viewer \\
+Replica recovery & Time to restore two (majority) verified, reachable copies of all affected segments \\
+Repair traffic & Repair payload sent, including retries (MiB) \\
+One-copy exposure & Data size $\times$ time with one reachable copy (MiB$\cdot$s) \\
+\bottomrule
+\end{tabularx}
+
+\par\vspace{3mm}
+\textbf{E1--E4 timeline:} first failure at 5 s; observation ends at 50 s.\\
+\textbf{Recovery target:} within 40 s after the first Peer failure.
+
+\par\vspace{2mm}
+% {\footnotesize
+% 81 unique runs: 72 for E1--E4 and 9 for E5.\\
+% 396 scheduled playback sessions in E1--E4; failed sessions remain included.
+% }
+\note{Completion means finishing all simulated playback; the downloads use real
+HTTP traffic. Stall averages include failed sessions and stop accumulating when
+a session ends. Exposure sums affected segment sizes weighted by time with only
+one reachable copy. Verified recovery requires matching size/hash receipts and
+committed replica registrations. Inventory checks occur approximately every two
+seconds, so recovery timing and exposure are sampled estimates. There are three
+paired source-failure contexts per setting, with two per E4 cell. Treatment order
+is randomized; pilots are excluded. The executed study took 67.9 minutes.
+E5 has separate Controller-failure scenarios and timing origins.}
 \end{frame}

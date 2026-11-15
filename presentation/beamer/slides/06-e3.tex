@@ -1,39 +1,93 @@
 % TODO(team): Preserve the negative overall result and censored recovery outcome.
 \section{E3: policy comparison}
-\begin{frame}{Compare adaptation with credible fixed controls}
-\begin{block}{Treatments}S: shared \quad F25: 25\% \quad F50: 50\% \quad L: adaptive\end{block}
+\begin{frame}{E3: How Repair Policies Balance Playback and Recovery}
+% \begin{block}{Repair Policies}
+% \begin{itemize}
+%     \item \textbf{S:} shared upload bandwidth, no additional repair cap.
+%     \item \textbf{F25 / F50:} repair capped at 25\% / 50\% of source capacity.
+%     \item \textbf{L:} repair allowance adapts to foreground activity and task age.
+% \end{itemize}
+% \end{block}
+
+\begin{block}{Experimental Setup}
 \begin{itemize}
-\item Steady high demand and burst arrivals.
-\item Same content, initial copies, source limits and paired fault trace.
-\item Evaluate completion, stalls and verified restoration together.
+  \item \textbf{Simultaneous arrivals:} all 6 viewers start within
+        the first 0.5 seconds.
+  \item \textbf{Staggered arrivals:} 6 viewers start in three groups
+        of 2, at approximately 0, 4, and 12 seconds.
+  \item \textbf{Controlled comparison:} all policies use the same
+        video, initial replica placement, failed Peer, and failure timing.
+  \item \textbf{Shared capacity:} each Peer's total upload limit
+        stays the same across policies; only the repair allowance changes.
 \end{itemize}
-\takeaway{Less observed stall alone does not establish a better policy.}
-\note{A policy can reduce foreground interference while delaying redundancy recovery. F50 is a prespecified credible comparator, not selected after inspecting the final results.}
+\end{block}
+
+\takeaway{Evaluate playback completion, stalls, and verified replica recovery together.}
+\note{All policies share the same total source upload limiter. F25 and F50
+add repair caps rather than reserving bandwidth. Staggered arrivals are at approximately
+0, 0, 4, 4.2, 12, and 12.2 seconds. Each workload-policy combination uses three
+paired source-failure contexts. Recovery requires matching inventory receipts
+and committed registrations. F50 was selected before inspecting final results.
+The task-age floor did not activate during these runs.}
 \end{frame}
-\begin{frame}{No consistent overall advantage for L}
+
+\begin{frame}{Playback and Recovery Across Repair Policies}
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{
+  l *{4}{>{\centering\arraybackslash}X}
+}
+\toprule
+Policy / allowance
+& \multicolumn{2}{c}{Avg. stall per viewer (s)}
+& \multicolumn{2}{c}{Recovered by 40 s} \\
+\cmidrule(lr){2-3}
+\cmidrule(lr){4-5}
+& Simultaneous & Staggered & Simultaneous & Staggered \\
+\midrule
+S: no extra cap & 4.46 & 6.18 & 3/3 & 2/3 \\
+F25: 25\%      & 4.73 & 6.28 & 3/3 & 1/3 \\
+F50: 50\%      & 4.88 & 6.20 & 3/3 & 2/3 \\
+L: adaptive    & 4.33 & 6.21 & 3/3 & 1/3 \\
+\bottomrule
+\end{tabularx}
+\par\vspace{2mm}
+{\footnotesize
+Recovered by 40 s: affected segments regaining majority verified within 40 s after failure.
+}
+\par\vspace{2mm}
+{\footnotesize
+L: 25\% when busy; 100\% after 2 s idle. All policies share the same total source cap.
+}
+\par\vspace{2mm}
+Completed sessions in 3 runs: \textbf{7/18} simultaneous; \textbf{9/18} staggered. (all policies)
+\takeaway{L showed no consistent advantage over F50 in playback and recovery.}
+\note{Stall values include all sessions, including failed sessions, and represent
+mean cumulative observed stall per viewer. Recovery timing is measured from the
+first fault, with three paired contexts per policy and workload. Mean L minus F50
+stall difference is -0.55 seconds for simultaneous arrivals and +0.01 for staggered
+arrivals. The former is driven by one context. An L recovery observation at 40.05 s
+is close to the threshold relative to the approximately two-second verification
+cadence. The task-age floor did not activate in these runs. Recovery means all affected segments have two verified, reachable copies. F25 had one staggered run unrecovered by the observation horizon.}
+\end{frame}
+
+\begin{frame}{Lower Playback Stalls Can Delay Replica Recovery}
 \small
-\begin{tabularx}{\textwidth}{lYYY}
-\toprule Policy & Steady stall & Burst stall & Verified by 40 s: steady / burst \\\midrule
-S & 4.46 s & 6.18 s & 3/3 \quad 2/3\\
-F25 & 4.73 s & 6.28 s & 3/3 \quad 1/3\\
-F50 & 4.88 s & 6.20 s & 3/3 \quad 2/3\\
-L & 4.33 s & 6.21 s & 3/3 \quad 1/3\\\bottomrule
+\textbf{Simultaneous arrivals:} the slowest Peer fails; all six viewers finish.
+\par\vspace{3mm}
+\begin{tabularx}{\textwidth}{Ycc}
+\toprule
+Metric & F50 (50\%) & L (adaptive) \\
+\midrule
+Avg. cumulative stall / viewer & 8.53 s & 6.88 s \\
+Verified recovery after failure & 33.99 s & 36.06 s \\
+One-copy exposure & 18.82 MiB$\cdot$s & 20.38 MiB$\cdot$s \\
+\bottomrule
 \end{tabularx}
-\vspace{3mm}
-All policies: \textbf{7/18} steady and \textbf{9/18} burst completions.\\
-F25: one burst run unrecovered at the observation horizon.
-\takeaway{The data do not establish a consistent L advantage over F50.}
-\note{Mean L minus F50 stall difference is -0.55 seconds under steady demand and +0.01 under bursts. The steady change is driven by one context. One L restoration observation at 40.05 seconds is too close to the target for precise timing claims with two-second sampling.}
-\end{frame}
-\begin{frame}{A local improvement has a recovery cost}
-\small Feasible high-load context: the slowest Peer fails; all six viewers finish.
-\vspace{3mm}
-\begin{tabularx}{\textwidth}{Yll}
-\toprule Metric & F50 & L \\\midrule
-Observed stall per viewer & 8.53 s & 6.88 s\\
-Verified restoration after fault & 33.99 s & 36.06 s\\
-One-copy exposure & 18.82 MiB$\cdot$s & 20.38 MiB$\cdot$s\\\bottomrule
-\end{tabularx}
-\takeaway{L saved 1.65 s of stalls, but restored redundancy 2.07 s later.}
-\note{This is a workload-specific compromise, not dominance or a population estimate. Source: compact-study-results.md, E3.}
+\par\vspace{3mm}
+\takeaway{L reduced stalls by 1.65 s per viewer, but repaired 2.07 s later.}
+\note{This is one paired workload/failure context, not an overall advantage.
+The task-age floor did not activate. Verified recovery requires two reachable,
+hash-valid, registered copies of every affected segment.
+Source: compact-study-results.md, E3.}
 \end{frame}
