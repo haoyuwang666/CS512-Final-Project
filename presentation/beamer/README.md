@@ -2,7 +2,7 @@
 
 TODO(team): Keep the editing guide and experimental figures synchronized with the slides.
 
-这是一份标准 LaTeX Beamer 工程，使用 TeX Live 编译，文字、表格和系统示意图均可直接编辑。无需 Python 或 PowerPoint 插件。共 31 页：封面、25 页主体、1 页可选演示、4 页附录。
+这是一份标准 LaTeX Beamer 工程，使用 TeX Live 编译，文字、表格和系统示意图均可直接编辑。无需 Python 或 PowerPoint 插件。共 31 页：封面、26 页主体、4 页附录。
 
 ## 编译
 
@@ -24,7 +24,7 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=dist main.tex
 |---|---|
 | `main.tex` | 标题、作者、日期、章节顺序；所有编译都从这里开始 |
 | `theme.tex` | 配色、字体、页脚、边距，以及图示的公共样式 |
-| `slides/01-system.tex` | 动机、架构、发布与播放流程、实现情况、演示 |
+| `slides/01-system.tex` | 动机、架构、发布与播放流程、故障恢复、实现情况 |
 | `slides/02-policies.tex` | 研究问题、N/OFF/S/F25/F50/L 策略 |
 | `slides/03-method.tex` | 实验环境、指标与样本数量 |
 | `slides/04-e1.tex` 至 `08-e5.tex` | E1–E5 实验设计、数值与结论 |
@@ -49,9 +49,8 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=dist main.tex
 
 表格内以 `&` 分列、`\\` 换行。普通文字中的 `%`、`&`、`_`、`#` 分别写成 `\%`、`\&`、`\_`、`\#`。正文为英文，当前字体配置不包含中文支持。
 
-## 演示、讲稿和篇幅
+## 讲稿和篇幅
 
-- 在 `main.tex` 中将 `\showdemotrue` 改为 `\showdemofalse`，隐藏可选演示页。
 - 取消 `\setbeameroption{show notes}` 的注释，可生成带单独讲稿页的版本；页数会增加。
 - 删除或注释不需要的 `frame` 可以缩短展示。不要只隐藏页码，因为内容仍会留在 PDF 中。
 - 删除 `\input{slides/10-appendix}` 可以去掉附录。
