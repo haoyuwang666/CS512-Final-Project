@@ -134,7 +134,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [presentation/beamer/Makefile](presentation/beamer/Makefile) | # TODO(team): Maintain the TeX Live build entry point for the presentation. |
 | [presentation/beamer/README.md](presentation/beamer/README.md) | TODO(team): Keep the editing guide and experimental figures synchronized with the slides. |
 | [presentation/beamer/main.tex](presentation/beamer/main.tex) | % TODO(team): Edit section inputs and presentation metadata here. |
-| [presentation/beamer/slides/01-system.tex](presentation/beamer/slides/01-system.tex) | % TODO(team): Rehearse the architecture explanation and optional real-media demo. |
+| [presentation/beamer/slides/01-system.tex](presentation/beamer/slides/01-system.tex) | % TODO(team): Rehearse the architecture, video workflow and recovery explanation. |
 | [presentation/beamer/slides/02-policies.tex](presentation/beamer/slides/02-policies.tex) | % TODO(team): Keep policy descriptions aligned with the frozen study configuration. |
 | [presentation/beamer/slides/03-method.tex](presentation/beamer/slides/03-method.tex) | % TODO(team): Keep setup and metric boundaries explicit during presentation. |
 | [presentation/beamer/slides/04-e1.tex](presentation/beamer/slides/04-e1.tex) | % TODO(team): Show completion beside stall comparisons. |
@@ -146,6 +146,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [presentation/beamer/slides/10-appendix.tex](presentation/beamer/slides/10-appendix.tex) | % TODO(team): Keep appendix figures tied to their original captions and units. |
 | [presentation/beamer/theme.tex](presentation/beamer/theme.tex) | % TODO(team): Adjust shared colors, typography and layout here, not per slide. |
 | [presentation/experiment-explanation.md](presentation/experiment-explanation.md) | TODO(team): Keep experiment procedures, measurements and limitations aligned with archived evidence. |
+| [presentation/haoyu-speaker-script.md](presentation/haoyu-speaker-script.md) | TODO(Haoyu): Keep the speech aligned with slides 1 to 10 and regenerate the Word export after edits. |
 | [presentation/presentation-layout.md](presentation/presentation-layout.md) | TODO(team): Maintain the presentation structure and references to verified experiment exhibits. |
 | [report/compact-experiment-design.md](report/compact-experiment-design.md) | TODO(team): Preserve the executed compact study design and document its exploratory limits. |
 | [report/compact-study-results.md](report/compact-study-results.md) | TODO(team): Keep reported findings and limitations traceable to the archived compact study. |

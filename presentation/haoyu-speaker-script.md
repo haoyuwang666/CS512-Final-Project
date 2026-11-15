@@ -1,5 +1,7 @@
 # Cooperative Video Storage Presentation Script
 
+TODO(Haoyu): Keep the speech aligned with slides 1 to 10 and regenerate the Word export after edits.
+
 Speaker: Haoyu Wang. Covers slides 1 to 10 in the current presentation, ending before methods. Read the paragraphs aloud; the last paragraph of each slide leads into the next. Allow about 8 to 10 minutes, including pauses and pointing to diagrams.
 
 ## Slide 1 Balancing Playback Continuity and Replica Recovery

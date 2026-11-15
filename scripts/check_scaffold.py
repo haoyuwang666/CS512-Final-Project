@@ -6,10 +6,13 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"node_modules", "dist", "bin", ".data", "__pycache__", ".git", ".venv", ".DS_Store", ".local-reference", ".pnpm-store"}
+# Generated Word exports are binary artifacts; audit their Markdown sources.
+EXCLUDED_SUFFIXES = {".docx"}
 
 
 def source_files():
     return sorted(path for path in ROOT.rglob("*") if path.is_file()
+                  and path.suffix.lower() not in EXCLUDED_SUFFIXES
                   and not any(part in EXCLUDED for part in path.relative_to(ROOT).parts)
                   and ("results" not in path.relative_to(ROOT).parts or path.name == "README.md"))
 
