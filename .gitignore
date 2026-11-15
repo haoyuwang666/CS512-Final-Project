@@ -17,6 +17,7 @@ results/*/
 !results/compact-controller-pilot/
 !results/compact-validation/
 .DS_Store
+.vscode/
 
 # Local planning documents and reference material.
 .local-reference/

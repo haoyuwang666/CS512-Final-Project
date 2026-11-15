@@ -6,6 +6,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 
 | 文件 | 用途 / 后续负责人 |
 |---|---|
+| [.vscode/settings.json](.vscode/settings.json) | TODO(team): Keep LaTeX Workshop outputs consistent with the Beamer Makefile. |
 | [.dockerignore](.dockerignore) | # TODO(Haoyu): Keep host caches, large datasets and build outputs outside Docker build contexts. |
 | [.env.example](.env.example) | # TODO(Haoyu): Document local-only service settings; do not store secrets here. |
 | [.gitattributes](.gitattributes) | # TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts. |

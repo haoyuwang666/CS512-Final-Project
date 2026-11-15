@@ -1,25 +1,70 @@
 % TODO(team): Explain exposure units and the distinction between grace and cancellation.
 \section{E2: repair timing}
-\begin{frame}{Grace trades early action against unnecessary work}
+\begin{frame}{E2: How Long Should Repair Wait After a Peer Failure}
+\begin{block}{Experimental Setup}
 \begin{itemize}
-\item Shared repair policy S; grace of \textbf{1 / 3 / 8 seconds}.
-\item Brief absence: original Peer returns after \textbf{4 seconds}.
-\item Persistent absence: original Peer stays offline.
-\item Measure repair payload and time spent with one reachable copy.
+  \item \textbf{Shared-bandwidth repair (S)}, with grace periods
+        of \textbf{1, 3, 8 seconds}.
+  \item \textbf{Brief outage}: the failed Peer returns
+        \textbf{4 seconds after failure}.
+  \item \textbf{Persistent outage}: the failed Peer remains offline
+        for the rest of the experiment.
 \end{itemize}
-\takeaway{Grace controls when repair starts, not whether a started task is cancelled.}
+\end{block}
+
+\vspace{3mm}
+\textbf{Metrics:} Repair traffic and time with only one reachable copy.
+
+\takeaway{Grace delays repair initiation (copy a segment to another Peer). \\ Once scheduled, the copy proceeds even if the failed Peer returns.}
 \note{An unavailable Peer is not necessarily permanently lost. Grace can avoid copying data that will soon return, but keeps fewer reachable copies for longer.}
 \end{frame}
-\begin{frame}{Waiting avoids copies, but extends exposure}
+
+% \begin{frame}{Waiting avoids copies, but extends exposure}
+% \small
+% \begin{tabularx}{\textwidth}{lYYY}
+% \toprule Grace & Brief: repair MiB & Persistent: repair MiB & Persistent exposure MiB$\cdot$s \\\midrule
+% 1 s & 0.125 & 0.750 & 17.42\\
+% 3 s & 0 & 0.750 & 18.24\\
+% 8 s & 0 & 0.750 & 20.20\\\bottomrule
+% \end{tabularx}
+% \vspace{4mm}\normalsize
+% All 54 brief-outage viewer sessions completed.
+% \takeaway{Persistent exposure increased about 16\% from 1 s to 8 s grace.}
+% \note{One-second grace copied one 128 KiB segment per brief-outage run. Longer grace avoided that work. Full restoration is not strictly monotonic in every context because source contention and coordinator ticks also matter. Source: compact-study-results.md, E2.}
+% \end{frame}
+
+\begin{frame}{Repair Traffic and Risk Under Different Settings}
 \small
-\begin{tabularx}{\textwidth}{lYYY}
-\toprule Grace & Brief: repair MiB & Persistent: repair MiB & Persistent exposure MiB$\cdot$s \\\midrule
-1 s & 0.125 & 0.750 & 17.42\\
-3 s & 0 & 0.750 & 18.24\\
-8 s & 0 & 0.750 & 20.20\\\bottomrule
+% \textbf{Brief outage:} Peer returns after 4 s.\\
+% \textbf{Persistent outage:} Peer remains offline.
+\par\vspace{3mm}
+\begin{tabularx}{\textwidth}{
+  c
+  *{3}{>{\centering\arraybackslash}X}
+}
+\toprule
+Grace &
+Brief: repair traffic (MiB) &
+Persistent: repair traffic (MiB) &
+Persistent: one-copy exposure (MiB$\cdot$s) \\
+\midrule
+1 s & 0.125 & 0.750 & 17.42 \\
+3 s & 0     & 0.750 & 18.24 \\
+8 s & 0     & 0.750 & 20.20 \\
+\bottomrule
 \end{tabularx}
-\vspace{4mm}\normalsize
-All 54 brief-outage viewer sessions completed.
-\takeaway{Persistent exposure increased about 16\% from 1 s to 8 s grace.}
-\note{One-second grace copied one 128 KiB segment per brief-outage run. Longer grace avoided that work. Full restoration is not strictly monotonic in every context because source contention and coordinator ticks also matter. Source: compact-study-results.md, E2.}
+\par\vspace{3mm}
+{\footnotesize
+Values are averages across three runs.
+One-copy exposure accumulates affected segment size
+$\times$ time with only one reachable copy.
+}
+\takeaway{Longer grace avoided repair traffic during brief outages,\\
+but increased one-copy exposure during persistent outages.}
+\note{With 1 s grace, each brief-outage run copied one 128 KiB
+segment. With 3 s or 8 s grace, no repair payload was observed.
+Persistent-outage repair traffic stayed at 0.750 MiB,
+while one-copy exposure rose by about 16\% from 1 s to 8 s grace.
+These observations apply to the tested traces.
+Source: compact-study-results.md, E2.}
 \end{frame}

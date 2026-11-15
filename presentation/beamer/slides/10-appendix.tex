@@ -4,6 +4,37 @@
 \centering\includegraphics[width=\textwidth,height=.70\textheight,keepaspectratio]{E1-paired-effects.png}
 \note{Early failed sessions can report lower observed stalls; show completion alongside this plot. Source: archived E1 paired effects.}
 \end{frame}
+% E2 formulas mirror the sampled accounting in repair_playback_study.py.
+\begin{frame}{E2: metric definitions}
+\small
+\textbf{Repair traffic (MiB)}
+\[
+  R_r = \frac{\sum_p B^{\mathrm{repair}}_{p,r}}{2^{20}}
+\]
+\textbf{One-copy exposure (MiB$\cdot$s)}
+\[
+ E_r=\sum_k (t_{k+1}-t_k)
+      \sum_{s\in A_r}\frac{b_s}{2^{20}}\,
+      \mathbf{1}\!\left[c_{s,r}(t_k)=1\right]
+\]
+\textbf{Reported means across three runs}
+\[
+ \overline{R}=\frac{1}{3}\sum_{r=1}^{3}R_r,
+ \qquad
+ \overline{E}=\frac{1}{3}\sum_{r=1}^{3}E_r.
+\]
+{\footnotesize
+$B^{\mathrm{repair}}_{p,r}$: repair payload bytes sent by Peer $p$;
+$A_r$: affected segments; $b_s$: segment size in bytes;\\
+$c_{s,r}(t_k)$: reachable, verified, registered copy count;
+$t_k$: sampling time; $\mathbf{1}[\cdot]$: indicator.
+}
+\note{Repair traffic includes retries, but excludes HTTP headers and TCP overhead.
+Exposure uses sampled states from the fault to the observation horizon;
+unknown and zero-copy states are accounted for separately.
+Source: experiments/repair_playback_study.py, summarize().}
+\end{frame}
+
 \begin{frame}{E3: outcomes by failed source capacity}
 \centering\includegraphics[width=\textwidth,height=.70\textheight,keepaspectratio]{E3-high-by-failed-peer.png}
 \note{One paired context per failed capacity. These rows are not repeated capacity-stratum estimates.}
