@@ -43,7 +43,7 @@ def trace_for(cell, cfg=None):
     rng = random.Random(cell['seed'])
     arrivals = [rng.uniform(0, .5) for _ in range(cfg['low_viewers'] if cell['load'] == 'low' else cfg['high_viewers'])]
     if cell['load'] == 'burst':
-        arrivals = [rng.uniform(0, .5), rng.uniform(0, .5), 4, 4.2, 12, 12.2]
+        arrivals = cfg.get('staggered_arrivals_s', [rng.uniform(0, .5), rng.uniform(0, .5), 4, 4.2, 12, 12.2])
     return [{'viewer': i, 'arrival_s': a} for i, a in enumerate(arrivals)]
 
 

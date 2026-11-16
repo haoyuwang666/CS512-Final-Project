@@ -6,6 +6,10 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 
 | 文件 | 用途 / 后续负责人 |
 |---|---|
+| [report/late-staggered-e3-results.md](report/late-staggered-e3-results.md) | TODO(team): Preserve the audited late-staggered E3 results and limitations. |
+| [experiments/scenarios/late-staggered-e3.json](experiments/scenarios/late-staggered-e3.json) | TODO(team): Freeze the late-arrival E3 workload and observation window. |
+| [experiments/analyze_late_staggered.py](experiments/analyze_late_staggered.py) | TODO(team): Audit late-arrival runs and summarize per-cohort outcomes. |
+| [experiments/late_staggered_study.py](experiments/late_staggered_study.py) | TODO(team): Reproduce the late-arrival E3 extension. |
 | [.dockerignore](.dockerignore) | # TODO(Haoyu): Keep host caches, large datasets and build outputs outside Docker build contexts. |
 | [.env.example](.env.example) | # TODO(Haoyu): Document local-only service settings; do not store secrets here. |
 | [.gitattributes](.gitattributes) | # TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts. |

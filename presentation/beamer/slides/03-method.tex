@@ -15,7 +15,7 @@ Timeouts & 8 s per download attempt; 42 s per session\\\bottomrule
 \note{Processes share CPU, RAM, disks and the host network stack. Fresh stores do not flush the OS page cache. Placement is fixed; source selection is round-robin.}
 \end{frame}
 
-\begin{frame}{Evaluation Metrics and Failure Timeline}
+\begin{frame}{Evaluation metrics and failure timeline}
 \small
 \renewcommand{\arraystretch}{1.15}
 \begin{tabularx}{\textwidth}{lY}
@@ -32,7 +32,7 @@ One-copy exposure & Data size $\times$ time with one reachable copy (MiB$\cdot$s
 
 \par\vspace{3mm}
 \textbf{E1--E4 timeline:} first failure at 5 s; observation ends at 50 s.\\
-\textbf{Recovery target:} within 40 s after the first Peer failure.
+\textbf{Recovery target:} recover rate of affected segments at 40 s after the first failure.
 
 \par\vspace{2mm}
 % {\footnotesize
