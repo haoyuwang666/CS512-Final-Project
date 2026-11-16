@@ -9,7 +9,11 @@
 \end{enumerate}
 \small S / F50 / L; two paired contexts per delay. Success requires correct hash \emph{and} committed registration.
 \takeaway{A buffered viewer may finish even when fresh delivery is unavailable.}
-\note{The probe checks one sentinel, not the whole video. Its late queue position makes repair timing important.}
+\note{The previous experiments compared playback and repair performance. E4 asks what happens if another Peer fails before repair finishes.
+
+We stop the first original holder, wait four, fourteen, or thirty seconds, and then stop the second original holder. These delays are fixed; we do not wait for repair to succeed.
+
+We then request one selected segment near the end of the repair queue. Success requires both correct bytes and committed registration.}
 \end{frame}
 \begin{frame}{The selected replacement was not ready in time}
 \begin{tabularx}{\textwidth}{lYYY}
@@ -21,5 +25,9 @@ L & 0/2 & 0/2 & 0/2\\\bottomrule
 \vspace{4mm}
 All 18 probes were unavailable under the specified success condition.
 \takeaway{A boundary was observed; no policy advantage or permanent data loss was established.}
-\note{Stopped processes retained their disks. Later delays were not tested. A future completed-repair control should verify replacement availability after every required segment is repaired. Source: compact-study-results.md, E4.}
+\note{We compare S, F50, and L, with two paired contexts for each delay. All eighteen probes were unavailable under this success condition.
+
+This shows a limit of unfinished repair, rather than a policy winner. It also does not establish permanent data loss: the stopped Peers kept their disks. A viewer finishing from its buffer would not prove that fresh delivery was available.
+
+Next, we move from Peer failures to Controller failures.}
 \end{frame}
