@@ -23,21 +23,20 @@ Fixed-delay results concern the selected sentinel; completed-repair controls fet
 \small
 \begingroup
 \renewcommand{\arraystretch}{1.35}
-\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}m{13mm}*{4}{>{\centering\arraybackslash}m{25mm}}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}m{13mm}*{3}{>{\centering\arraybackslash}m{33mm}}}
 \toprule
-Policy & \shortstack{30 s\\Original} & \shortstack{34 s\\Exploration} & \shortstack{34 s\\Validation} & \shortstack{40 s\\Follow-up} \\
+Policy & \shortstack{30 s\\Original} & \shortstack{34 s\\Exploration} & \shortstack{40 s\\Follow-up} \\
 \midrule
-S   & 0/2 & 2/2 & 2/4 & 2/2 \\
-F50 & 0/2 & 2/2 & 3/4 & 2/2 \\
-L   & 0/2 & 0/2 & 4/4 & 2/2 \\
+S   & 0/2 & 2/2 & 2/2 \\
+F50 & 0/2 & 2/2 & 2/2 \\
+L   & 0/2 & 0/2 & 2/2 \\
 \bottomrule
 \end{tabular*}
 \endgroup
 \par\vspace{6mm}
-{\scriptsize Successful target deliveries / trials. Intervals are measured from the first failure.\par}
+{\scriptsize Successful target deliveries / trials. Intervals are measured from the first failure.\\[1mm]
+Independent 34 s validation: S 2/4; F50 3/4; L 4/4.\par}
 \vspace{3mm}
-At 30 s, the selected replacement was not ready in any trial.\par
-\vspace{2mm}
 After verified repair, all \textbf{6 controls} delivered \textbf{all 9 segments} afresh.
 \takeaway{Availability depends on repair readiness when the next failure occurs.}
 \note{At thirty seconds, all three policies failed to deliver the selected segment in both contexts.
