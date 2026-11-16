@@ -68,21 +68,6 @@ Closest model: a \textbf{distributed server network} [2].
 \note{These are logical stages, not a packet sequence: checks, writes and receipt confirmation repeat per segment. FFmpeg packages the real video as continuous fragmented MP4. Ingestion first creates a draft manifest, the segment list with sizes and hashes, and uploads each segment to at least two distinct Peers. Each Peer checks the size and SHA-256 hash, durably installs its bytes and index, and returns a receipt. The Controller verifies receipt metadata and commits replica locations. Publication commits READY only when every segment has the required copies. On playback, the Gateway obtains the published manifest and locations, selects a holder and fetches verified segments. The browser verifies the bytes again and appends them to a MediaSource Extensions buffer for decoding. Downloads are pipelined; the browser does not wait for the whole video. Headless experiments use deterministic payloads and simulated consumption instead of FFmpeg/MSE decoding; they retain the metadata, replication and real HTTP transfer mechanisms.}
 \end{frame}
 
-\begin{frame}{Application implementation and validation}
-\small
-\begin{tabularx}{\textwidth}{YY}
-\toprule Application work & Foundation / tool \\\midrule
-Publication and persistent task lifecycle & HashiCorp Raft, BoltDB, snapshots\\
-Durable indexes and immutable objects & Go HTTP / filesystem, SHA-256\\
-Playback, budgets and experiment harness & FFmpeg / FFprobe for media gates\\
-Console: faults, cleanup and video deletion & React and TypeScript\\\bottomrule
-\end{tabularx}
-\vspace{3mm}
-Archived gates: build, static/race, smoke, repair, cleanup, deletion, exact fragment timing and media decoding.
-\evidence{Evidence: results/compact-study/validation/gates.json.}
-\note{The archived media gates do not establish browser performance in the headless study. Attribute the consensus implementation to HashiCorp rather than presenting it as our own Raft implementation.}
-\end{frame}
-
 \begin{frame}{Playback recovery $\neq$ redundancy recovery}
 \begin{block}{Foreground recovery}
 Peer fails $\rightarrow$ try another holder $\rightarrow$ verify bytes $\rightarrow$ continue delivery.

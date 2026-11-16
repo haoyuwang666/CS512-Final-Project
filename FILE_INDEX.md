@@ -147,7 +147,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [presentation/beamer/slides/10-appendix.tex](presentation/beamer/slides/10-appendix.tex) | % TODO(team): Keep appendix figures tied to their original captions and units. |
 | [presentation/beamer/theme.tex](presentation/beamer/theme.tex) | % TODO(team): Adjust shared colors, typography and layout here, not per slide. |
 | [presentation/experiment-explanation.md](presentation/experiment-explanation.md) | TODO(team): Keep experiment procedures, measurements and limitations aligned with archived evidence. |
-| [presentation/haoyu-speaker-script.md](presentation/haoyu-speaker-script.md) | TODO(Haoyu): Keep the speech aligned with slides 1 to 10 and regenerate the Word export after edits. |
+| [presentation/haoyu-speaker-script.md](presentation/haoyu-speaker-script.md) | TODO(Haoyu): Keep the speech aligned with slides 1 to 9 and regenerate the Word export after edits. |
 | [presentation/presentation-layout.md](presentation/presentation-layout.md) | TODO(team): Maintain the presentation structure and references to verified experiment exhibits. |
 | [report/compact-experiment-design.md](report/compact-experiment-design.md) | TODO(team): Preserve the executed compact study design and document its exploratory limits. |
 | [report/compact-study-results.md](report/compact-study-results.md) | TODO(team): Keep reported findings and limitations traceable to the archived compact study. |
