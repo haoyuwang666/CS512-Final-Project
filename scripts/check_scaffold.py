@@ -6,8 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"node_modules", "dist", "bin", ".data", "__pycache__", ".git", ".venv", ".DS_Store", ".local-reference", ".pnpm-store"}
-# Generated Word exports are binary artifacts; audit their Markdown sources.
-EXCLUDED_SUFFIXES = {".docx"}
+# Generated document exports are binary artifacts; audit their source files.
+EXCLUDED_SUFFIXES = {".docx", ".pdf"}
 
 
 def source_files():
@@ -20,7 +20,7 @@ def source_files():
 def purpose(path):
     if path.name == "go.sum":
         return "TODO(Haoyu)：Go 自动管理的依赖完整性校验；格式禁止添加用途注释，本索引代为说明。"
-    text = path.read_text()
+    text = path.read_text(encoding="utf-8")
     return next((line.strip().replace("|", "/").replace("`", "") for line in text.splitlines() if "TODO" in line), "")
 
 
@@ -40,7 +40,7 @@ def main():
             if path.name != "FILE_INDEX.md":
                 relative = path.relative_to(ROOT).as_posix()
                 lines.append(f"| [{relative}]({relative}) | {purpose(path)} |")
-        (ROOT / "FILE_INDEX.md").write_text("\n".join(lines) + "\n")
+        (ROOT / "FILE_INDEX.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(json.dumps({"source_files": len(source_files()), "missing_todo": missing}, ensure_ascii=False))
 
 

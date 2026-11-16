@@ -1,5 +1,7 @@
 # Cooperative Video Storage Presentation Script
 
+TODO(Yuquan): Keep the speech aligned with slides 19 to 23 and regenerate the PDF export after edits.
+
 Speaker: Yuquan Hu. Covers slides 19 to 23: E4, E5, and Conclusion. Target: about 3 minutes, including short pauses and slide changes. Read only the paragraphs below aloud; timing and preparation notes are not part of the speech.
 
 ## Slide 19 E4: test the second failure near repair completion

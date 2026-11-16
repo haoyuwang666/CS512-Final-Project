@@ -1,3 +1,4 @@
+# TODO(Yuquan): Maintain reproducible E4 follow-up execution and evidence audits.
 """Audit and summarize every follow-up trial without pooling exploration and validation."""
 import argparse
 import csv

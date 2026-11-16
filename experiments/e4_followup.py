@@ -1,3 +1,4 @@
+# TODO(Yuquan): Maintain reproducible E4 follow-up execution and evidence audits.
 """Run E4 alone, preserving the frozen study and all actual probe outcomes."""
 import argparse
 import csv

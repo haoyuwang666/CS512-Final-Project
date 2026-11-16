@@ -1,5 +1,7 @@
 # E4 follow-up: second-holder failure and repair readiness
 
+TODO(Yuquan): Keep this report aligned with the archived E4 follow-up evidence.
+
 Executed November 15, 2026. All 48 trials completed with valid injections: 30 exploratory sweep trials, 12 independent fixed-delay validation trials, and six completion-gated positive controls. The original compact-study archive is unchanged.
 
 ## Design and timing
