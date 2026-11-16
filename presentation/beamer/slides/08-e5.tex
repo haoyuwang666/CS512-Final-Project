@@ -1,38 +1,24 @@
-% TODO(team): Keep recovery timing origins explicit for E5a/b versus E5c.
 \section{E5: Controller recovery}
-\begin{frame}{Recovery requires a successful application request}
-\small
-\begin{tabularx}{\textwidth}{Ylll}
-\toprule Case & Passed & Median & Origin \\\midrule
-E5a: active delivery & 3/3 & 1.52 s & Leader stop\\
-E5b: pending repair & 3/3 & 1.60 s & Leader stop\\
-E5c: majority loss & 3/3 & 1.04 s & Quorum restored\\\bottomrule
+\begin{frame}{E5a and E5b: application recovery after Leader loss}
+\begin{tabularx}{\textwidth}{Yll}
+\toprule Case & Passed & Median recovery \\\midrule
+E5a: Leader stops during delivery & 3/3 & 1.52 s\\
+E5b: Leader stops with repair pending & 3/3 & 1.60 s\\\bottomrule
 \end{tabularx}
-\vspace{4mm}\normalsize
-Fresh quorum-backed metadata, not a health response or Leader role string.
-\takeaway{All nine tested Controller scenarios passed the application contract.}
-\note{E5c excludes deliberate quorum-isolation time in this table. It includes the startup and election interval after the recorded restore event.}
-\end{frame}
-\begin{frame}{E5a: fresh metadata recovered during delivery}
+\vspace{3mm}
 \begin{itemize}
-\item Stop the current Leader during active delivery.
-\item Probe fresh, quorum-backed metadata.
-\item Warm and cold uncached sessions completed in all three trials.
+\item \textbf{E5a:} fresh metadata succeeds; warm and cold sessions complete.
+\item \textbf{E5b:} same task ID and creation time; replacement verified and registered.
 \end{itemize}
-\begin{block}{Observed recovery after Leader stop}
-Median \textbf{1.52 s}; observed range \textbf{1.47--2.74 s}.
-\end{block}
-\note{Cached playback alone cannot demonstrate Controller availability. The cold-session and fresh-probe checks address that distinction. Source: compact-study-results.md, E5a.}
-\end{frame}
-\begin{frame}{E5b: committed repair survived Leader loss}
-\begin{itemize}
-\item Stop the Leader with a committed pending repair task.
-\item New Leader retains the \textbf{same task ID and creation time}.
-\item Target bytes pass hash validation; replacement registration commits.
-\item Controller restart retains task state; source restart retains L configuration.
-\end{itemize}
-\takeaway{3/3 passed; fresh recovery median 1.60 s, range 1.52--1.97 s.}
-\note{This verifies application task continuity in addition to Raft election. A new source process gets a new counter instance ID; counters must not be combined as if continuous.}
+\small Both recovery timers start at Leader stop.
+\takeaway{Recovery requires a successful application request, beyond election.}
+\note{For E5, we require a successful application request, not just a new Leader.
+
+In E5a, we stop the Leader during delivery. Fresh metadata requests recover, and both warm and cold sessions complete in all three trials. Median recovery is one point five two seconds.
+
+In E5b, we stop the Leader with a committed repair task pending. The new Leader preserves the task ID and creation time, and the replacement is verified and registered. All three trials pass, with median recovery of one point six seconds.
+Recovery ranges: E5a 1.47--2.74 s; E5b 1.52--1.97 s.
+E5b also checks task state after Controller restart and L configuration after source restart.}
 \end{frame}
 \begin{frame}{E5c: without a majority, writes were refused}
 \begin{columns}[T,onlytextwidth]
@@ -40,9 +26,13 @@ Median \textbf{1.52 s}; observed range \textbf{1.47--2.74 s}.
 9/9 valid write attempts returned HTTP 503.\\No success acknowledgments.
 \end{block}
 \column{.49\textwidth}\begin{block}{After quorum restoration}
-Baseline state retained.\\Original operation IDs reconciled.\\Median recovery: 1.04 s.
+Baseline state retained.\\Original operation IDs reconciled.\\All 3 trials passed.
 \end{block}
 \end{columns}
-\takeaway{Recovery range 0.85--1.43 s, measured from quorum restoration.}
-\note{This is process-crash and quorum-loss evidence, not sustained-network-partition, power-loss or Byzantine coverage. Source: compact-study-results.md, E5c.}
+\takeaway{Median recovery: 1.04 s from quorum restoration; range 0.85--1.43 s.}
+\note{E5c removes the Controller majority. During stable majority loss, all nine valid write attempts return HTTP five-oh-three, with no success acknowledgments.
+
+After quorum restoration, the baseline state is retained and the original operation IDs are reconciled. All three trials pass, with median recovery of one point zero four seconds. This timer starts when quorum is restored, excluding the deliberate outage.
+The nine attempts span three trials. Coverage is process crashes and quorum loss,
+not sustained network partitions, power loss, or Byzantine faults.}
 \end{frame}
