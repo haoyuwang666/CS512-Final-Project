@@ -10,9 +10,11 @@ E4 asks whether replacement copies can serve after both original holders stop.
 
 We stop the first holder, wait a fixed delay, then stop the second and request a selected segment. Success requires correct bytes and committed registration.
 
-We tested thirty-three through forty seconds, independently repeated thirty-four seconds, and added a control that waits for verified repair completion.
+We compared the original thirty-second result with longer delays, independently repeated thirty-four seconds, and added a control that waits for verified repair completion.
 
 ## Slide 20 E4: availability depends on repair readiness
+
+At thirty seconds, all three policies failed to deliver the selected segment in both contexts.
 
 At thirty-four seconds, independent repeats succeeded in two of four trials for S, three of four for F50, and all four for L.
 

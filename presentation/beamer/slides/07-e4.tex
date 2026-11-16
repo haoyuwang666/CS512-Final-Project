@@ -3,7 +3,7 @@
 \begin{frame}{E4: test the second failure near repair completion}
 \begin{enumerate}
 \item Stop the first original holder at experiment time 5 s.
-\item Wait a fixed \textbf{33 / 34 / 35 / 36 / 40 seconds}.
+\item Wait a fixed interval; compare the original \textbf{30 s} with \textbf{33--40 s} follow-up trials.
 \item Stop the second original holder; probe a selected late-queue segment.
 \end{enumerate}
 \small S / F50 / L; two paired contexts. Success requires correct hash \emph{and} committed target registration.
@@ -21,18 +21,28 @@ Fixed-delay results concern the selected sentinel; completed-repair controls fet
 \end{frame}
 \begin{frame}{E4: availability depends on repair readiness}
 \small
-\begin{tabularx}{\textwidth}{lYYY}
-\toprule Policy & 34 s: validation & 40 s: sweep & After repair\\\midrule
-S & 2/4 & 2/2 & 2/2\\
-F50 & 3/4 & 2/2 & 2/2\\
-L & 4/4 & 2/2 & 2/2\\
+\begingroup
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}>{\centering\arraybackslash}m{13mm}*{4}{>{\centering\arraybackslash}m{25mm}}}
+\toprule
+Policy & \shortstack{30 s\\Original} & \shortstack{34 s\\Exploration} & \shortstack{34 s\\Validation} & \shortstack{40 s\\Follow-up} \\
+\midrule
+S   & 0/2 & 2/2 & 2/4 & 2/2 \\
+F50 & 0/2 & 2/2 & 3/4 & 2/2 \\
+L   & 0/2 & 0/2 & 4/4 & 2/2 \\
 \bottomrule
-\end{tabularx}
+\end{tabular*}
+\endgroup
+\par\vspace{6mm}
+{\scriptsize Successful target deliveries / trials. Intervals are measured from the first failure.\par}
 \vspace{3mm}
-Successful target deliveries / trials. 34 s: four validation trials per policy.\\[2mm]
-All \textbf{6 completed-repair controls} also delivered \textbf{all 9 segments} afresh.
+At 30 s, the selected replacement was not ready in any trial.\par
+\vspace{2mm}
+After verified repair, all \textbf{6 controls} delivered \textbf{all 9 segments} afresh.
 \takeaway{Availability depends on repair readiness when the next failure occurs.}
-\note{At thirty-four seconds, independent repeats succeeded in two of four trials for S, three of four for F50, and all four for L.
+\note{At thirty seconds, all three policies failed to deliver the selected segment in both contexts.
+
+At thirty-four seconds, independent repeats succeeded in two of four trials for S, three of four for F50, and all four for L.
 
 At forty seconds, every policy succeeded. After verified repair completion, all six controls also delivered all nine segments afresh from the sole survivor.
 
