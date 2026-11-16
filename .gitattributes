@@ -5,6 +5,7 @@ results/compact-study/** -text
 results/compact-pilot/** -text
 results/compact-controller-pilot/** -text
 results/compact-validation/** -text
+results/e4-followup/** -text
 
 # Preserve generated PDF bytes across platforms.
 *.pdf binary

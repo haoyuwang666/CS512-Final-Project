@@ -161,7 +161,7 @@ def summarize(directory, cell, cfg, correctness, sessions):
         'simulated_consumption': True, 'formal_experiment': False}
 
 
-def run_cell(out, cfg, cell):
+def run_cell(out, cfg, cell, second_fault_gate=None, post_second_fault_check=None):
     directory = out / run_identity(cell); directory.mkdir()
     identity = {k: cell[k] for k in ('seed', 'policy', 'experiments')}
     journal = Journal(directory, {'run_id': directory.name, **identity})
@@ -210,6 +210,9 @@ def run_cell(out, cfg, cell):
             requested = time.monotonic()-journal.epoch
             was_running = c.processes[node].poll() is None
             if kind == 'second_failure':
+                if second_fault_gate is not None:
+                    second_fault_gate(c, cfg, manifest, journal, correctness)
+                    requested = time.monotonic()-journal.epoch
                 reg = metadata(c, f'/segments/{sentinel["segment_id"]}/locations', journal)
                 receipt = probe(target['url']+f'/api/v1/segments/{sentinel["segment_id"]}/receipt')
                 journal.write('second-fault-precondition', {'registration':reg,'target_receipt':receipt})
@@ -228,6 +231,8 @@ def run_cell(out, cfg, cell):
                 reg=metadata(c,f'/segments/{sentinel["segment_id"]}/locations',journal)
                 correctness['second_fault_delivery']={'hash_valid':valid,'probe':res,
                     'committed':reg is not None and any(p['peer_id']==target['peer_id'] for p in reg['locations'])}
+                if post_second_fault_check is not None:
+                    post_second_fault_check(c, cfg, manifest, journal, correctness)
         stop.wait(max(0,journal.epoch+cfg['horizon_s']-time.monotonic()))
         status='completed'
         if observer_errors:

@@ -1,0 +1,17 @@
+{
+  "purpose": "Independent fixed-delay validation after exploratory sweep",
+  "selected_delay_s": 34,
+  "selection_evidence": "scan seed 1101: S and F50 success; L unavailable at 34 seconds",
+  "seeds": [
+    1101,
+    1102
+  ],
+  "policies": [
+    "S",
+    "F50",
+    "L"
+  ],
+  "new_repeats_per_context_policy": 2,
+  "reporting": "Keep scan and validation separate; retain every outcome, including reversals.",
+  "positive_control": "One run per seed and policy, wait for all affected segments to have two verified committed reachable copies; stop second holder; freshly fetch every segment from sole survivor."
+}

@@ -1,0 +1,396 @@
+{
+  "trials": 48,
+  "all_valid": true,
+  "identical_binaries_across_phases": true,
+  "binary_sha256": {
+    "peer": "635e6f9836563ffce65aca6372620603b98fb3ee497de850fb26d7271209f6d4",
+    "controller": "6e986cf2543af184df365896a4a560f0ef7ee517f8325c0030916772dc495f3d",
+    "client": "5312c4edce05029de06f03a66cc4e65b8142d541d8fc2eb60e2d2aa78ad8915e"
+  },
+  "checks": [
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-36-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-35-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-36-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-33-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-35-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-40-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-40-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-35-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-36-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-35-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-33-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-35-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-33-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-36-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-34-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-34-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-36-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-34-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-40-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-36-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-34-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-33-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-40-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-34-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-L-3-persistent-34-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-40-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-35-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-33-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-S-3-persistent-33-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "scan",
+      "run_id": "e4-1-high-F50-3-persistent-40-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-L-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-F50-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-L-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-S-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-S-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-S-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-F50-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-L-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-L-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-2-high-F50-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-S-3-persistent-34.0-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 404,
+      "post_fault_status": 404
+    },
+    {
+      "phase": "validation",
+      "run_id": "e4-1-high-F50-3-persistent-34.0-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-F50-3-persistent-1-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-F50-3-persistent-1-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-L-3-persistent-1-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-S-3-persistent-1-1102",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-S-3-persistent-1-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    },
+    {
+      "phase": "completed-control",
+      "run_id": "e4-1-high-L-3-persistent-1-1101",
+      "valid_run": true,
+      "summary_matches_raw": true,
+      "before_fault_receipt_status": 200,
+      "post_fault_status": 200
+    }
+  ]
+}
