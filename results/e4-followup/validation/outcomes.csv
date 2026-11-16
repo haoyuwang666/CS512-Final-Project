@@ -1,0 +1,13 @@
+run_id,seed,policy,requested_delay_s,actual_delay_s,status,hash_valid,committed,success,injection_preconditions_met,completed_repair_gate_passed,fresh_full_video_valid,completed_viewers,scheduled_viewers
+e4-2-high-L-3-persistent-34.0-1102,1102,L,34.0,34.00819374999992,completed,True,True,True,True,False,False,1,6
+e4-2-high-F50-3-persistent-34.0-1102,1102,F50,34.0,33.99549090100004,completed,True,True,True,True,False,False,1,6
+e4-2-high-L-3-persistent-34.0-1101,1101,L,34.0,34.00422212700005,completed,True,True,True,True,False,False,6,6
+e4-2-high-S-3-persistent-34.0-1101,1101,S,34.0,34.00642100999994,completed,False,False,False,True,False,False,6,6
+e4-1-high-S-3-persistent-34.0-1102,1102,S,34.0,34.011741592000135,completed,True,True,True,True,False,False,1,6
+e4-2-high-S-3-persistent-34.0-1102,1102,S,34.0,34.00829011499991,completed,True,True,True,True,False,False,1,6
+e4-1-high-F50-3-persistent-34.0-1101,1101,F50,34.0,34.003332711999974,completed,True,True,True,True,False,False,6,6
+e4-1-high-L-3-persistent-34.0-1102,1102,L,34.0,34.00883358200008,completed,True,True,True,True,False,False,1,6
+e4-1-high-L-3-persistent-34.0-1101,1101,L,34.0,34.01052557699995,completed,True,True,True,True,False,False,6,6
+e4-2-high-F50-3-persistent-34.0-1101,1101,F50,34.0,34.010124300999905,completed,False,False,False,True,False,False,6,6
+e4-1-high-S-3-persistent-34.0-1101,1101,S,34.0,34.01038330500023,completed,False,False,False,True,False,False,6,6
+e4-1-high-F50-3-persistent-34.0-1102,1102,F50,34.0,34.02846420099968,completed,True,True,True,True,False,False,1,6

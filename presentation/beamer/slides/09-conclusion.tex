@@ -1,21 +1,21 @@
 % TODO(team): Keep conclusions and limitations aligned with the measured experiment results.
 \section{Conclusions}
-\begin{frame}{Conclusions: performance and recovery are separate}
-\begin{block}{Repair and playback share bandwidth}
-Grace avoids some brief-outage work but extends reduced-redundancy exposure.
-L showed no consistent advantage over F50.
+\begin{frame}{Conclusions: playback, repair, and application recovery}
+\begin{block}{Repair policies balance two demands}
+Playback and repair share upload bandwidth.
+Policy choices balance playback stalls and recovery speed.
 \end{block}
-\begin{block}{Recovery must be checked at the application level}
-Controller recovery and task continuity held in tested cases.
-E4 exposed availability limits while repair was unfinished.
+\begin{block}{Ready replicas serve through a second Peer failure}
+After verified repair, all six controls delivered all nine segments
+from the sole surviving Peer.
 \end{block}
-\small\textbf{Limits:} one host, few contexts, simulated consumption, short horizon.\\[2mm]
-\textbf{Next:} multi-host browser measurements; E4 after verified repair completion.
-\takeaway{We observed tradeoffs and recovery boundaries within the tested scope.}
-\note{To conclude, repair competes with playback for bandwidth. Waiting can avoid unnecessary repair, but extends the time with reduced redundancy. L shows a local tradeoff, without a consistent advantage over F50.
+\begin{block}{Controllers recover application service}
+Fresh metadata recovers; committed repair tasks continue.
+Without a majority, writes are refused.
+\end{block}
+\note{To conclude, our experiments connect playback performance, repair timing, and failure recovery. Repair shares bandwidth with viewers, and the policies balance playback stalls against recovery speed.
 
-Controller recovery and task continuity hold in our tested cases, while E4 shows the risk of repair still being unfinished.
+E4 shows that repair readiness matters when another Peer fails. With repair complete, replacement copies successfully served all nine segments after both original holders stopped. E5 verifies fresh metadata recovery, repair task continuity, and write refusal without a majority.
 
-These are short, single-host experiments with simulated consumption. Next steps are multi-host browser measurements and an E4 control after verified repair completion. Thank you.
-No universal adaptive-policy superiority or hard availability guarantee is established.}
+Together, these results show how the system maintains data delivery and restores application service under the tested failures. Thank you.}
 \end{frame}

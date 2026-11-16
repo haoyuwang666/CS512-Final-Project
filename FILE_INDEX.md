@@ -6,8 +6,6 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 
 | 文件 | 用途 / 后续负责人 |
 |---|---|
-| [presentation/tian-speaker-script.md](presentation/tian-speaker-script.md) | TODO(Tian): Keep the speech aligned with Method through E3 and update slide numbers when the deck order changes. |
-| [.vscode/settings.json](.vscode/settings.json) | TODO(team): Keep LaTeX Workshop outputs consistent with the Beamer Makefile. |
 | [.dockerignore](.dockerignore) | # TODO(Haoyu): Keep host caches, large datasets and build outputs outside Docker build contexts. |
 | [.env.example](.env.example) | # TODO(Haoyu): Document local-only service settings; do not store secrets here. |
 | [.gitattributes](.gitattributes) | # TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts. |
@@ -34,10 +32,12 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [docs/storage.md](docs/storage.md) | TODO(Yuquan)：补逐 fsync 掉电测试、库存分页与观测热度策略；已实现的上报/修复流程见 reliability.md。 |
 | [docs/verification.md](docs/verification.md) | TODO(Haoyu)：后续每次修改按风险更新验证证据；Docker、分区和新研究策略需分别验收。 |
 | [experiments/aggregate.py](experiments/aggregate.py) | """TODO(Tian): Add paired run-level differences and uncertainty; keep failed/stopped sessions in completion denominators.""" |
+| [experiments/analyze_e4_followup.py](experiments/analyze_e4_followup.py) | # TODO(Yuquan): Maintain reproducible E4 follow-up execution and evidence audits. |
 | [experiments/analyze_repair_playback.py](experiments/analyze_repair_playback.py) | """TODO(team): Maintain this experiment tool. Rebuild slide exhibits from archived runs; failed/censored outcomes remain visible.""" |
 | [experiments/compare.py](experiments/compare.py) | """TODO(Yuquan): Validate sensitivity to workload design before interpreting diagnostic confidence intervals.""" |
 | [experiments/compare_test.py](experiments/compare_test.py) | """TODO(Yuquan): Extend metric validation when paired reports gain new statistics.""" |
 | [experiments/controller_recovery_study.py](experiments/controller_recovery_study.py) | """TODO(team): Maintain this experiment tool. E5: direct timed application probes, committed task continuity, quorum refusal.""" |
+| [experiments/e4_followup.py](experiments/e4_followup.py) | # TODO(Yuquan): Maintain reproducible E4 follow-up execution and evidence audits. |
 | [experiments/fault_injection.py](experiments/fault_injection.py) | """TODO(Yuquan): Add timed trace-driven faults; explicit Docker/Console actions never remove stored data.""" |
 | [experiments/finalize_compact_study.py](experiments/finalize_compact_study.py) | """TODO(team): Maintain this experiment tool. Final audit and slide-focused exhibits. Raw event journals are never changed.""" |
 | [experiments/paired.py](experiments/paired.py) | """TODO(Yuquan): Extend controlled cold-start comparisons with warm-up and timed fault traces.""" |
@@ -142,16 +142,19 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [presentation/beamer/slides/04-e1.tex](presentation/beamer/slides/04-e1.tex) | % TODO(team): Show completion beside stall comparisons. |
 | [presentation/beamer/slides/05-e2.tex](presentation/beamer/slides/05-e2.tex) | % TODO(team): Explain exposure units and the distinction between grace and cancellation. |
 | [presentation/beamer/slides/06-e3.tex](presentation/beamer/slides/06-e3.tex) | % TODO(team): Preserve the negative overall result and censored recovery outcome. |
-| [presentation/beamer/slides/07-e4.tex](presentation/beamer/slides/07-e4.tex) | % TODO(team): Keep targeted availability separate from buffered playback and permanent loss. |
-| [presentation/beamer/slides/08-e5.tex](presentation/beamer/slides/08-e5.tex) | % TODO(team): Keep recovery timing origins explicit for E5a/b versus E5c. |
-| [presentation/beamer/slides/09-conclusion.tex](presentation/beamer/slides/09-conclusion.tex) | % TODO(team): Keep conclusions conditional on the archived study scope. |
+| [presentation/beamer/slides/07-e4.tex](presentation/beamer/slides/07-e4.tex) | % TODO(Yuquan): Keep E4 slides aligned with the follow-up results. |
+| [presentation/beamer/slides/08-e5.tex](presentation/beamer/slides/08-e5.tex) | % TODO(team): Keep controller recovery results aligned with the E5 application-level checks. |
+| [presentation/beamer/slides/09-conclusion.tex](presentation/beamer/slides/09-conclusion.tex) | % TODO(team): Keep conclusions and limitations aligned with the measured experiment results. |
 | [presentation/beamer/slides/10-appendix.tex](presentation/beamer/slides/10-appendix.tex) | % TODO(team): Keep appendix figures tied to their original captions and units. |
 | [presentation/beamer/theme.tex](presentation/beamer/theme.tex) | % TODO(team): Adjust shared colors, typography and layout here, not per slide. |
 | [presentation/experiment-explanation.md](presentation/experiment-explanation.md) | TODO(team): Keep experiment procedures, measurements and limitations aligned with archived evidence. |
 | [presentation/haoyu-speaker-script.md](presentation/haoyu-speaker-script.md) | TODO(Haoyu): Keep the speech aligned with slides 1 to 9 and regenerate the Word export after edits. |
 | [presentation/presentation-layout.md](presentation/presentation-layout.md) | TODO(team): Maintain the presentation structure and references to verified experiment exhibits. |
+| [presentation/tian-speaker-script.md](presentation/tian-speaker-script.md) | TODO(Tian): Keep the speech aligned with Method through E3 and update slide numbers when the deck order changes. |
+| [presentation/yuquan-speaker-script.md](presentation/yuquan-speaker-script.md) | TODO(Yuquan): Keep the speech aligned with slides 19 to 23 and regenerate the PDF export after edits. |
 | [report/compact-experiment-design.md](report/compact-experiment-design.md) | TODO(team): Preserve the executed compact study design and document its exploratory limits. |
 | [report/compact-study-results.md](report/compact-study-results.md) | TODO(team): Keep reported findings and limitations traceable to the archived compact study. |
+| [report/e4-followup-results.md](report/e4-followup-results.md) | TODO(Yuquan): Keep this report aligned with the archived E4 follow-up evidence. |
 | [report/evaluation.md](report/evaluation.md) | TODO(Tian)：填写工作负载、配对对照、指标、不确定性及负结果；不将基础流水线数据当正式实验。 |
 | [report/experiment-plan.md](report/experiment-plan.md) | TODO(team): Maintain the original experiment specification and its link to the superseding compact design. |
 | [report/final.md](report/final.md) | TODO(Haoyu)：课程格式确认后合并各负责人章节，列出实际贡献、已知限制与 AI 辅助使用；当前不是已完成报告。 |
@@ -163,6 +166,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [report/storage.md](report/storage.md) | TODO(Yuquan)：按课程报告格式补实验图表、逐阶段断电测试及实测限制。 |
 | [requirements.txt](requirements.txt) | # TODO(Haoyu): Keep Python runtime requirements aligned with scripts and experiments. |
 | [results/README.md](results/README.md) | TODO(Tian)：保存配置、原始事件、session 汇总、run 汇总和正式配对分析。大数据另存时记录地址与校验值。 |
+| [results/e4-followup/README.md](results/e4-followup/README.md) | TODO(Yuquan): Keep this report aligned with the archived E4 follow-up evidence. |
 | [scripts/check_scaffold.py](scripts/check_scaffold.py) | """TODO(Haoyu): Maintain the per-file purpose index and audit owner TODO markers when extending the scaffold.""" |
 | [scripts/ingest/ingest.py](scripts/ingest/ingest.py) | """TODO(Yuquan): Replace advisory placement with durable reservations; preserve operation IDs on all retries.""" |
 | [scripts/media/fixture.py](scripts/media/fixture.py) | """TODO(Yuquan): Maintain deterministic byte fixtures for protocol tests; these are NOT decodable video.""" |

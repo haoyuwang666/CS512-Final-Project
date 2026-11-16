@@ -1,33 +1,41 @@
-% TODO(team): Keep targeted availability separate from buffered playback and permanent loss.
+% TODO(Yuquan): Keep E4 slides aligned with the follow-up results.
 \section{E4: second-holder failure}
-\begin{frame}{Can the replacement serve after both holders stop?}
+\begin{frame}{E4: test the second failure near repair completion}
 \begin{enumerate}
-\item Stop the first original holder.
-\item Wait a fixed \textbf{4 / 14 / 30 seconds}, independent of repair success.
-\item Stop the second original holder.
-\item Probe a preselected late-queue segment from its replacement.
+\item Stop the first original holder at experiment time 5 s.
+\item Wait a fixed \textbf{33 / 34 / 35 / 36 / 40 seconds}.
+\item Stop the second original holder; probe a selected late-queue segment.
 \end{enumerate}
-\small S / F50 / L; two paired contexts per delay. Success requires correct hash \emph{and} committed registration.
-\takeaway{A buffered viewer may finish even when fresh delivery is unavailable.}
-\note{The previous experiments compared playback and repair performance. E4 asks what happens if another Peer fails before repair finishes.
+\small S / F50 / L; two paired contexts. Success requires correct hash \emph{and} committed target registration.
+\begin{block}{Independent checks}
+Repeat the selected 34 s interval twice per context and policy.\\
+Positive control: wait for verified repair, then fetch all 9 segments afresh after the second stop.
+\end{block}
+\takeaway{The second fault uses a fixed deadline; the positive control waits for repair.}
+\note{E4 asks whether replacement copies can serve after both original holders stop.
 
-We stop the first original holder, wait four, fourteen, or thirty seconds, and then stop the second original holder. These delays are fixed; we do not wait for repair to succeed.
+We stop the first holder, wait a fixed delay, then stop the second and request a selected segment. Success requires correct bytes and committed registration.
 
-We then request one selected segment near the end of the repair queue. Success requires both correct bytes and committed registration.}
+We tested thirty-three through forty seconds, independently repeated thirty-four seconds, and added a control that waits for verified repair completion.
+Fixed-delay results concern the selected sentinel; completed-repair controls fetch all nine segments. Full data: report/e4-followup-results.md.}
 \end{frame}
-\begin{frame}{The selected replacement was not ready in time}
+\begin{frame}{E4: availability depends on repair readiness}
+\small
 \begin{tabularx}{\textwidth}{lYYY}
-\toprule Policy & Second fault +4 s & +14 s & +30 s \\\midrule
-S & 0/2 & 0/2 & 0/2\\
-F50 & 0/2 & 0/2 & 0/2\\
-L & 0/2 & 0/2 & 0/2\\\bottomrule
+\toprule Policy & 34 s: validation & 40 s: sweep & After repair\\\midrule
+S & 2/4 & 2/2 & 2/2\\
+F50 & 3/4 & 2/2 & 2/2\\
+L & 4/4 & 2/2 & 2/2\\
+\bottomrule
 \end{tabularx}
-\vspace{4mm}
-All 18 probes were unavailable under the specified success condition.
-\takeaway{A boundary was observed; no policy advantage or permanent data loss was established.}
-\note{We compare S, F50, and L, with two paired contexts for each delay. All eighteen probes were unavailable under this success condition.
+\vspace{3mm}
+Successful target deliveries / trials. 34 s: four validation trials per policy.\\[2mm]
+All \textbf{6 completed-repair controls} also delivered \textbf{all 9 segments} afresh.
+\takeaway{Availability depends on repair readiness when the next failure occurs.}
+\note{At thirty-four seconds, independent repeats succeeded in two of four trials for S, three of four for F50, and all four for L.
 
-This shows a limit of unfinished repair, rather than a policy winner. It also does not establish permanent data loss: the stopped Peers kept their disks. A viewer finishing from its buffer would not prove that fresh delivery was available.
+At forty seconds, every policy succeeded. After verified repair completion, all six controls also delivered all nine segments afresh from the sole survivor.
 
-Next, we move from Peer failures to Controller failures.}
+Availability therefore depends on repair readiness when the next failure occurs. Next, we move to Controller failures.
+Full methods and exploratory results: report/e4-followup-results.md.}
 \end{frame}

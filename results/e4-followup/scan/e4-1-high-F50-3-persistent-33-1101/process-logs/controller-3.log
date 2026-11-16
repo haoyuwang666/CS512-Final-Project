@@ -1,0 +1,6 @@
+2026-11-15T22:10:59.117-0500 [INFO]  raft: initial configuration: index=0 servers=[]
+2026/11/15 22:10:59 controller controller-3 listening on 127.0.0.1:48479
+2026-11-15T22:10:59.118-0500 [INFO]  raft: entering follower state: follower="Node at 127.0.0.1:45423 [Follower]" leader-address= leader-id=
+2026-11-15T22:11:00.230-0500 [DEBUG] raft: received a requestPreVote with a newer term, grant the pre-vote
+2026-11-15T22:11:00.234-0500 [DEBUG] raft: lost leadership because received a requestVote with a newer term
+2026-11-15T22:11:00.239-0500 [WARN]  raft: failed to get previous log: previous-index=1 last-index=0 error="log not found"

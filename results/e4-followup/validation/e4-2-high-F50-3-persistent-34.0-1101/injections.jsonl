@@ -1,0 +1,2 @@
+{"run_id": "e4-2-high-F50-3-persistent-34.0-1101", "seed": 1101, "policy": "F50", "experiments": ["E4-followup"], "observer_s": 5.003826644000128, "kind": "first_failure", "node": "peer-1", "requested_s": 5.000287078999918, "precondition_satisfied": true, "effect_confirmed": true}
+{"run_id": "e4-2-high-F50-3-persistent-34.0-1101", "seed": 1101, "policy": "F50", "experiments": ["E4-followup"], "observer_s": 39.01395094500003, "kind": "second_failure", "node": "peer-3", "requested_s": 39.000270129, "precondition_satisfied": true, "effect_confirmed": true}

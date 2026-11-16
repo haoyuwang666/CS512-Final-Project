@@ -16,6 +16,7 @@ results/*/
 !results/compact-pilot/
 !results/compact-controller-pilot/
 !results/compact-validation/
+!results/e4-followup/
 .DS_Store
 .vscode/
 
