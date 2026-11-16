@@ -75,18 +75,22 @@ cadence. The task-age floor did not activate in these runs. Recovery means all a
 \small
 \textbf{Simultaneous arrivals:} the slowest Peer fails; all six viewers finish.
 \par\vspace{3mm}
-\begin{tabularx}{\textwidth}{Ycc}
+\begin{tabularx}{\textwidth}{Yccc}
 \toprule
-Metric & F50 (50\%) & L (adaptive) \\
+Metric & S (no extra cap) & F50 (50\%) & L (adaptive) \\
 \midrule
-Avg. cumulative stall / viewer & 8.53 s & 6.88 s \\
-Verified recovery after failure & 33.99 s & 36.06 s \\
-One-copy exposure & 18.82 MiB$\cdot$s & 20.38 MiB$\cdot$s \\
+Avg. cumulative stall / viewer (s) & 7.47 & 8.53 & 6.88 \\
+Verified recovery after failure (s) & 35.99 & 33.99 & 36.06 \\
+One-copy exposure (MiB$\cdot$s) & 20.11 & 18.82 & 20.38 \\
 \bottomrule
 \end{tabularx}
 \par\vspace{3mm}
-\takeaway{L reduced stalls by 1.65 s per viewer, but repaired 2.07 s later.}
+\takeaway{This scenario shows a playback--recovery trade-off: compared with F50,
+L reduced stalls by 1.65 s per viewer but restored replicas 2.07 s later.}
 \note{This is one paired workload/failure context, not an overall advantage.
+S values come from peer-high-S-3-persistent-0-1101/summary.json.
+S and L have nearly identical observed recovery times; their 0.07 s difference
+is below the approximately two-second verification cadence.
 The task-age floor did not activate. Verified recovery requires two reachable,
 hash-valid, registered copies of every affected segment.
 Source: compact-study-results.md, E3.}
