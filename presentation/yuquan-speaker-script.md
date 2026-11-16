@@ -16,7 +16,7 @@ We compared the original thirty-second result with longer delays, independently 
 
 At thirty seconds, all three policies failed to deliver the selected segment in both contexts.
 
-At thirty-four seconds, independent repeats succeeded in two of four trials for S, three of four for F50, and all four for L.
+In the exploratory trials shown at thirty-four seconds, S and F50 delivered the segment in both contexts, while L had not yet prepared the selected replacement.
 
 At forty seconds, every policy succeeded. After verified repair completion, all six controls also delivered all nine segments afresh from the sole survivor.
 
