@@ -1,3 +1,4 @@
+TODO(team): Maintain checkpoint content status and build instructions.
 # COMPSCI 512 Checkpoint
 
 `dist/checkpoint.pdf` 是英文 checkpoint，沿用 proposal 中的题目方向及三名作者，采用 USENIX 双栏格式，正文与参考文献合计三页。
