@@ -59,3 +59,8 @@ presentation/beamer/slides/*.log
 !/docs/proposal/dist/*.pdf
 /docs/checkpoint/*.log
 /docs/proposal/*.log
+
+# Final report build outputs; keep the submission PDF.
+/docs/final-report/dist/*
+!/docs/final-report/dist/*.pdf
+/docs/final-report/*.log
