@@ -1,4 +1,126 @@
 % !TeX root = ../final-report.tex
-% TODO(team): Explain publication, metadata consistency, storage integrity, playback, persistent repair, and bandwidth controls using actual code.
 \section{Design and Implementation}
-Explain publication, metadata consistency, storage integrity, playback, persistent repair, and bandwidth controls using actual code.
+\label{sec:design}
+\input{assets/architecture}
+
+\subsection{Control and Data Planes}
+Figure~\ref{fig:architecture} separates metadata from segment delivery.
+The Go backend comprises Controllers, storage Peers, a headless client, and a
+Demo API gateway; a React/TypeScript frontend provides browser playback and
+management. The evaluated deployment uses three Controllers and three Peers.
+Controllers use HashiCorp Raft, BoltDB-backed persistent storage, and file
+snapshots. A deterministic finite-state machine (FSM) applies metadata
+commands; network I/O and clocks remain in handlers and the coordinator.
+Reads verify leadership and execute a Raft barrier before exposing state.
+Snapshots preserve manifests, registrations, tasks, and operation-ID
+deduplication results. A write requires a majority; an uncertain response is
+retried with the same operation ID.
+
+\subsection{Verified Publication and Storage}
+Ingestion creates a \texttt{DRAFT} manifest listing ordered segment IDs,
+durations, sizes, and SHA-256 hashes, then uploads each segment directly to
+two distinct Peers. A Peer checks size and hash, synchronizes a temporary
+file, atomically installs its content-addressed blob, synchronizes the
+directory, and durably replaces its index before returning a receipt.
+Conflicting overwrites are rejected; equivalent retries recheck the stored
+blob. Unindexed orphan bytes are retained and counted against capacity,
+but are not advertised as replicas.
+
+The Controller checks receipts against the configured Peer endpoints and
+commits registrations through Raft. Let $\mathcal{S}_v$ be a video's segments
+and $R_s$ its distinct registered holders. Publication commits
+\texttt{DRAFT}$\rightarrow$\texttt{READY} only if
+\begin{equation}
+  \forall s\in\mathcal{S}_v,\qquad |R_s|\geq 2.
+  \label{eq:publication}
+\end{equation}
+This is a check of confirmed registrations at publication, not a continuous
+liveness guarantee. Files installed without a committed registration are
+not returned as playback locations. Fixed placement is used in the study.
+An optional resource-aware planner ranks eligible Peers by normalized free
+space and upload capacity, with greater bandwidth weight for the first three
+segments. Its capacity deductions are local to a plan; concurrent imports
+have no global durable reservation, so the Peer quota is the final guard.
+
+\subsection{Playback Paths}
+The headless engine fetches published metadata and downloads segments with a
+bounded prefetch window and worker pool. Round-robin rotates candidate
+holders by segment index. Failed or invalid transfers try another holder;
+exhausted candidates trigger a fresh location query and one further round.
+Only size- and hash-verified segments become consumable. Consumption follows
+manifest durations after a configurable contiguous startup buffer; payloads
+are discarded rather than decoded. An optional deadline strategy ranks
+sources using session-local throughput estimates, outstanding requests, and
+failure penalties; the reported repair study holds round-robin fixed.
+
+Browser playback instead fetches verified segments through the gateway and
+checks them again with Web Crypto. FFmpeg encodes once into continuous
+H.264/AAC fragmented MP4, preserving decode timestamps across segments.
+The browser serializes append/remove operations on one MediaSource and
+SourceBuffer, with bounded prefetch and historical buffers. Seeking cancels
+obsolete requests and refills from the relevant keyframe. Browser waiting
+events and headless simulated stalls are separate measurements. Metadata
+caching and bounded retries bridge some Controller outages; uncached requests
+still require an available quorum-backed service.
+
+\subsection{Persistent Repair and Reconciliation}
+Peers report heartbeat/inventory observations every two seconds. The leader
+also polls configured endpoints independently; inventories rehash indexed
+objects, excluding missing or corrupt data. Observations are ephemeral,
+whereas replica registrations and tasks are replicated state. For segment
+$s$, let $V_s(t)\subseteq R_s$ denote holders verified as reachable and valid
+by the current inventory check. When $|V_s|<2$, the coordinator starts a
+local grace timer. After grace, exactly one valid source and a distinct
+eligible target are needed to create a committed \texttt{pending} task.
+No source means no reconstructible copy. Grace restarts after leadership
+loss and does not cancel tasks already created.
+
+The coordinator resumes pending work before planning new work and processes
+one segment per reconciliation cycle. It GETs source bytes, verifies them,
+rechecks leadership, and PUTs the target with the task ID as operation ID.
+A matching durable receipt allows one FSM command to register the target
+and mark the task \texttt{completed} atomically. Copy errors can mark a task
+\texttt{failed}; later cycles may plan another attempt. At most one task per
+segment is pending. On resumption, an already-installed matching target
+receipt avoids recopying, even if the source has stopped. Verified inventory
+can also recover registration after a lost acknowledgment. An old leader
+may install extra immutable bytes, but cannot publish them without quorum.
+
+\subsection{Repair Bandwidth Controls}
+All segment GETs share a Peer-wide token bucket (rate $C_p$, burst
+32\,KiB). Repair reads additionally pass a bucket at rate
+$\alpha_p(t)C_p$. The common token budget over $\Delta$ is
+\begin{equation}
+ \mathcal{B}_p(\Delta)=C_p\Delta+32\,\mathrm{KiB}.
+ \label{eq:shared-budget}
+\end{equation}
+S sets $\alpha=1$;
+F25 and F50 set $\alpha=0.25$ and $0.50$.
+N and OFF are no-failure and failure-without-repair controls, respectively.
+L updates every 250\,ms. Let $F_p$ count active foreground requests, $I_p$
+be elapsed time since foreground activity became idle, and $A_p$ be the
+oldest committed task age among active repair requests at that source
+(zero if none):
+\begin{equation}
+ \begin{aligned}
+ \beta_p(t)&=\begin{cases}
+ 1,&F_p(t)=0\ \text{and }I_p(t)\geq2\,\mathrm{s},\\
+ 0.25,&\text{otherwise},
+ \end{cases}\\
+ \alpha_p^{L}(t)&=\max\!\left\{\beta_p(t),\,
+          0.5\,\mathbf{1}[A_p(t)>60\,\mathrm{s}]\right\}.
+ \end{aligned}
+ \label{eq:load-aware}
+\end{equation}
+Age begins at task creation, not at the fault; the 60\,s branch was not
+activated in the main performance study. L observes source-local request
+activity, not browser buffer levels. These allowances are additional caps,
+not reserved shares or fairness guarantees, and token bursts and outstanding
+chunk reservations affect short intervals. Counters record bytes written
+at the HTTP response layer by traffic class, excluding protocol overhead
+and TCP retransmissions.
+
+The prototype also provides persistent video-deletion and surplus-replica
+cleanup tasks and a local fault console. These support operation and testing;
+the study concerns minimum-two repair in a trusted network, without
+authentication or Byzantine protection.

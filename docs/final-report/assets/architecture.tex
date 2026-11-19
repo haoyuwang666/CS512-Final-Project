@@ -1,0 +1,42 @@
+% Editable, code-grounded diagram; included by sections/03-design-implementation.tex.
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  x=1cm,y=1cm,
+  component/.style={draw,rounded corners=2pt,align=center,
+    font=\footnotesize,inner sep=3pt,minimum height=9mm},
+  data/.style={-{Stealth[length=1.5mm]},thick},
+  control/.style={-{Stealth[length=1.5mm]},dashed},
+  note/.style={font=\scriptsize,align=center,fill=white,inner sep=1pt}]
+\node[component,text width=35mm] (c) at (0,0)
+  {\textbf{Raft Controllers}\\Manifests, locations, tasks};
+\node[component,text width=15mm] (i) at (-2.9,-1.65)
+  {\textbf{Ingestion}\\Upload};
+\node[component,text width=29mm] (p) at (0,-1.65)
+  {\textbf{Storage Peers}\\Verified disk objects};
+\node[component,text width=15mm] (g) at (2.9,-1.65)
+  {\textbf{Gateway}\\Fetch/verify};
+\node[component,text width=29mm] (h) at (0,-3.05)
+  {\textbf{Headless client}\\HTTP + simulated clock};
+\node[component,text width=15mm] (b) at (2.9,-3.05)
+  {\textbf{Browser}\\Verify/MSE};
+\draw[data] (i.east)--node[note,above]{PUT}(p.west);
+\draw[data] (p.east)--node[note,above]{GET}(g.west);
+\draw[data] (g.south)--(b.north);
+\draw[data] (p.south)--node[note,right]{GET}(h.north);
+\draw[control] (i.north)|-node[note,pos=.23,left]{publish}(c.west);
+\draw[control] (g.north)|-node[note,pos=.23,right]{lookup}(c.east);
+\draw[control,<->] ([xshift=-6mm]c.south)--
+  node[note,left]{inventory}( [xshift=-6mm]p.north);
+\draw[data,<->] ([xshift=7mm]c.south)--
+  node[note,right]{repair\\GET/PUT}([xshift=7mm]p.north);
+\draw[control] (h.west)--(-1.95,-3.05)--(-1.95,-.63)--
+  node[note,pos=.4,above]{lookup}(-1.1,-.63)--([xshift=-11mm]c.south);
+\end{tikzpicture}
+\caption{Prototype paths. Dashed arrows carry metadata/control; solid
+arrows carry segment bytes (arrowheads show data direction). During repair,
+the Controller reads a surviving Peer, verifies the full segment, and
+uploads it to a replacement Peer; both are grouped in the Peer box.
+Headless experiments bypass the browser gateway.}
+\label{fig:architecture}
+\end{figure}

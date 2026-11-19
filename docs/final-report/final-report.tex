@@ -1,9 +1,17 @@
-% TODO(team): Replace the planning skeleton with the reviewed eight-page report.
+% TODO(team): Complete the remaining sections and review the eight-page report.
 \documentclass[letterpaper,twocolumn,10pt]{article}
+% Load before the style's breakurl dependency for XeLaTeX/Tectonic compatibility.
+\usepackage{xcolor}
+\usepackage{hyperref}
 \usepackage{usenix-2020-09}
+\ifXeTeX\microtypesetup{spacing=false,kerning=false}\fi
 \usepackage{amsmath,booktabs,graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
 \graphicspath{{assets/}}
-\hypersetup{hidelinks}
+\hypersetup{colorlinks=true,citecolor=blue,linkcolor=blue,urlcolor=blue}
+% Avoid stretching heading and float gaps to force equal column bottoms.
+\raggedbottom
 \title{\Large\bf Balancing Playback Continuity and Replica Recovery\\in Cooperative Video Storage}
 \author{{\rm Haoyu Wang}\\Duke University
 \and {\rm Yuquan Hu}\\Duke University
@@ -11,7 +19,7 @@
 \date{}
 \begin{document}
 \maketitle
-\begin{center}\textbf{Planning skeleton --- not a submission draft}\end{center}
+\begin{center}\textbf{Partial draft --- remaining sections are placeholders}\end{center}
 \input{sections/00-abstract}
 \input{sections/01-introduction}
 \input{sections/02-background-related-work}
@@ -19,9 +27,8 @@
 \input{sections/04-methodology}
 \input{sections/05-evaluation}
 \input{sections/06-discussion-conclusion}
-% Enable once verified citations have been added to references.bib.
-% \bibliographystyle{plain}
-% \bibliography{references}
+\bibliographystyle{plain}
+\bibliography{references}
 \input{sections/07-ai-use}
 % The course requires detailed individual contributions at the end.
 \input{sections/08-contributions}

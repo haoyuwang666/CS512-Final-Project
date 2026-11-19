@@ -38,7 +38,11 @@
 
 % refs and bib
 \usepackage{cite}               % order multiple entries in \cite{...}
+% Native hyperref handles URL wrapping for XeTeX; breakurl uses PostScript.
+\usepackage{iftex}
+\ifPDFTeX
 \usepackage{breakurl}           % break too-long urls in refs
+\fi
 \usepackage{url}                % allow \url in bibtex for clickable links
 \usepackage{xcolor}             % color definitions, to be use for...
 \usepackage[]{hyperref}         % ...clickable refs within pdf...

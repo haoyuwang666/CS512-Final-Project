@@ -1,1 +1,121 @@
-% TODO(team): Add only verified bibliographic entries cited in the final report.
+% Verified against publisher/author-hosted papers on 2026-11-19.
+% Comments identify the passages supporting Section 2; not all papers' methods
+% are implemented. Preprint entries explicitly identify the version consulted.
+
+% GFS: Sections 2.3 (architecture), 4.3 (re-replication), 5.2 (integrity).
+% Google Research's landing page lists 20--43; the SOSP record is 29--43.
+@inproceedings{ghemawat2003gfs,
+  author = {Sanjay Ghemawat and Howard Gobioff and Shun-Tak Leung},
+  title = {The {Google} File System},
+  booktitle = {Proceedings of the 19th ACM Symposium on Operating Systems Principles (SOSP)},
+  year = {2003},
+  pages = {29--43},
+  publisher = {ACM},
+  doi = {10.1145/945445.945450},
+  url = {https://storage.googleapis.com/gweb-research2023-media/pubtools/4446.pdf}
+}
+
+% Raft: Sections 2 and 5 (replicated state machines, elections, log safety).
+@inproceedings{ongaro2014raft,
+  author = {Diego Ongaro and John Ousterhout},
+  title = {In Search of an Understandable Consensus Algorithm},
+  booktitle = {2014 USENIX Annual Technical Conference (USENIX ATC)},
+  year = {2014},
+  pages = {305--319},
+  publisher = {USENIX Association},
+  url = {https://www.usenix.org/system/files/conference/atc14/atc14-paper-ongaro.pdf}
+}
+
+% Total Recall: Section 3.3, especially eager/lazy repair and transient absence.
+@inproceedings{bhagwan2004totalrecall,
+  author = {Ranjita Bhagwan and Kiran Tati and Yu-Chung Cheng and Stefan Savage and Geoffrey M. Voelker},
+  title = {Total Recall: System Support for Automated Availability Management},
+  booktitle = {1st Symposium on Networked Systems Design and Implementation (NSDI)},
+  year = {2004},
+  publisher = {USENIX Association},
+  url = {https://www.usenix.org/legacy/publications/library/proceedings/nsdi04/tech/full_papers/bhagwan/bhagwan_html/index.html}
+}
+
+% f4: Section 5.3, "Rebuilder Nodes", pp. 389--390; self-throttling to
+% avoid adverse effects on online requests, distinct from online reconstruction.
+@inproceedings{muralidhar2014f4,
+  author = {Subramanian Muralidhar and Wyatt Lloyd and Sabyasachi Roy and Cory Hill and Ernest Lin and Weiwen Liu and Satadru Pan and Shiva Shankar and Viswanath Sivakumar and Linpeng Tang and Sanjeev Kumar},
+  title = {{f4}: {Facebook}'s Warm {BLOB} Storage System},
+  booktitle = {11th USENIX Symposium on Operating Systems Design and Implementation (OSDI)},
+  year = {2014},
+  pages = {383--398},
+  publisher = {USENIX Association},
+  url = {https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-muralidhar.pdf}
+}
+
+% Consulted the 2008 author preprint, not the earlier 2007 four-author paper.
+% Abstract and Sections II--III: regenerating codes and storage/bandwidth tradeoff.
+@misc{dimakis2008network,
+  author = {Alexandros G. Dimakis and P. Brighten Godfrey and Yunnan Wu and Martin J. Wainwright and Kannan Ramchandran},
+  title = {Network Coding for Distributed Storage Systems},
+  year = {2008},
+  howpublished = {arXiv:0803.0632},
+  note = {Author preprint},
+  url = {https://arxiv.org/abs/0803.0632}
+}
+
+% Conference version (10 pages), not the differently titled 14-page draft.
+% Sections III-C/III-D: supplier scheduling and failure recovery.
+@inproceedings{zhang2005coolstreaming,
+  author = {Xinyan Zhang and Jiangchuan Liu and Bo Li and Tak-Shing Peter Yum},
+  title = {{CoolStreaming/DONet}: A Data-Driven Overlay Network for Peer-to-Peer Live Media Streaming},
+  booktitle = {Proceedings IEEE INFOCOM 2005},
+  year = {2005},
+  volume = {3},
+  pages = {2102--2111},
+  publisher = {IEEE},
+  url = {https://www.cs.sfu.ca/~jcliu/Papers/47_01.pdf}
+}
+
+% Consulted v4, revised 2011-08-17. Sections I--II distinguish DSN/PP2PN;
+% placement results use loss-network and many-user/large-catalogue assumptions.
+% Kept as a preprint rather than mixing 2011 text with the 2013 journal record.
+@misc{tan2011placement,
+  author = {Bo Tan and Laurent Massouli{\'e}},
+  title = {Optimal Content Placement for Peer-to-Peer Video-on-Demand Systems},
+  year = {2011},
+  howpublished = {arXiv:1004.4709v4},
+  note = {Revised August 17, 2011},
+  url = {https://arxiv.org/abs/1004.4709v4}
+}
+
+% Abstract, Sections II--IV (fluid sharing/server offload), IV-B (heterogeneity).
+% Conference/year also checked against Chiu's author publication list.
+@inproceedings{zhou2011replication,
+  author = {Yipeng Zhou and Tom Z. J. Fu and Dah Ming Chiu},
+  title = {Statistical Modeling and Analysis of {P2P} Replication to Support {VoD} Service},
+  booktitle = {Proceedings IEEE INFOCOM 2011},
+  year = {2011},
+  publisher = {IEEE},
+  url = {https://home.ie.cuhk.edu.hk/~dmchiu/p2pvod_infocom11.pdf}
+}
+
+% Published PDF first page: volume, issue, year, DOI, authors and abstract.
+% Sections III--IV discuss rarest-first/greedy/mixed and continuity/buffer size.
+@article{zhou2011chunks,
+  author = {Yipeng Zhou and Dah-Ming Chiu and John C. S. Lui},
+  title = {A Simple Model for Chunk-Scheduling Strategies in {P2P} Streaming},
+  journal = {IEEE/ACM Transactions on Networking},
+  year = {2011},
+  volume = {19},
+  number = {1},
+  pages = {42--54},
+  doi = {10.1109/TNET.2010.2065237},
+  url = {https://www.cse.cuhk.edu.hk/~cslui/PUBLICATION/TON_P2P_2011.pdf}
+}
+
+% INFOCOM 2016 published PDF (UMass author copy), abstract and Sections II--IV:
+% buffer-based bitrate control; distinct from source-local repair throttling.
+@inproceedings{spiteri2016bola,
+  author = {Kevin Spiteri and Rahul Urgaonkar and Ramesh K. Sitaraman},
+  title = {{BOLA}: Near-Optimal Bitrate Adaptation for Online Videos},
+  booktitle = {IEEE INFOCOM 2016---The 35th Annual IEEE International Conference on Computer Communications},
+  year = {2016},
+  publisher = {IEEE},
+  url = {https://groups.cs.umass.edu/wp-content/uploads/sites/3/2019/12/BOLA-Near-optimal-bitrate-adaptation-for-online-videos.pdf}
+}

@@ -1,4 +1,41 @@
 % !TeX root = ../final-report.tex
-% TODO(team): State the research question and scoped contributions; distinguish the final study from the original proposal.
 \section{Introduction}
-State the research question and scoped contributions; distinguish the final study from the original proposal.
+Replicating video segments across storage nodes allows a viewer to switch
+sources when one node fails. Continuing playback, however, does not restore
+the missing replica. Until a replacement is installed, another holder failure
+can make a segment unavailable to new requests. Repair closes this window by
+copying data from a surviving holder, but that holder must also serve viewers.
+With limited upload capacity, protecting future availability can therefore
+interfere with present playback.
+
+We study this tension in a cooperative video storage prototype with dedicated
+storage Peers, independent viewers, and a Raft-replicated Controller service.
+Peers contribute disk space and upload capacity; viewers do not upload.
+Controllers commit manifests, replica registrations, and repair tasks, while
+video bytes remain outside the consensus log. The system requires two
+confirmed copies of every segment before publication and repairs published
+segments when fewer than two verified, reachable copies remain.
+
+Our central question is: \emph{how should repair timing and bandwidth limits
+balance playback continuity against replica recovery on heterogeneous,
+upload-constrained Peers?} We examine whether repair adds interference beyond
+the initial failure, how a grace interval trades avoided copying against
+reduced redundancy, and whether a source-local load-aware allowance improves
+on fixed repair caps. We also test the consequences of a second holder
+failure and recovery of application state after Controller failures.
+
+The project makes three scoped contributions. First, it implements a working
+storage and playback system with durable, verifiable objects, quorum-backed
+publication, resumable repair tasks, and browser playback. Second, it provides
+shared, fixed-cap, and load-aware repair controls under an unchanged total
+source upload budget, together with paired fault experiments and classified
+traffic accounting. Third, it characterizes their trade-offs: repair can add
+stalls under contention, longer grace can avoid short-outage copies while
+extending exposure, and load-aware control shows a workload-specific
+playback/recovery compromise rather than a consistent advantage.
+
+The contribution is an implemented prototype and an exploratory empirical
+study. Performance experiments transfer real HTTP payloads but simulate
+media consumption; browser decoding is validated separately. The final scope
+uses replication, without the erasure coding, popularity learning, or tiered
+storage envisioned in the earlier proposal.
