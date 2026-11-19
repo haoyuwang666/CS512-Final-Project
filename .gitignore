@@ -51,3 +51,11 @@ presentation/beamer/dist/*
 !presentation/beamer/dist/*.pdf
 presentation/beamer/*.log
 presentation/beamer/slides/*.log
+
+# Document build outputs; retain the published PDFs.
+/docs/checkpoint/dist/*
+!/docs/checkpoint/dist/*.pdf
+/docs/proposal/dist/*
+!/docs/proposal/dist/*.pdf
+/docs/checkpoint/*.log
+/docs/proposal/*.log
