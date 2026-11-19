@@ -6,8 +6,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED = {"node_modules", "dist", "bin", ".data", "__pycache__", ".git", ".venv", ".DS_Store", ".local-reference", ".pnpm-store"}
-# Generated document exports are binary artifacts; audit their source files.
-EXCLUDED_SUFFIXES = {".docx", ".pdf"}
+# Binary document assets cannot contain source-purpose comments.
+EXCLUDED_SUFFIXES = {".docx", ".pdf", ".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico"}
+# Keep upstream templates byte-for-byte intact; record their purpose in the index.
+VENDORED_PURPOSES = {
+    "docs/checkpoint/usenix-2020-09.sty": "TODO(team): Upstream USENIX style, preserved unchanged for the checkpoint.",
+    "docs/proposal/usenix2019_v3.sty": "TODO(team): Upstream USENIX style, preserved unchanged for the proposal.",
+    "docs/final-report/usenix-2020-09.sty": "TODO(team): Upstream USENIX style, preserved unchanged for the final report.",
+}
 
 
 def source_files():
@@ -18,6 +24,9 @@ def source_files():
 
 
 def purpose(path):
+    relative = path.relative_to(ROOT).as_posix()
+    if relative in VENDORED_PURPOSES:
+        return VENDORED_PURPOSES[relative]
     if path.name == "go.sum":
         return "TODO(Haoyu)：Go 自动管理的依赖完整性校验；格式禁止添加用途注释，本索引代为说明。"
     text = path.read_text(encoding="utf-8")
