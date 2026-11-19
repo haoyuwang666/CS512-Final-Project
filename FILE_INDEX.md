@@ -11,7 +11,6 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [.gitattributes](.gitattributes) | # TODO(Yuquan): Keep executable Linux scripts portable across Windows checkouts. |
 | [.github/workflows/ci.yml](.github/workflows/ci.yml) | # TODO(Haoyu): Maintain repository-root build and verification checks. |
 | [.gitignore](.gitignore) | # TODO(Haoyu): Keep generated data, local dependencies, binaries and credentials out of version control. |
-| [.vscode/settings.json](.vscode/settings.json) | // TODO(team): Keep LaTeX Workshop outputs consistent with the Beamer Makefile. |
 | [Makefile](Makefile) | # TODO(Haoyu): Maintain these shared entry points; commands run from the repository root. |
 | [README.md](README.md) | TODO(Haoyu)：维护项目入口、构建约定和功能状态；每个负责人完成任务时同步相关文档。 |
 | [cmd/client/main.go](cmd/client/main.go) | // TODO(Tian): Extend CLI configuration alongside the shared Go engine; never implement a separate CLI scheduler. |
@@ -36,13 +35,14 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [docs/final-report/Makefile](docs/final-report/Makefile) | # TODO(team): Maintain the final-report build entry point. |
 | [docs/final-report/PLAN.md](docs/final-report/PLAN.md) | TODO(team): Freeze claims against archived evidence, confirm individual contributions, and finish the eight-page report by November 24. |
 | [docs/final-report/README.md](docs/final-report/README.md) | TODO(team): Complete and review the eight-page English report according to PLAN.md before submission. |
-| [docs/final-report/assets/README.md](docs/final-report/assets/README.md) | TODO(team): Add final figures with source data, generation commands, and units documented. |
-| [docs/final-report/final-report.tex](docs/final-report/final-report.tex) | % TODO(team): Replace the planning skeleton with the reviewed eight-page report. |
-| [docs/final-report/references.bib](docs/final-report/references.bib) | % TODO(team): Add only verified bibliographic entries cited in the final report. |
+| [docs/final-report/assets/README.md](docs/final-report/assets/README.md) | TODO(team): Add evaluation figures with source data, generation commands, and units documented. |
+| [docs/final-report/assets/architecture.tex](docs/final-report/assets/architecture.tex) | % TODO(team): Keep the architecture diagram aligned with implemented control and data paths. |
+| [docs/final-report/final-report.tex](docs/final-report/final-report.tex) | % TODO(team): Complete the remaining sections and review the eight-page report. |
+| [docs/final-report/references.bib](docs/final-report/references.bib) | % TODO(team): Maintain verified bibliographic metadata and source-to-claim notes as the report evolves. |
 | [docs/final-report/sections/00-abstract.tex](docs/final-report/sections/00-abstract.tex) | % TODO(team): Summarize the problem, prototype, measured findings, and limitations after the main text is complete. |
-| [docs/final-report/sections/01-introduction.tex](docs/final-report/sections/01-introduction.tex) | % TODO(team): State the research question and scoped contributions; distinguish the final study from the original proposal. |
-| [docs/final-report/sections/02-background-related-work.tex](docs/final-report/sections/02-background-related-work.tex) | % TODO(team): Compare verified prior work on streaming, replication, repair interference, and Raft. Establish the precise empirical contribution. |
-| [docs/final-report/sections/03-design-implementation.tex](docs/final-report/sections/03-design-implementation.tex) | % TODO(team): Explain publication, metadata consistency, storage integrity, playback, persistent repair, and bandwidth controls using actual code. |
+| [docs/final-report/sections/01-introduction.tex](docs/final-report/sections/01-introduction.tex) | % TODO(team): Keep the introduction's scope and contributions aligned with the final evidence. |
+| [docs/final-report/sections/02-background-related-work.tex](docs/final-report/sections/02-background-related-work.tex) | % TODO(team): Maintain verified prior-work comparisons and citations as the report evolves. |
+| [docs/final-report/sections/03-design-implementation.tex](docs/final-report/sections/03-design-implementation.tex) | % TODO(team): Keep design details, policy formulas, and implementation boundaries aligned with the code. |
 | [docs/final-report/sections/04-methodology.tex](docs/final-report/sections/04-methodology.tex) | % TODO(team): Define paired contexts, workloads, fault schedules, metrics, verification cadence, and the limits of simulated media consumption. |
 | [docs/final-report/sections/05-evaluation.tex](docs/final-report/sections/05-evaluation.tex) | % TODO(team): Report E1--E5, the E4 follow-up, and the late-arrival extension with traceable data and clearly separated experimental phases. |
 | [docs/final-report/sections/06-discussion-conclusion.tex](docs/final-report/sections/06-discussion-conclusion.tex) | % TODO(team): Answer each hypothesis, report negative results, discuss threats to validity, and distinguish deferred features from implemented work. |
@@ -69,6 +69,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [experiments/compare_test.py](experiments/compare_test.py) | """TODO(Yuquan): Extend metric validation when paired reports gain new statistics.""" |
 | [experiments/controller_recovery_study.py](experiments/controller_recovery_study.py) | """TODO(team): Maintain this experiment tool. E5: direct timed application probes, committed task continuity, quorum refusal.""" |
 | [experiments/e4_followup.py](experiments/e4_followup.py) | # TODO(Yuquan): Maintain reproducible E4 follow-up execution and evidence audits. |
+| [experiments/e4_timing_check.py](experiments/e4_timing_check.py) | """TODO(team): Maintain the exploratory E4 timing follow-up without modifying the frozen study.""" |
 | [experiments/fault_injection.py](experiments/fault_injection.py) | """TODO(Yuquan): Add timed trace-driven faults; explicit Docker/Console actions never remove stored data.""" |
 | [experiments/finalize_compact_study.py](experiments/finalize_compact_study.py) | """TODO(team): Maintain this experiment tool. Final audit and slide-focused exhibits. Raw event journals are never changed.""" |
 | [experiments/late_staggered_study.py](experiments/late_staggered_study.py) | """TODO(team): Reproduce the late-arrival E3 extension without replacing compact-study evidence.""" |
@@ -188,6 +189,7 @@ TODO(Haoyu)：新增文件后运行 python3 scripts/check_scaffold.py --write-in
 | [report/compact-experiment-design.md](report/compact-experiment-design.md) | TODO(team): Preserve the executed compact study design and document its exploratory limits. |
 | [report/compact-study-results.md](report/compact-study-results.md) | TODO(team): Keep reported findings and limitations traceable to the archived compact study. |
 | [report/e4-followup-results.md](report/e4-followup-results.md) | TODO(Yuquan): Keep this report aligned with the archived E4 follow-up evidence. |
+| [report/e4-timing-followup.md](report/e4-timing-followup.md) | TODO(team): Preserve the exploratory timing evidence and its separation from the frozen study. |
 | [report/evaluation.md](report/evaluation.md) | TODO(Tian)：填写工作负载、配对对照、指标、不确定性及负结果；不将基础流水线数据当正式实验。 |
 | [report/experiment-plan.md](report/experiment-plan.md) | TODO(team): Maintain the original experiment specification and its link to the superseding compact design. |
 | [report/final.md](report/final.md) | TODO(Haoyu)：课程格式确认后合并各负责人章节，列出实际贡献、已知限制与 AI 辅助使用；当前不是已完成报告。 |

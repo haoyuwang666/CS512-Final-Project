@@ -1,5 +1,7 @@
 # E4 timing follow-up
 
+TODO(team): Preserve the exploratory timing evidence and its separation from the frozen study.
+
 Executed November 15, 2026. This is a small exploratory check, separate from the frozen 81-run study. It tests whether later second failures allow the selected replacement to serve; it does not compare policies or estimate an availability probability.
 
 ## Setup

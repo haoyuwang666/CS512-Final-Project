@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small exploratory E4 timing follow-up; never modifies the frozen study."""
+"""TODO(team): Maintain the exploratory E4 timing follow-up without modifying the frozen study."""
 import argparse
 import csv
 import hashlib
