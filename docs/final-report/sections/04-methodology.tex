@@ -39,9 +39,9 @@ Timeouts & 8 s per attempt, 42 s per session \\
 \paragraph{Comparison design.}
 Within each workload and arrival pattern, 
 policies use the same content, initial replica placement, round-robin source selection, and fault schedule.
-Policies are tested in a randomized order to reduce bias from changes in host load and cache state over time.. 
+Policies are tested in a randomized order to reduce bias from changes in host load and cache state over time.
 The main playback and repair comparisons cover 3 failure contexts, 
-where the failed Peer’s upload limit is set to 96, 144, or 192 KiB/s respectively. 
+where the failed Peer's upload limit is set to 96, 144, or 192 KiB/s respectively.
 The second-holder failure experiments use 2 of these contexts.
 
 \paragraph{Fault schedule and recovery verification.}
@@ -50,7 +50,7 @@ The main observation window ends at 50\,s.
 Replica recovery is checked approximately every 2\,s.
 Essentially, full recovery requires every affected segment to have 2 reachable,
 hash-valid copies with committed registrations.
-Based on this, we count a run as meeting the recovery target if full recovery is verified within 40,s of the first Peer failure.
+Based on this, we count a run as meeting the recovery target if full recovery is verified within 40\,s of the first Peer failure.
 The main study comprises 81 runs, including 72 performance runs and 9 Controller failure trials.
 
 \paragraph{Metrics.}

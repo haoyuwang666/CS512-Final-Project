@@ -145,11 +145,17 @@ segment from its replacement Peer and verify the size, hash, and committed
 registration. This request tests whether a viewer can fetch the segment
 without relying on previously buffered data. At intervals of 4, 14,
 and 30\,s between failures, all 18 requests failed.
+The follow-up adds 48 trials: 30 exploratory sweep trials, 12 independent
+trials at the selected 34\,s interval, and 6 completed-repair controls.
+The fixed-delay follow-up horizon is 55\,s from run start; the
+completion-gated controls use 75\,s. Each phase uses the same two paired
+failure contexts and is reported separately.
 
 \begin{table}[ht]
 \centering\small
 \caption{E4 follow-up. Successful fresh reads of the selected segment
-over scheduled trials. Delay is measured between holder failures.}
+over scheduled trials. Delay is measured between holder failures.
+Each sweep cell has two trials; independent validation has four per policy.}
 \label{tab:e4}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
@@ -181,14 +187,18 @@ retained their disks.
 We measure Controller recovery by the first successful application request
 that requires fresh, quorum-backed metadata. Each failure case has 3 runs.
 When the leader stopped during delivery, the median recovery time was
-1.52\,s from the stop (range 1.47--2.74\,s). Both warm and cold clients
-finished playback. When the leader stopped during a pending repair,
+1.52\,s from the stop (range 1.47--2.74\,s). Both ongoing warm sessions
+and newly started uncached sessions completed in all 3 trials.
+When the leader stopped during a pending repair,
 the median was 1.60\,s from the stop (range 1.52--1.97\,s). In all
 3 runs the new leader resumed the task with its original ID and creation
 time. Subsequent checks confirmed a hash-valid copy and a committed
 registration at the replacement Peer.
+Further checks retained task state after a Controller restart and
+the L configuration after a source-Peer restart.
 
-During majority loss, all 9 valid write attempts returned HTTP 503.
+During stable majority loss, all 9 valid write attempts across the 3 trials
+returned HTTP 503, with no success acknowledgments.
 For this case, timing begins when quorum returns. The median time to a
 fresh application response was 1.04\,s (range 0.85--1.43\,s). In each
 run, the Controller retained the baseline state and reconciled the
