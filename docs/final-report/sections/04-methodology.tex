@@ -1,4 +1,90 @@
 % !TeX root = ../final-report.tex
-% TODO(team): Define paired contexts, workloads, fault schedules, metrics, verification cadence, and the limits of simulated media consumption.
+% TODO(team): Recheck fixture and metric definitions if the study is rerun.
 \section{Experimental Methodology}
-Define paired contexts, workloads, fault schedules, metrics, verification cadence, and the limits of simulated media consumption.
+\label{sec:method}
+
+\paragraph{Experimental setup.}
+The testbed consists of three Controllers, three storage Peers, and
+independent viewers running on one host. Each run starts fresh Controller
+and Peer processes. Viewers download segments over HTTP, verify their
+hashes, and consume them in order at the rate specified by their media
+durations. This consumption is simulated, while segment transfers and
+bandwidth contention occur in the running system.
+Table~\ref{tab:fixture} lists the cluster and client settings.
+
+\paragraph{Workload.}
+Each viewer requests the same 18\,s video, divided into 9 segments of 128\,KiB each.
+Low demand consists of 2 viewers, while high demand consists of 6 viewers. 
+Under high demand, arrivals follow 2 patterns.
+With simultaneous arrivals, all 6 viewers start near 0\,s. 
+With staggered arrivals, viewers start in pairs near 0, 4, and 12\,s. 
+
+\begin{table}[ht]
+\centering\small
+\caption{Playback and storage configuration.}
+\label{tab:fixture}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Storage cluster & 3 Controllers, 3 Peers \\
+Source upload limits & 96, 144, 192 KiB/s \\
+Content & 9 segments of 128 KiB and 2 s each \\
+Initial placement & 2 copies per segment, fixed holders \\
+Client prefetch & 3-segment window, 2 downloads at once \\
+Startup buffer & 4 s of contiguous media \\
+Timeouts & 8 s per attempt, 42 s per session \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Comparison design.}
+Within each workload and arrival pattern, 
+policies use the same content, initial replica placement, round-robin source selection, and fault schedule.
+Policies are tested in a randomized order to reduce bias from changes in host load and cache state over time.. 
+The main playback and repair comparisons cover 3 failure contexts, 
+where the failed Peer’s upload limit is set to 96, 144, or 192 KiB/s respectively. 
+The second-holder failure experiments use 2 of these contexts.
+
+\paragraph{Fault schedule and recovery verification.}
+The first Peer failure occurs 5\,s after the run starts.
+The main observation window ends at 50\,s.
+Replica recovery is checked approximately every 2\,s.
+Essentially, full recovery requires every affected segment to have 2 reachable,
+hash-valid copies with committed registrations.
+Based on this, we count a run as meeting the recovery target if full recovery is verified within 40,s of the first Peer failure.
+The main study comprises 81 runs, including 72 performance runs and 9 Controller failure trials.
+
+\paragraph{Metrics.}
+To capture both playback performance and replica recovery, 
+we measure session completion, startup delay, playback stall, replica recovery time, repair traffic, and one-copy exposure.
+
+A session completes when it consumes all 18\,s of media.
+For each session, startup delay measures the time from session start until media consumption begins. 
+Once consumption begins, any time spent waiting for unavailable segments counts as playback stall.
+To compare the effects of failure and repair, 
+we accumulate observed stall from the first Peer failure until each session ends, 
+then average over all scheduled viewers. 
+For the no-failure control, accumulation begins at the corresponding 5-second mark.
+
+Replica recovery time is measured from the first Peer failure
+to the first check confirming full recovery.
+Repair traffic counts source HTTP response payload bytes,
+including repeated transfers.
+When a segment has only one verified, reachable, registered copy,
+failure of its remaining holder can make it unavailable.
+Therefore, we use one-copy exposure to quantify the amount of data in this vulnerable
+state and how long it remains there.
+Let $b_s$ be the size of affected segment $s$ in MiB,
+and let $n_s(t_i)$ be its verified, reachable, registered copy count
+at check $i$.
+The sampled exposure is
+
+\begin{equation}
+  E_{\mathrm{one}}
+  = \sum_i (t_{i+1}-t_i)
+    \sum_s b_s\,\mathbf{1}[n_s(t_i)=1],
+\end{equation}
+
+where the intervals span the period from the first failure
+to the observation horizon.
+Exposure is reported in MiB$\cdot$s.
+

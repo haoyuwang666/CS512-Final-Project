@@ -1,4 +1,195 @@
 % !TeX root = ../final-report.tex
-% TODO(team): Report E1--E5, the E4 follow-up, and the late-arrival extension with traceable data and clearly separated experimental phases.
+% TODO(team): Keep the tables aligned with the compact study and E4 follow-up archives.
 \section{Evaluation}
-Report E1--E5, the E4 follow-up, and the late-arrival extension with traceable data and clearly separated experimental phases.
+\label{sec:evaluation}
+
+\subsection{E1: Playback after a Peer failure}
+We use 3 conditions to distinguish the effect of Peer failure on playback
+from the additional effect of repair. Comparing the no-failure control (N)
+with repair disabled after a Peer failure (OFF) shows how playback changes
+when a Peer stops. 
+Then, using OFF as the baseline, we assess the additional effect of
+shared repair (S) under the same failure schedule.
+
+Under low demand, all 6 sessions in each condition completed with zero observed post-fault stall. 
+However, under high demand, 7/18 sessions completed under both OFF and S, 
+compared with 18/18 under N.
+Although OFF and S had the same completion count, shared repair increased
+mean stall from 3.24 to 4.46\,s per viewer, a difference
+of 1.22\,s.
+
+\begin{table}[ht]
+\centering\small
+\caption{E1 at high demand. Each treatment schedules 6 viewers in each of
+3 capacity contexts, with matched healthy runs for N.}
+\label{tab:e1}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Treatment & Sessions completed & Stall per viewer (s) \\
+\midrule
+N & 18/18 & 3.20 \\
+OFF & 7/18 & 3.24 \\
+S & 7/18 & 4.46 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Completion also depended on which Peer failed. When the slowest Peer
+stopped, all 6 viewers finished under both OFF and S. In this context,
+shared repair increased mean stall from 4.01 to 7.47\,s per viewer.
+When the middle or fastest Peer stopped, only 1 or 0 viewers finished,
+respectively, under either policy. Because each failed session stops
+accumulating stall at termination, the similar stall averages under N
+and OFF include very different completion outcomes.
+
+\subsection{E2: Waiting before repair}
+Under shared repair, we vary how long the coordinator waits (grace period) after it
+detects a missing copy. In the brief outage, the original Peer returns
+after 4\,s. While in the persistent outage, it stays offline.
+Table~\ref{tab:e2} reports mean repair traffic and one-copy exposure
+across the 3 failure contexts.
+
+\begin{table}[ht]
+\centering\small
+\caption{E2. Source repair payload per run and sampled one-copy exposure
+during persistent absence.}
+\label{tab:e2}
+\begin{tabular}{@{}r rr r@{}}
+\toprule
+ & \multicolumn{2}{c}{Repair payload (MiB)} & Exposure (MiB$\cdot$s) \\
+\cmidrule(lr){2-3}
+Grace & Brief & Persistent & Persistent \\
+\midrule
+1 s & 0.125 & 0.750 & 17.42 \\
+3 s & 0 & 0.750 & 18.24 \\
+8 s & 0 & 0.750 & 20.20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+During each brief outage with a 1\,s grace period, the coordinator
+created a repair task that copied a single 128\,KiB segment.
+Once created, the task could proceed even after the original Peer returned.
+With 3 or 8\,s of grace, repair generated no traffic during these runs.
+All 54 brief-outage sessions completed.
+
+During persistent outages, all 3 settings copied the same 6 segments.
+Increasing grace from 1 to 8\,s raised mean one-copy exposure from 17.42
+to 20.20\,MiB$\cdot$s. The additional wait therefore increased exposure
+by about 16\% for the same repair volume.
+
+\subsection{E3: Fixed and load-aware allowances}
+To assess the load-aware allowance (L), we compare it with the fixed
+50\% cap (F50) under both arrival patterns. Shared repair (S) and the
+fixed 25\% cap (F25) provide two additional comparison points.
+Each policy completed 7/18 sessions with simultaneous arrivals and 9/18
+with staggered arrivals. Table~\ref{tab:e3} reports post-fault stall and
+the number of runs meeting the recovery target.
+
+\begin{table}[ht]
+\centering\small
+\caption{E3 main study. Stall is mean seconds per scheduled viewer.
+Recovery counts runs first verified within 40\,s of failure.}
+\label{tab:e3}
+\begin{tabular}{@{}l rr rr@{}}
+\toprule
+ & \multicolumn{2}{c}{Simultaneous} & \multicolumn{2}{c}{Staggered} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Policy & Stall & Recovered & Stall & Recovered \\
+\midrule
+S   & 4.46 & 3/3 & 6.18 & 2/3 \\
+F25 & 4.73 & 3/3 & 6.28 & 1/3 \\
+F50 & 4.88 & 3/3 & 6.20 & 2/3 \\
+L   & 4.33 & 3/3 & 6.21 & 1/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Across the 3 failure contexts, mean stall under L was 0.55\,s lower
+than under F50 with simultaneous arrivals and 0.01\,s higher with
+staggered arrivals. With staggered arrivals, L met the recovery target
+in 1/3 runs and F50 in 2/3. 
+There's no clear winner between L and F50, but both outperformed F25 in
+stall and recovery. 
+
+\begin{table}[ht]
+\centering\small
+\caption{Simultaneous arrivals with the 96\,KiB/s Peer offline after
+the fault. Stall is the mean post-fault stall per viewer. Recovery is timed from failure to first verification.}
+\label{tab:e3-slowest}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Policy & Stall (s) & Recovery (s) & Exposure (MiB$\cdot$s) \\
+\midrule
+S & 7.47 & 35.99 & 20.11 \\
+F25 & 8.36 & 37.77 & 21.24 \\
+F50 & 8.53 & 33.99 & 18.82 \\
+L & 6.88 & 36.06 & 20.38 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:e3-slowest} focuses on simultaneous arrivals when the slowest Peer failed.
+Of the 3 failure contexts, only this one allowed all 6 viewers to finish under every policy.
+Therefore, we can compare stall over complete sessions and examine how each repair policy
+affected the time needed to restore the missing replicas.
+In this case, L reduced mean post-fault stall by
+1.65\,s per viewer relative to F50, but full replica recovery was first
+verified 2.07\,s later. Viewers spent less time waiting for segments,
+while one-copy exposure rose from 18.82 to 20.38\,MiB$\cdot$s.
+
+\subsection{E4: Segment availability after a second holder failure}
+We select a segment late in the repair queue and stop its original
+holders in sequence. Immediately after the second stop, we request the
+segment from its replacement Peer and verify the size, hash, and committed
+registration. This request tests whether a viewer can fetch the segment
+without relying on previously buffered data. At intervals of 4, 14,
+and 30\,s between failures, all 18 requests failed.
+
+\begin{table}[ht]
+\centering\small
+\caption{E4 follow-up. Successful fresh reads of the selected segment
+over scheduled trials. Delay is measured between holder failures.}
+\label{tab:e4}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Second-failure condition & S & F50 & L \\
+\midrule
+Sweep: 33 s & 1/2 & 1/2 & 1/2 \\
+Sweep: 34 s & 2/2 & 2/2 & 0/2 \\
+Sweep: 35, 36, 40 s (each) & 2/2 & 2/2 & 2/2 \\
+Independent trials: 34 s & 2/4 & 3/4 & 4/4 \\
+After verified full repair & 2/2 & 2/2 & 2/2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The follow-up tested longer intervals in 30 exploratory trials
+(Table~\ref{tab:e4}). At 34\,s, S and F50 each served the segment in
+2/2 trials and L in 0/2. In 12 independent trials at the same delay,
+S, F50, and L succeeded in 2/4, 3/4, and 4/4 trials, respectively.
+The policy ordering thus changed when the comparison was repeated.
+
+In 6 additional trials, we stopped the second holder only after every
+affected segment had 2 verified, reachable, registered copies.
+The remaining Peer then served all 9 segments in every trial,
+passing all 54 fresh-read checks. These checks establish byte
+availability after the second process failure. The stopped Peers
+retained their disks.
+
+\subsection{E5: Controller failures}
+We measure Controller recovery by the first successful application request
+that requires fresh, quorum-backed metadata. Each failure case has 3 runs.
+When the leader stopped during delivery, the median recovery time was
+1.52\,s from the stop (range 1.47--2.74\,s). Both warm and cold clients
+finished playback. When the leader stopped during a pending repair,
+the median was 1.60\,s from the stop (range 1.52--1.97\,s). In all
+3 runs the new leader resumed the task with its original ID and creation
+time. Subsequent checks confirmed a hash-valid copy and a committed
+registration at the replacement Peer.
+
+During majority loss, all 9 valid write attempts returned HTTP 503.
+For this case, timing begins when quorum returns. The median time to a
+fresh application response was 1.04\,s (range 0.85--1.43\,s). In each
+run, the Controller retained the baseline state and reconciled the
+operation using its original ID.

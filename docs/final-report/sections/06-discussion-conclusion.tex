@@ -1,4 +1,47 @@
 % !TeX root = ../final-report.tex
-% TODO(team): Answer each hypothesis, report negative results, discuss threats to validity, and distinguish deferred features from implemented work.
+% TODO(team): Revisit the limits of these conclusions if deployments or workloads change.
 \section{Discussion and Conclusion}
-Answer each hypothesis, report negative results, discuss threats to validity, and distinguish deferred features from implemented work.
+
+\paragraph{Playback and segment availability.}
+Shared repair draws upload capacity from the same Peer that serves
+viewers. Under high demand, when the slowest Peer failed, all 6 viewers
+finished and shared repair added 3.46\,s of stall per viewer relative to
+OFF. The benefit of restoring a copy depended on which holders remained
+reachable. When both original
+holders stopped after verified repair, the replacement served fresh
+requests. Session completion alone therefore gives little indication of
+how well the system can serve reads after another holder fails.
+
+\paragraph{Repair timing and bandwidth.}
+The grace period determines how long a segment can remain below the
+replication target before the coordinator creates a task. Waiting avoided
+copying during the brief outages, while longer grace increased one-copy
+exposure during persistent outages. Once a task starts copying, the
+source allowance limits the upload capacity available to repair.
+Compared with F50, L reduced stall when the slowest Peer failed under
+simultaneous demand, but the replacement copies took longer to verify.
+Across arrival patterns, L showed no consistent advantage in playback
+and recovery. The Controller trials also showed that a new leader could
+resume a committed task after a crash and register the replacement copy.
+
+\paragraph{Limitations.}
+Each failed upload capacity in E1--E3 corresponds to a different Peer
+and a single paired context. The comparisons therefore include both
+Peer identity and capacity, with no estimate of variation across repeats
+at each capacity. The repeated trials at 34\,s in E4 illustrate how
+delivery outcomes can vary at the same fault interval. All processes
+share one host and its OS page cache. Configured upload limits control
+contention, and the media clock simulates consumption. Measurements on
+wide-area links or with browser decoding could yield different stalls.
+Placement, source selection, and retry limits also influence completion.
+The failure model covers process crashes with retained disks. Power loss
+and sustained network partitions remain outside its scope.
+
+\paragraph{Implications for further experiments.}
+To measure when repair improves playback completion, a follow-up could
+compare OFF with enabled repair under matched viewer arrival schedules and stop
+a second holder before new viewers arrive. Recording the source of each
+verified segment would connect a completed session to the replacement
+that served it. In the current experiments, verified repair preserved
+access after a second holder failure, while its cost to ongoing playback
+depended on demand and the upload capacity left at surviving Peers.
